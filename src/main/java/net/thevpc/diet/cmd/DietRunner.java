@@ -30,17 +30,17 @@ public class DietRunner {
     }
 
     private static void doJson(DietOptions o) {
-        new ActionJson(o, new DbStore().setOut(new File(o.file)))
+        new ActionJson(o, new DbStore().setOut(o.file==null?null:new File(o.file)))
                 .run();
     }
 
     private static void doExport(DietOptions o) {
-        new ActionExport(o, new DbStore().setDb(o.cnx).setOut(new File(o.file)))
+        new ActionExport(o, new DbStore().setDb(o.cnx).setOut(o.file==null?null:new File(o.file)))
                 .run();
     }
 
     private static void doImport(DietOptions o) {
-        new ActionImport(o, new DbStore().setDb(o.cnx).setOut(new File(o.file)))
+        new ActionImport(o, new DbStore().setDb(o.cnx).setOut(o.file==null?null:new File(o.file)))
                 .run();
     }
 }

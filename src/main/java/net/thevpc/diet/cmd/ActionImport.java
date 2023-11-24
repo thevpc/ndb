@@ -5,7 +5,7 @@ import net.thevpc.diet.io.*;
 import net.thevpc.diet.model.StoreTableDefinition;
 import net.thevpc.diet.model.TableHeader;
 import net.thevpc.diet.sql.DatabaseDriver;
-import net.thevpc.diet.sql.TableRestore;
+import net.thevpc.diet.sql.TableImporter;
 import net.thevpc.diet.cmd.options.TableRestoreOptions;
 import net.thevpc.diet.util.FileUtils;
 import net.thevpc.diet.util.StringUtils;
@@ -62,13 +62,13 @@ public class ActionImport {
                 public void visitSchema(StoreTableDefinition[] md) {
                     this.md = md;
                     for (StoreTableDefinition d : md) {
-                        TableRestore tr = s.getDb().createTableRestore();
+                        TableImporter tr = s.getDb().createTableImporter();
                         if (t.test(d.toTableHeader())) {
                             tr.updateSchema(d, schemaMode);
                         }
                     }
                     for (StoreTableDefinition d : md) {
-                        TableRestore tr = s.getDb().createTableRestore();
+                        TableImporter tr = s.getDb().createTableImporter();
                         if (t.test(d.toTableHeader())) {
                             tr.disableConstraints(d, schemaMode);
                         }
@@ -79,7 +79,7 @@ public class ActionImport {
                 public void visitData(StoreRows md) {
                     if (o.data) {
                         if (t.test(md.getDefinition().toTableHeader())) {
-                            TableRestore tr = s.getDb().createTableRestore();
+                            TableImporter tr = s.getDb().createTableImporter();
                             tr.importData(md, schemaMode);
                             return;
                         }
@@ -90,7 +90,7 @@ public class ActionImport {
                 @Override
                 public void visitEnd() {
                     for (StoreTableDefinition d : md) {
-                        TableRestore tr = s.getDb().createTableRestore();
+                        TableImporter tr = s.getDb().createTableImporter();
                         if (t.test(d.toTableHeader())) {
                             tr.enableConstraints(d, schemaMode);
                         }

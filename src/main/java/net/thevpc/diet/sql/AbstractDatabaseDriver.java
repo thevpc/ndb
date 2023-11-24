@@ -91,7 +91,7 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
 
     @Override
     public StoreTableDefinition getTableMetaData(TableId name) {
-        LOG.log(Level.FINEST, "[" + name.toStringId() + "] load db metadata");
+        LOG.log(Level.FINEST, "[" + name.toStringId() + "] load table metadata");
         StoreTableDefinition tmd = null;
         try {
             DatabaseMetaData md = connection.getMetaData();
@@ -929,9 +929,8 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
     }
 
     @Override
-    public TableRestore createTableRestore() {
-        return new AbstractTableRestore(this) {
-        };
+    public TableImporter createTableImporter() {
+        return new DefaultTableImporter(this);
     }
 
     @Override

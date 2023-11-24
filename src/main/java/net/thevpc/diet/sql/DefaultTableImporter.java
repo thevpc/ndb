@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class AbstractTableRestore implements TableRestore {
-    public static Logger LOG = Logger.getLogger(AbstractTableRestore.class.getName());
+public class DefaultTableImporter implements TableImporter {
+    public static Logger LOG = Logger.getLogger(DefaultTableImporter.class.getName());
     protected StoreRows rows;
     protected DatabaseDriver dbHelper;
     private PreparedStatement insertRowPreparedStatement;
@@ -27,7 +27,7 @@ public abstract class AbstractTableRestore implements TableRestore {
     private TableRestoreOptions schemaMode;
     private TableId newTable;
 
-    public AbstractTableRestore(DatabaseDriver dbHelper) {
+    public DefaultTableImporter(DatabaseDriver dbHelper) {
         this.dbHelper = dbHelper;
     }
 
@@ -58,7 +58,7 @@ public abstract class AbstractTableRestore implements TableRestore {
 
     protected void importData() {
         if (schemaMode.isClearTable()) {
-            clearTable(newTable);
+            dbHelper.clearTable(newTable);
         }
         IoRow r = null;
         _createInsertQuery();
@@ -238,10 +238,6 @@ public abstract class AbstractTableRestore implements TableRestore {
     @Override
     public void disableConstraints(StoreTableDefinition d, TableRestoreOptions schemaMode) {
 
-    }
-
-    public void clearTable(TableId t) {
-        dbHelper.clearTable(t);
     }
 
     public void deactivateConstraints() {

@@ -67,7 +67,7 @@ public class StringUtils {
         return "\"" + s + "\"";
     }
 
-    public static Pattern glob(String s) {
+    public static Pattern glob(String s, boolean caseSensitive) {
         if (s == null || s.length() == 0) {
             return Pattern.compile(".*");
         }
@@ -96,7 +96,11 @@ public class StringUtils {
                 }
             }
         }
-        return Pattern.compile(sb.toString());
+        if (caseSensitive) {
+            return Pattern.compile(sb.toString());
+        } else {
+            return Pattern.compile(sb.toString(), Pattern.CASE_INSENSITIVE);
+        }
     }
 
     public static String emptyIfNull(String s) {

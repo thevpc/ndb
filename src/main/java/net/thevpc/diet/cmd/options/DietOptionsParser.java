@@ -1,7 +1,6 @@
 package net.thevpc.diet.cmd.options;
 
-import net.thevpc.diet.cmd.options.DietOptions;
-import net.thevpc.diet.sql.DbHelperFactory;
+import net.thevpc.diet.sql.DatabaseDriverFactory;
 import net.thevpc.diet.util.Param;
 import net.thevpc.diet.util.StringUtils;
 
@@ -201,14 +200,14 @@ public class DietOptionsParser {
                 return true;
             }
             case "--db-type": {
-                o.cnx.setType(DbHelperFactory.checkValidDbType(p.getValue()));
+                o.cnx.setType(DatabaseDriverFactory.checkValidDbType(p.getValue()));
                 return true;
             }
             case "--db": {
                 Pattern pat = Pattern.compile("(?<type>[a-z]+)://((?<user>[^:@/]+)(:(?<password>[^:@/]+))?@)?((?<host>[^:/?]*)(:(?<port>[0-9]+))?)/(?<db>[a-zA-Z0-9_-]+).*");
                 Matcher m = pat.matcher(p.getValue());
                 if (m.matches()) {
-                    o.cnx.setType(DbHelperFactory.checkValidDbType(m.group("type")));
+                    o.cnx.setType(DatabaseDriverFactory.checkValidDbType(m.group("type")));
                     o.cnx.setUser(m.group("user"));
                     o.cnx.setPassword(m.group("password"));
                     o.cnx.setHost(m.group("host"));

@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -723,6 +722,26 @@ public class StoreInputStream implements Closeable {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    public int readAvailable(byte[] buffer) {
+        return readAvailable(buffer, 0, buffer.length);
+    }
+
+    public int readAvailable(byte[] buffer, int offset, int len) {
+        int l = len;
+        int o = offset;
+        int r = 0;
+        while (l > 0) {
+            int z = read(buffer, o, l);
+            if (z <= 0) {
+                break;
+            }
+            o += z;
+            l -= z;
+            r += z;
+        }
+        return r;
     }
 
     public int read(byte[] buffer, int offset, int len) {

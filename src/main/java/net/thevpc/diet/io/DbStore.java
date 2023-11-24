@@ -3,7 +3,7 @@ package net.thevpc.diet.io;
 import net.thevpc.diet.io.v1.StoreWriterV1;
 import net.thevpc.diet.sql.CnxInfo;
 import net.thevpc.diet.sql.DatabaseDriver;
-import net.thevpc.diet.sql.DbHelperFactory;
+import net.thevpc.diet.sql.DatabaseDriverFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,17 +24,17 @@ public class DbStore {
     }
 
     public DbStore setDb(CnxInfo cnx) {
-        this.db = DbHelperFactory.create(cnx);
+        this.db = DatabaseDriverFactory.create(cnx);
         return this;
     }
 
     public DbStore setDb(Connection db) {
-        this.db = DbHelperFactory.create(db);
+        this.db = DatabaseDriverFactory.create(db);
         return this;
     }
 
     public DbStore setDb(String url, String login, String pwd) {
-        this.db = DbHelperFactory.create(url, login, pwd);
+        this.db = DatabaseDriverFactory.create(url, login, pwd);
         return this;
     }
 

@@ -20,7 +20,7 @@ public class FileUtils {
             if (parentFile == null) {
                 parentFile = new File(".");
             }
-            Pattern glob = StringUtils.glob(file.getName());
+            Pattern glob = StringUtils.glob(file.getName(),true);
             File[] files = parentFile.listFiles(x -> {
                 return x.isFile() && glob.matcher(x.getName()).matches();
             });

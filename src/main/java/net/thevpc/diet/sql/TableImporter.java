@@ -4,7 +4,7 @@ import net.thevpc.diet.cmd.options.TableRestoreOptions;
 import net.thevpc.diet.io.StoreRows;
 import net.thevpc.diet.model.StoreTableDefinition;
 
-public interface TableRestore {
+public interface TableImporter {
     void importData(StoreRows md, TableRestoreOptions schemaMode);
 
     void updateSchema(StoreTableDefinition definition, TableRestoreOptions schemaMode);

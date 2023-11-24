@@ -13,13 +13,18 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
  * @author vpc
  */
 public class StoreOutputStream implements Closeable {
+    public static final int WRITE_BUFFER_SIZE = 1024 * 10;
     private Sers sers;
     private DataOutputStream dos;
 
@@ -653,16 +658,17 @@ public class StoreOutputStream implements Closeable {
     }
 
     public void writeNonNullableReader(Reader v) {
-        char[] buffer = new char[1024 * 10];
+        char[] buffer = new char[WRITE_BUFFER_SIZE];
         int c = 0;
-        while (true) {
-            try {
-                if (!((c = v.read(buffer)) > 0)) break;
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-            String s = new String(buffer, 0, c);
-            byte[] bytes = s.getBytes();
+        while ((c = _readAvailable(v, buffer, 0, buffer.length)) > 0) {
+            CharBuffer charBuffer = CharBuffer.wrap(buffer, 0, c);
+            ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+            byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
+                    byteBuffer.position(), byteBuffer.limit());
+
+//            String s = new String(buffer, 0, c);
+//            byte[] bytes = s.getBytes();
+
             this.writeNonNullableLong(bytes.length);
             this.writeRawBytes(bytes, 0, bytes.length);
         }
@@ -694,16 +700,52 @@ public class StoreOutputStream implements Closeable {
         }
     }
 
-
-    public void writeNonNullableInputStream(InputStream v) {
-        byte[] buffer = new byte[1024 * 10];
-        int c = 0;
-        while (true) {
+    private int _readAvailable(InputStream is, byte[] buffer, int offset, int len) {
+        int l = len;
+        int o = offset;
+        int r = 0;
+        while (l > 0) {
+            int z = 0;
             try {
-                if (!((c = v.read(buffer)) > 0)) break;
+                z = is.read(buffer, o, l);
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+            if (z <= 0) {
+                break;
+            }
+            o += z;
+            l -= z;
+            r += z;
+        }
+        return r;
+    }
+
+    private int _readAvailable(Reader is, char[] buffer, int offset, int len) {
+        int l = len;
+        int o = offset;
+        int r = 0;
+        while (l > 0) {
+            int z = 0;
+            try {
+                z = is.read(buffer, o, l);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            if (z <= 0) {
+                break;
+            }
+            o += z;
+            l -= z;
+            r += z;
+        }
+        return r;
+    }
+
+    public void writeNonNullableInputStream(InputStream v) {
+        byte[] buffer = new byte[WRITE_BUFFER_SIZE];
+        int c = 0;
+        while ((c = _readAvailable(v, buffer, 0, buffer.length)) > 0) {
             this.writeNonNullableLong(c);
             this.writeRawBytes(buffer, 0, c);
         }

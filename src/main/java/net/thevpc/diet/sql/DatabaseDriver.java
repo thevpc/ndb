@@ -36,7 +36,7 @@ public interface DatabaseDriver extends Closeable {
 
     void close();
 
-    TableRestore createTableRestore();
+    TableImporter createTableImporter();
 
     String escapeIdentifier(TableId name);
 

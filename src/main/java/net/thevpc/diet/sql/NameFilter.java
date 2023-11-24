@@ -60,7 +60,7 @@ public class NameFilter {
                 if (ss != null) {
                     for (String s : ss.split("[, ]")) {
                         if (s.length() > 0) {
-                            sIncludeTables.add(StringUtils.glob(s));
+                            sIncludeTables.add(StringUtils.glob(s,false));
                         }
                     }
                 }
@@ -71,7 +71,7 @@ public class NameFilter {
                 if (ss != null) {
                     for (String s : ss.split("[, ]")) {
                         if (s.length() > 0) {
-                            sExcludeTables.add(StringUtils.glob(s));
+                            sExcludeTables.add(StringUtils.glob(s,false));
                         }
                     }
                 }

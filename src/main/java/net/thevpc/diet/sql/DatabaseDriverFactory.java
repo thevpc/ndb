@@ -10,8 +10,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DbHelperFactory {
-    public static Logger LOG = Logger.getLogger(DbHelperFactory.class.getName());
+public class DatabaseDriverFactory {
+    public static Logger LOG = Logger.getLogger(DatabaseDriverFactory.class.getName());
 
     public static DbType parseDbTypeFromDriverName(String dbType) {
         if (dbType == null) {

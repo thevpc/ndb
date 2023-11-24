@@ -36,6 +36,11 @@ public class PostgreSqlDatabaseDriver extends AbstractDatabaseDriver {
             case NBYTE_STREAM: {
                 return "BYTEA";
             }
+            case BYTE:
+            case NBYTE:
+            {
+                return "numeric(1,0)";
+            }
             case SHORT:
             case NSHORT:
             {

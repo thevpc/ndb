@@ -1,7 +1,7 @@
 package net.thevpc.diet.cmd.options;
 
-import net.thevpc.dbinfo.model.CnxInfo;
-import net.thevpc.dbinfo.util.DatabaseDriverFactories;
+import net.thevpc.dbrman.model.CnxInfo;
+import net.thevpc.dbrman.util.DatabaseDriverFactories;
 import net.thevpc.vio2.util.CmdLineFileParser;
 import net.thevpc.vio2.util.Param;
 import net.thevpc.vio2.util.StringUtils;
@@ -10,8 +10,6 @@ import java.io.*;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DietOptionsParser {
     public static DietOptions parse(String... args) {

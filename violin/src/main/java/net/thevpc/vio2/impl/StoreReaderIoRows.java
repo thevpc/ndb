@@ -9,6 +9,7 @@ public class StoreReaderIoRows implements StoreRows {
 
     private final StoreStructDefinition md;
     private final StoreInputStream dis;
+    private long rowIndex;
 
     public StoreReaderIoRows(StoreInputStream dis) {
         this.dis = dis;
@@ -26,6 +27,8 @@ public class StoreReaderIoRows implements StoreRows {
         if (b == 0) {
             return null;
         }
+        rowIndex++;
+        IOLogger.current().log("Reading row "+rowIndex);
         return new StoreReaderIoRow(md, dis);
     }
 

@@ -89,8 +89,10 @@ public class StoreWriterImpl extends AbstractStoreWriter {
         maxProgress = (isData() ? (1 + tablesMd.size()) : 0) + 3;
         incProgress(currProgress, maxProgress, "Start");
         LOG.log(Level.FINE, "[SECTION_SCHEMA] write schema for " + tablesMd.size() + " tables");
+        IOLogger.current().log("[SECTION_SCHEMA] write schema for " + tablesMd.size() + " tables");
         for (StoreStructDefinition storeTableDefinition : tablesMd) {
             LOG.log(Level.FINE, "[SECTION_SCHEMA] " + storeTableDefinition.toStoreStructId().getFullName() + " (" + storeTableDefinition.getColumns().size() + " columns)");
+            IOLogger.current().log("[SECTION_SCHEMA] " + storeTableDefinition.toStoreStructId().getFullName() + " (" + storeTableDefinition.getColumns().size() + " columns)");
         }
         incProgress(currProgress, maxProgress, "Write Definitions");
         dos.writeNonNullableStruct(StoreStructDefinition[].class, tablesMd.toArray(new StoreStructDefinition[0]));
@@ -99,6 +101,7 @@ public class StoreWriterImpl extends AbstractStoreWriter {
             for (StoreStructDefinition tableMd : tablesMd) {
                 this.startSection(DietProtocol.SECTION_DATA);
                 LOG.log(Level.FINE, "[" + tableMd.toStoreStructId().getFullName() + "] start section data (limit " + getMaxRows() + ")");
+                IOLogger.current().log("[" + tableMd.toStoreStructId().getFullName() + "] start section data (limit " + getMaxRows() + ")");
                 try (StoreRows rs = db.getRows(tableMd.toStoreStructId())) {
                     dos.writeNonNullableStruct(StoreRows.class, rs.limit(getMaxRows()));
                 }

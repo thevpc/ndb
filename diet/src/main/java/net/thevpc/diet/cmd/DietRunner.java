@@ -1,12 +1,12 @@
 package net.thevpc.diet.cmd;
 
-import net.thevpc.dbinfo.api.DatabaseDriver;
-import net.thevpc.dbinfo.options.DbToDumpOptions;
-import net.thevpc.dbinfo.options.DbToJsonOptions;
-import net.thevpc.dbinfo.options.DumpToDbOptions;
-import net.thevpc.dbinfo.options.DumpToJsonOptions;
-import net.thevpc.dbinfo.store.DbrmanService;
-import net.thevpc.dbinfo.io.In;
+import net.thevpc.dbrman.api.DatabaseDriver;
+import net.thevpc.dbrman.options.DbToDumpOptions;
+import net.thevpc.dbrman.options.DbToJsonOptions;
+import net.thevpc.dbrman.options.DumpToDbOptions;
+import net.thevpc.dbrman.options.DumpToJsonOptions;
+import net.thevpc.dbrman.store.DbrmanService;
+import net.thevpc.dbrman.io.In;
 import net.thevpc.diet.cmd.options.DietOptions;
 
 import java.io.File;

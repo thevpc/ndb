@@ -1,7 +1,7 @@
 package net.thevpc.diet.test;
 
-import net.thevpc.dbinfo.model.ColumnDefinition;
-import net.thevpc.dbinfo.model.TableDefinition;
+import net.thevpc.dbrman.model.ColumnDefinition;
+import net.thevpc.dbrman.model.TableDefinition;
 import net.thevpc.vio2.api.*;
 import net.thevpc.vio2.impl.DefaultStoreRows;
 import net.thevpc.vio2.impl.StoreInputStreamImpl;

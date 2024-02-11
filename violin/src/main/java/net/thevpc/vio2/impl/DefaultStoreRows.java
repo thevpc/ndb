@@ -22,6 +22,7 @@ public class DefaultStoreRows implements StoreRows {
     @Override
     public IoRow nextRow() {
         if (index < rows.length) {
+            IOLogger.current().log("Reading row "+(index+1)+" / "+rows.length);
             IoRow c = new DefaultIoRow(def, rows[index]);
             index++;
             return c;

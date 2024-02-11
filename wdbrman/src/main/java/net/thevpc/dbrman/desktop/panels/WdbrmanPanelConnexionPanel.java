@@ -1,8 +1,11 @@
 package net.thevpc.dbrman.desktop.panels;
 
-import net.thevpc.dbinfo.api.DatabaseDriver;
-import net.thevpc.dbinfo.model.*;
-import net.thevpc.dbinfo.util.DatabaseDriverFactories;
+import net.thevpc.dbrman.api.DatabaseDriver;
+import net.thevpc.dbrman.api.DatabaseHeader;
+import net.thevpc.dbrman.api.DatabaseId;
+import net.thevpc.dbrman.model.*;
+import net.thevpc.dbrman.util.DatabaseDriverFactories;
+import net.thevpc.dbrman.util.UncheckedSQLException;
 import net.thevpc.dbrman.desktop.util.GBC;
 import net.thevpc.dbrman.desktop.util.UI;
 
@@ -11,14 +14,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class WdbrmanPanelConnexionPanel extends JPanel {
-    private final JLabel catalogLabel;
-    private final JLabel schemaLabel;
+    private final JLabel dbLabel;
     JTextField hostField = new JTextField();
     JSpinner portField = new JSpinner(new SpinnerNumberModel());
     JTextField loginField = new JTextField();
@@ -27,70 +28,44 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
     JLabel passwordLabel = new JLabel("Mot de Passe");
     JCheckBox integratedSecurity = new JCheckBox("Sécurité Integrée");
     JComboBox serverType = new JComboBox(new Object[0]);
-    JComboBox schemaList = new JComboBox(new Object[0]);
-    JComboBox catalogList = new JComboBox(new Object[0]);
+    JComboBox dbList = new JComboBox(new Object[0]);
     Properties conf;
-    SchemaId selectedSchema;
-    CatalogId selectedCatalog;
-    String catalogTerm = "Catalog";
-    String schemaTerm = "Schema";
+    DatabaseId selectedDatabase;
     PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    List<ConnexionStatusListener> connexionStatusListeners = new ArrayList<>();
+    private String currentConnexionAttemptId;
 
     public WdbrmanPanelConnexionPanel() {
         super(new GridBagLayout());
         int line = 0;
-        catalogLabel = new JLabel("Catalogue");
-        schemaLabel = new JLabel("Schema");
+        dbLabel = new JLabel("Database");
 
         serverType = new JComboBox(
                 Arrays.stream(DbType.values()).map(x -> x.name()).toArray()
         );
         add(new JLabel("Type de Serveur"), GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(serverType, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(serverType, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).colspanReminder().build());
 
         add(new JLabel("Adresse"), GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(hostField, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
-        add(new JLabel("Port"), GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(portField, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(hostField, GBC.of(1, line).fillHorizontal().anchorWest().insets(3).weightx(2).colspan(2).build());
+        add(new JLabel("Port"), GBC.of(3, line).fillHorizontal().anchorWest().insets(3).build());
+        add(portField, GBC.of(4, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
-        add(integratedSecurity, GBC.of(0, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(integratedSecurity, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
-        add(loginLabel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(loginField, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(loginLabel, GBC.of(1, line).fillHorizontal().anchorWest().insets(3).build());
+        add(loginField, GBC.of(2, line).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
-        add(passwordLabel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(passwordField, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(passwordLabel, GBC.of(3, line).fillHorizontal().anchorWest().insets(3).build());
+        add(passwordField, GBC.of(4, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
-        add(catalogLabel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(catalogList, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+        add(dbLabel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
+        add(dbList, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).colspanReminder().build());
 
-        add(schemaLabel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
-        add(schemaList, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
-
-        passwordField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                onChangeServerConnexion();
-                pcs.firePropertyChange("password", null, new String(passwordField.getPassword()));
-            }
-        });
-        loginField.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                onChangeServerConnexion();
-                pcs.firePropertyChange("login", null, loginField.getText());
-            }
-        });
+        hostField.addFocusListener(new MyFocusListener("host"));
+        portField.addFocusListener(new MyFocusListener("port"));
+        loginField.addFocusListener(new MyFocusListener("login"));
+        passwordField.addFocusListener(new MyFocusListener("password"));
         integratedSecurity.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -103,61 +78,51 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
                 onChangeServerConnexion();
             }
         });
-        catalogList.setRenderer(new DefaultListCellRenderer() {
+        dbList.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                String s = value == null ? null : ((CatalogHeader) value).getCatalogName();
+                String s = value == null ? null : ((DatabaseHeader) value).getDatabaseName();
                 return super.getListCellRendererComponent(list, s, index, isSelected, cellHasFocus);
             }
         });
 
-        schemaList.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                String s = value == null ? null : ((SchemaHeader) value).getSchemaName();
-                return super.getListCellRendererComponent(list, s, index, isSelected, cellHasFocus);
-            }
-        });
-        schemaList.addItemListener(new ItemListener() {
+        dbList.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                SchemaHeader item = (SchemaHeader) e.getItem();
-                onChangeSchema(item.toSchemaId());
-            }
-        });
-        catalogList.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                CatalogHeader item = (CatalogHeader) e.getItem();
-                onChangeCatalog(item == null ? null : item.toCatalogId());
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    DatabaseHeader item = (DatabaseHeader) e.getItem();
+                    onChangeDatabase(item == null ? null : item.toDatabaseId());
+                }
             }
         });
         serverType.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                onChangeServerConnexion();
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    onChangeServerConnexion();
+                }
             }
         });
         onChangeServerConnexion();
     }
 
 
-    public boolean acceptTable(TableId tid,DatabaseDriver d) {
-        SchemaId schemaId = selectedSchemaId();
-        if (schemaId == null) {
-            return true;
-        }
+    public boolean acceptTable(TableId tid, DatabaseDriver d) {
+        DatabaseId catalogId = selectedDatabaseId();
+
 //        if (schemaId.getSchemaName() != null) {
 //            if (!Objects.equals(tid.getSchemaName(), schemaId.getSchemaName())) {
 //                return false;
 //            }
 //        }
-        if (schemaId.getCatalogName() != null) {
-            if (!Objects.equals(tid.getCatalogName(), schemaId.getCatalogName())) {
-                return false;
+        if (catalogId != null) {
+            if (catalogId.getCatalogName() != null && tid.getCatalogName() != null) {
+                if (!Objects.equals(tid.getCatalogName(), catalogId.getCatalogName())) {
+                    return false;
+                }
             }
         }
-        if(d.isSpecialTable(tid)) {
+        if (d.isSpecialTable(tid)) {
             return false;
         }
         return true;
@@ -166,121 +131,80 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
 
     public CnxInfo cnxInfo() {
         Object value = portField.getValue();
-        String dbName=null;
+        String dbName = null;
         String dbType = serverType.getSelectedItem() == null ? DbType.SQLSERVER.name() : (String) serverType.getSelectedItem();
 
         {
-            SchemaId schemaId = selectedSchemaId();
-            String schemaName = schemaId == null ? "unknown" :
-                    (schemaId.getSchemaName() != null && schemaId.getCatalogName() != null) ? (schemaId.getCatalogName() + "." + schemaId.getSchemaName()) :
-                            (schemaId.getSchemaName() != null) ? (schemaId.getSchemaName()) :
-                                    (schemaId.getCatalogName() != null) ? (schemaId.getCatalogName()) :
-                                            "unknown";
-            if (
-                    DbType.SQLSERVER.name().equals(dbType)
-                            || DbType.JTDS_SQLSERVER.name().equals(dbType)
-            ) {
-                if (schemaId != null) {
-                    dbName=(schemaId.getCatalogName());
-                }
-            }
+            dbName = selectedDatabaseId() == null ? null : selectedDatabaseId().getDatabaseName();
         }
         CnxInfo c = new CnxInfo()
-//                        .setType("postgresql")
-//                        .setUser("postgres")
-//                        .setPassword("postgres")
-
                 .setType(dbType)
                 .setDbName(dbName)
-//                        .setHost("192.168.1.22")
                 .setUser(loginField.getText())
                 .setPassword(new String(passwordField.getPassword()))
                 .setHost(hostField.getText())
                 .setPort(value == null ? null : value.toString())
 //                .setPassword("Rombatakaya")
-                .setIntegrationSecurity(true);
+                .setIntegrationSecurity(integratedSecurity.isSelected());
         return c;
     }
 
     void onChangeServerConnexion() {
         UI.async(() -> {
             try (DatabaseDriver d = createDriver()) {
-                List<CatalogHeader> catalogs = d.getCatalogs();
-                catalogs.sort(Comparator.comparing(x -> x.getCatalogName()));
+                List<DatabaseHeader> catalogs = d.getDatabases();
+                catalogs.sort(Comparator.comparing(x -> x.getDatabaseName()));
                 UI.withinGUI(() -> {
-                    catalogList.setModel(new DefaultComboBoxModel(
+                    dbList.setModel(new DefaultComboBoxModel(
                             catalogs.toArray(new Object[0])
                     ));
-                    if (selectedCatalog == null) {
-                        CatalogHeader v = (CatalogHeader) catalogList.getSelectedItem();
-                        selectedCatalog = v == null ? null : v.toCatalogId();
-                    }
-                    onChangeCatalog(selectedCatalog);
+                    dbList.setSelectedItem(selectedDatabase);
+                    DatabaseHeader v = (DatabaseHeader) dbList.getSelectedItem();
+                    onChangeDatabase(v == null ? null : v.toDatabaseId());
                 });
+            }catch (Exception ex){
+                System.err.println(ex);
             }
         });
     }
 
-    private void onChangeSchema(SchemaId item) {
-        SchemaId old = selectedSchema;
-        selectedSchema = item;
-        pcs.firePropertyChange("schema", old, item);
-        updateTablesCount();
-    }
-
-    private void onChangeCatalog(CatalogId item) {
-        CatalogId old = selectedCatalog;
-        selectedCatalog = item;
-        pcs.firePropertyChange("catalog", old, item);
-        updateTablesCount();
-
+    private void onChangeDatabase(DatabaseId item) {
+        DatabaseId old = selectedDatabase;
+        selectedDatabase = item;
+        pcs.firePropertyChange("database", old, item);
         try (DatabaseDriver d = createDriver()) {
-
-            String catalogTerm = null;
-            try {
-                catalogTerm = d.getConnection().getMetaData().getCatalogTerm();
-            } catch (SQLException e) {
-                //
-            }
-            if (catalogTerm != null) {
-                this.catalogTerm = catalogTerm;
-                catalogLabel.setText(capitalize(catalogTerm));
-            }
-
-            String schemaTerm = null;
-            try {
-                schemaTerm = d.getConnection().getMetaData().getSchemaTerm();
-            } catch (SQLException e) {
-                //
-            }
-            if (schemaTerm != null) {
-                this.schemaTerm = schemaTerm;
-                schemaLabel.setText(capitalize(schemaTerm));
-            }
-
-            List<SchemaHeader> schemas = d.getSchemas(selectedCatalog == null ? null : selectedCatalog.getCatalogName());
-            schemas.sort(Comparator.comparing(x -> x.getSchemaName()));
-            UI.withinGUI(() -> {
-                schemaList.setModel(new DefaultComboBoxModel(
-                        schemas.toArray(new SchemaHeader[0])
-                ));
-                if (selectedSchema == null) {
-                    SchemaHeader v = (SchemaHeader) schemaList.getSelectedItem();
-                    selectedSchema = v == null ? null : v.toSchemaId();
-                    onChangeSchema(selectedSchema);
-                }
-            });
+            updateTablesCount();
+        } catch (Exception ex) {
+            System.err.println(ex);
         }
     }
 
     public DatabaseDriver createDriver() {
         pcs.firePropertyChange("connexion.status", null, "start");
+        CnxInfo cnxInfo = null;
+        String currentConnexionAttemptId=UUID.randomUUID().toString();
         try {
-            DatabaseDriver r = DatabaseDriverFactories.createDatabaseDriver(cnxInfo());
-            pcs.firePropertyChange("connexion.status", null, "success");
+            this.currentConnexionAttemptId=currentConnexionAttemptId;
+            cnxInfo = cnxInfo();
+            for (ConnexionStatusListener listener : connexionStatusListeners) {
+                listener.onConnectionCheckStart(cnxInfo);
+            }
+            DatabaseDriver r = DatabaseDriverFactories.createDatabaseDriver(cnxInfo);
+            for (ConnexionStatusListener listener : connexionStatusListeners) {
+                listener.onConnectionSuccess(cnxInfo);
+            }
             return r;
         } catch (RuntimeException e) {
-            pcs.firePropertyChange("connexion.status", null, "failure");
+            Throwable ee = e;
+            if (ee instanceof UncheckedSQLException) {
+                ee = ee.getCause();
+            }
+            //ignore alder attempts!
+            if(Objects.equals(currentConnexionAttemptId,this.currentConnexionAttemptId)) {
+                for (ConnexionStatusListener listener : connexionStatusListeners) {
+                    listener.onConnectionFailure(cnxInfo, ee);
+                }
+            }
             throw e;
         }
     }
@@ -295,12 +219,9 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         });
     }
 
-    public SchemaId selectedSchemaId() {
-        if (selectedSchema != null) {
-            return selectedSchema;
-        }
-        if (selectedCatalog != null) {
-            return new SchemaId(selectedCatalog.getCatalogName(), null);
+    public DatabaseId selectedDatabaseId() {
+        if (selectedDatabase != null) {
+            return selectedDatabase;
         }
         return null;
     }
@@ -314,14 +235,22 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
 
     private void updateTablesCount() {
         try (DatabaseDriver d = createDriver()) {
-            SchemaId schemaId = selectedSchemaId();
-            List<TableHeader> tables = d.getAnyTables(schemaId).stream().filter(x -> x.isTable()
+            DatabaseId databaseId = selectedDatabaseId();
+            for (CatalogHeader catalog : d.getCatalogs()) {
+                System.out.println("CATALOG : "+catalog);
+                for (SchemaHeader schema : d.getSchemas(catalog.toCatalogId())) {
+                    System.out.println("\tSCHEMA : "+schema);
+                }
+            }
+            List<TableHeader> tables = d.getAnyTables(databaseId).stream().filter(x -> x.isTable()
                     && !d.isSpecialTable(x.toTableId())
             ).collect(Collectors.toList());
-            List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x.toTableId(),d)).collect(Collectors.toList());
-            System.out.println(
-                    schemaId + " : " +
-                            filtered.size() + " : " + filtered);
+            List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x.toTableId(), d)).collect(Collectors.toList());
+            System.out.println("updateTablesCount : " +
+                    databaseId + " : " +
+                    filtered.size() + " : " + filtered);
+        } catch (Exception ex) {
+            System.err.println(ex);
         }
     }
 
@@ -340,12 +269,8 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         onChangeServerConnexion();
     }
 
-    public JLabel getCatalogLabel() {
-        return catalogLabel;
-    }
-
-    public JLabel getSchemaLabel() {
-        return schemaLabel;
+    public JLabel getDbLabel() {
+        return dbLabel;
     }
 
     public JCheckBox getIntegratedSecurity() {
@@ -356,32 +281,12 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         return serverType;
     }
 
-    public JComboBox getSchemaList() {
-        return schemaList;
-    }
-
-    public JComboBox getCatalogList() {
-        return catalogList;
+    public JComboBox getDbList() {
+        return dbList;
     }
 
     public Properties getConf() {
         return conf;
-    }
-
-    public SchemaId getSelectedSchema() {
-        return selectedSchema;
-    }
-
-    public CatalogId getSelectedCatalog() {
-        return selectedCatalog;
-    }
-
-    public String getCatalogTerm() {
-        return catalogTerm;
-    }
-
-    public String getSchemaTerm() {
-        return schemaTerm;
     }
 
     public void addPropertyChangerListener(PropertyChangeListener li, String... a) {
@@ -391,6 +296,64 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
             for (String s : a) {
                 pcs.addPropertyChangeListener(s, li);
             }
+        }
+    }
+
+    public void addConnexionStatusListener(ConnexionStatusListener item) {
+        if (item != null) {
+            connexionStatusListeners.add(item);
+        }
+    }
+
+    public void removeConnexionStatusListener(ConnexionStatusListener item) {
+        if (item != null) {
+            connexionStatusListeners.remove(item);
+        }
+    }
+
+    public interface ConnexionStatusListener {
+        void onConnectionCheckStart(CnxInfo info);
+
+        void onConnectionSuccess(CnxInfo info);
+
+        void onConnectionFailure(CnxInfo info, Throwable ex);
+    }
+
+    private class MyFocusListener implements FocusListener {
+        private String name;
+
+        public MyFocusListener(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void focusGained(FocusEvent e) {
+
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            onChangeServerConnexion();
+            Object value=null;
+            switch (name){
+                case "login":{
+                    value= loginField.getText();
+                    break;
+                }
+                case "password":{
+                    value=new String(passwordField.getPassword());
+                    break;
+                }
+                case "host":{
+                    value= hostField.getText();
+                    break;
+                }
+                case "port":{
+                    value= portField.getValue();
+                    break;
+                }
+            }
+            pcs.firePropertyChange(name, null, value);
         }
     }
 }

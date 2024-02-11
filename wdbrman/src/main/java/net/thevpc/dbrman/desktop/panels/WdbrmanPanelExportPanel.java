@@ -1,24 +1,25 @@
 package net.thevpc.dbrman.desktop.panels;
 
-import net.thevpc.dbinfo.api.DatabaseDriver;
-import net.thevpc.dbinfo.model.*;
-import net.thevpc.dbinfo.util.DatabaseDriverFactories;
+import net.thevpc.dbrman.api.DatabaseDriver;
+import net.thevpc.dbrman.desktop.Main;
+import net.thevpc.dbrman.model.*;
+import net.thevpc.dbrman.util.DatabaseDriverFactories;
 import net.thevpc.vio2.api.StoreWriter;
 import net.thevpc.vio2.api.StoreProgressMonitor;
 import net.thevpc.dbrman.desktop.util.GBC;
 import net.thevpc.dbrman.desktop.util.UI;
+import net.thevpc.vio2.impl.IOLogger;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.*;
 
 public class WdbrmanPanelExportPanel extends JPanel {
     JLabel statusLabel = new JLabel();
+    JLabel percentLabel = new JLabel();
     Box statusBar = Box.createHorizontalBox();
     JProgressBar progressBar = new JProgressBar();
     JButton startButton = new JButton("Commencer...");
@@ -37,8 +38,12 @@ public class WdbrmanPanelExportPanel extends JPanel {
         int line = 0;
         updateStartButtonState();
         statusBar.add(Box.createHorizontalGlue());
-        statusBar.add(new JLabel("1.0"));
         statusBar.add(statusLabel);
+        statusBar.add(Box.createHorizontalStrut(10));
+        percentLabel.setMinimumSize(new Dimension(50, 1));
+        statusBar.add(percentLabel);
+        statusBar.add(Box.createHorizontalStrut(10));
+        statusBar.add(new JLabel(" | v" + Main.VERSION));
         progressBar.setMinimum(0);
         progressBar.setMaximum(100);
 
@@ -54,17 +59,22 @@ public class WdbrmanPanelExportPanel extends JPanel {
                 UI.async(() -> onStartExport());
             }
         });
-        cnxPanel.addPropertyChangerListener(new PropertyChangeListener() {
+        cnxPanel.addConnexionStatusListener(new WdbrmanPanelConnexionPanel.ConnexionStatusListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println("propertyChange " + evt.getPropertyName());
-                switch (evt.getPropertyName()) {
-                    case "connexion.status": {
-                        updateStatus(statusProgress, "Connexion : " + evt.getNewValue());
-                        updateStartButtonState();
-                        return;
-                    }
-                }
+            public void onConnectionCheckStart(CnxInfo info) {
+                updateStatus(statusProgress, "Checking connection...");
+                updateStartButtonState();
+            }
+
+            @Override
+            public void onConnectionSuccess(CnxInfo info) {
+                updateStatus(statusProgress, "Successful connection");
+                updateStartButtonState();
+            }
+
+            @Override
+            public void onConnectionFailure(CnxInfo info, Throwable ex) {
+                updateStatus(statusProgress, "Connection failed : " + ex.getMessage());
                 updateStartButtonState();
             }
         });
@@ -78,19 +88,26 @@ public class WdbrmanPanelExportPanel extends JPanel {
             try {
                 File file = outFile;
 
-                SchemaId schemaId = cnxPanel.selectedSchemaId();
-                String schemaName = schemaId == null ? "unknown" :
-                        (schemaId.getSchemaName() != null && schemaId.getCatalogName() != null) ? (schemaId.getCatalogName() + "." + schemaId.getSchemaName()) :
-                                (schemaId.getSchemaName() != null) ? (schemaId.getSchemaName()) :
-                                        (schemaId.getCatalogName() != null) ? (schemaId.getCatalogName()) :
-                                                "unknown";
+//                SchemaId schemaId =
+//                        cnxPanel.selectedCatalog==null?null:new SchemaId(
+//                                cnxPanel.selectedCatalog.getCatalogName(),
+//                                null
+//                        );
+//                String schemaName = schemaId == null ? "unknown" :
+//                        (schemaId.getSchemaName() != null && schemaId.getCatalogName() != null) ? (schemaId.getCatalogName() + "." + schemaId.getSchemaName()) :
+//                                (schemaId.getSchemaName() != null) ? (schemaId.getSchemaName()) :
+//                                        (schemaId.getCatalogName() != null) ? (schemaId.getCatalogName()) :
+//                                                "unknown";
 
-                String catName = cnxPanel.getSelectedCatalog().getCatalogName();
+                String dbName = cnxPanel.selectedDatabaseId() == null ? null : cnxPanel.selectedDatabaseId().getDatabaseName();//cnxPanel.getSelectedCatalog().getCatalogName();
+                if (cnxPanel.selectedDatabase == null) {
+                    return;
+                }
                 if (file == null) {
-                    file = new File(schemaName + ".dump");
+                    file = new File(dbName + ".dump");
                 }
                 if (file.isDirectory()) {
-                    file = new File(file, schemaName + ".dump");
+                    file = new File(file, dbName + ".dump");
                 }
                 JFileChooser jfc = new JFileChooser();
                 jfc.setSelectedFile(file);
@@ -103,7 +120,7 @@ public class WdbrmanPanelExportPanel extends JPanel {
                             }
                         }
                         if (selectedFile.isDirectory()) {
-                            selectedFile = new File(selectedFile, schemaName + ".dump");
+                            selectedFile = new File(selectedFile, dbName + ".dump");
                         }
                         DbStore s = new DbStore();
                         s.setOut(selectedFile);
@@ -114,8 +131,8 @@ public class WdbrmanPanelExportPanel extends JPanel {
                                     dbType == DbType.SQLSERVER
                                             || dbType == DbType.JTDS_SQLSERVER
                             ) {
-                                if (schemaId != null) {
-                                    cnx.setDbName(schemaId.getCatalogName());
+                                if (dbName != null) {
+                                    cnx.setDbName(dbName);
                                 }
                             }
 
@@ -135,40 +152,55 @@ public class WdbrmanPanelExportPanel extends JPanel {
         }
     }
 
-    private void exportExplodedFile(File selectedFile) {
+    private void exportExplodedFileOne(TableId table, File nf, int i, int len) {
         try (DatabaseDriver db = cnxPanel.createDriver()) {
-            TableId[] tables = db.getTableIds(new SchemaId(
-                    cnxPanel.selectedSchemaId().getCatalogName(),
-                    null
-            )).stream()
-                    .filter(x -> cnxPanel.acceptTable(x, db))
-                    .toArray(TableId[]::new);
-            for (int i = 0, tablesLength = tables.length; i < tablesLength; i++) {
-                TableId table = tables[i];
-                System.out.println(table);
-                try {
-                    String n = selectedFile.getName();
-                    if (n.endsWith(".dump")) {
-                        n = n.substring(0, n.length() - ".dump".length());
-                    }
-                    n = n + "-" + table.getTableName() + ".dump";
-                    selectedFile.getParentFile().mkdirs();
-                    try (StoreWriter w = new DbStoreWriter(new File(selectedFile.getParent(), n), db)) {
-                        updateStatus((i) * 100 / tables.length, "Table " + table.getTableName()+"...");
-                        w.setCompress(optionCompress);
-                        w.setData(optionData);
-                        w.setMaxRows(optionMaxRows);
-                        w.addStructs(table);
-                        w.write();
-                        w.flush();
-                        updateStatus((i + 1) * 100 / tables.length, "Table " + table.getTableName());
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(WdbrmanPanelExportPanel.this, "Erreur " + table.getTableName(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            try (StoreWriter w = new DbStoreWriter(nf, db)) {
+                updateStatus((i) * 100 / len, "Table " + table.getTableName() + "...");
+                w.setCompress(optionCompress);
+                w.setData(optionData);
+                w.setMaxRows(optionMaxRows);
+                w.addStructs(table);
+                w.write();
+                w.flush();
+                updateStatus((i + 1) * 100 / len, "Table " + table.getTableName());
             }
         }
+    }
+
+    private void exportExplodedFile(File selectedFile) {
+
+        IOLogger.runWith(new IOLogger() {
+                             @Override
+                             public void log(String msg) {
+                                 updateStatus(-1, msg);
+                             }
+                         },
+                () -> {
+                    TableId[] tables;
+                    try (DatabaseDriver db = cnxPanel.createDriver()) {
+                        tables = db.getTableIds(cnxPanel.selectedDatabaseId()).stream()
+                                .filter(x -> cnxPanel.acceptTable(x, db))
+                                .toArray(TableId[]::new);
+                    }
+                    for (int i = 0, tablesLength = tables.length; i < tablesLength; i++) {
+                        TableId table = tables[i];
+                        try {
+                            String n = selectedFile.getName();
+                            if (n.endsWith(".dump")) {
+                                n = n.substring(0, n.length() - ".dump".length());
+                            }
+                            n = n + "-" + table.getTableName() + ".dump";
+                            selectedFile.getParentFile().mkdirs();
+                            File nf = new File(selectedFile.getParent(), n);
+                            exportExplodedFileOne(table, nf, i, tables.length);
+                            updateStatus(100, tables.length + " Tables exportées");
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(WdbrmanPanelExportPanel.this, "Erreur " + table.getTableName(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+        );
         JOptionPane.showMessageDialog(WdbrmanPanelExportPanel.this, "Export réussi", "Succès", JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -191,7 +223,7 @@ public class WdbrmanPanelExportPanel extends JPanel {
                 w.setCompress(optionCompress);
                 w.setData(optionData);
                 w.setMaxRows(optionMaxRows);
-                w.addStructs(db.getTableIds(cnxPanel.selectedSchemaId()).stream()
+                w.addStructs(db.getTableIds(cnxPanel.selectedDatabaseId()).stream()
                         .filter(x -> cnxPanel.acceptTable(x, db))
                         .toArray(TableId[]::new)
                 );
@@ -209,12 +241,15 @@ public class WdbrmanPanelExportPanel extends JPanel {
             if (isIndeterminateProgress()) {
                 progressBar.setIndeterminate(true);
                 statusLabel.setText(statusMessage == null ? "" : statusMessage);
+                percentLabel.setText("");
             } else {
                 progressBar.setIndeterminate(false);
                 if (statusProgress < 0 || statusProgress > 100) {
-                    statusLabel.setText((statusMessage == null ? "" : statusMessage));
+                    statusLabel.setText(statusMessage == null ? "" : statusMessage);
+                    percentLabel.setText("");
                 } else {
-                    statusLabel.setText(statusProgress + "% | " + (statusMessage == null ? "" : statusMessage));
+                    statusLabel.setText(statusMessage == null ? "" : statusMessage);
+                    percentLabel.setText(statusProgress + "%");
                 }
             }
         });
@@ -226,10 +261,9 @@ public class WdbrmanPanelExportPanel extends JPanel {
 
 
     private void updateStartButtonState() {
-        boolean a=cnxPanel.cnxInfo() != null
+        boolean a = cnxPanel.cnxInfo() != null
 //                && selectedSchema != null
                 && !workInProgress;
-        System.out.println(a);
         startButton.setEnabled(a);
     }
 

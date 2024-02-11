@@ -1,7 +1,7 @@
 package net.thevpc.diet.cmd.options;
 
-import net.thevpc.dbinfo.model.CnxInfo;
-import net.thevpc.dbinfo.options.TableRestoreOptions;
+import net.thevpc.dbrman.model.CnxInfo;
+import net.thevpc.dbrman.options.TableRestoreOptions;
 import net.thevpc.vio2.util.NameFilter;
 
 public class DietOptions {

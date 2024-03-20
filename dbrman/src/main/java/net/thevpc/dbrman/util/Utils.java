@@ -2,8 +2,27 @@ package net.thevpc.dbrman.util;
 
 import java.io.File;
 import java.net.URL;
+import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class Utils {
+    public static final <T> Stream<T> concatStreams(List<Stream<T>> all){
+        if(all.isEmpty()){
+            return (Stream)Collections.emptyList().stream();
+        }
+        Stream<T> s=all.get(0);
+        for (int i = 1; i <all.size(); i++) {
+            s=Stream.concat(s,all.get(i));
+        }
+        return s;
+    }
+    public static final <T> Stream<T> toStream(Iterator<T> sourceIterator){
+        return  StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(sourceIterator, Spliterator.ORDERED),
+                false);
+    }
+
     public static boolean isOSWindows(){
         return System.getProperty("os.name").toLowerCase().contains("windows");
     }

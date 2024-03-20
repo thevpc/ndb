@@ -7,8 +7,12 @@ import net.thevpc.dbrman.options.DbToDumpOptions;
 import net.thevpc.dbrman.options.DbToJsonOptions;
 import net.thevpc.dbrman.options.DumpToDbOptions;
 import net.thevpc.dbrman.options.DumpToJsonOptions;
+import net.thevpc.dbrman.util.DbInfoModuleInstaller;
 
 public class DbrmanService {
+    static {
+        DbInfoModuleInstaller.init();
+    }
     public void dumpToDb(DumpToDbOptions options, DatabaseDriver driver){
         new ActionImportDumpHelper().run(options,driver);
     }

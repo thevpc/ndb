@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface StoreStructDefinition {
     List<? extends StoreFieldDefinition> getColumns();
+    int getColumnsCount();
 
     StoreStructId toStoreStructId();
 

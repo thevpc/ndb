@@ -1,15 +1,27 @@
 package net.thevpc.dbrman.options;
 
 import net.thevpc.dbrman.io.In;
+import net.thevpc.dbrman.io.Out;
 
+import java.io.File;
 import java.io.PrintStream;
 
 public class DumpToJsonOptions {
     private In in;
-    private PrintStream out;
+    private Out out;
+    private File lobFolder;
     private boolean data = true;
     private boolean pretty = false;
     private boolean printSeparators = false;
+
+    public File getLobFolder() {
+        return lobFolder;
+    }
+
+    public DumpToJsonOptions setLobFolder(File lobFolder) {
+        this.lobFolder = lobFolder;
+        return this;
+    }
 
     public boolean isPrintSeparators() {
         return printSeparators;
@@ -38,11 +50,11 @@ public class DumpToJsonOptions {
         return this;
     }
 
-    public PrintStream getOut() {
+    public Out getOut() {
         return out;
     }
 
-    public DumpToJsonOptions setOut(PrintStream out) {
+    public DumpToJsonOptions setOut(Out out) {
         this.out = out;
         return this;
     }

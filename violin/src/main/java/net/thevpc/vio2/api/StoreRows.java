@@ -4,13 +4,10 @@
  */
 package net.thevpc.vio2.api;
 
-import net.thevpc.vio2.impl.StoreRowsFilter;
-import net.thevpc.vio2.model.StoreFieldDefinition;
 import net.thevpc.vio2.model.StoreStructDefinition;
 
 import java.io.Closeable;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author vpc
@@ -21,88 +18,17 @@ public interface StoreRows extends Closeable {
 
     IoRow nextRow();
 
-    default Iterable<IoRow> rowsIterable() {
-        return new Iterable<IoRow>() {
-            @Override
-            public Iterator<IoRow> iterator() {
-                return StoreRows.this.rowsIterator();
-            }
-        };
-    }
+    Iterable<IoRow> rowsIterable() ;
 
-    default Iterator<IoRow> rowsIterator() {
-        return new Iterator<IoRow>() {
-            IoRow curr;
+    Iterator<IoRow> rowsIterator() ;
 
-            @Override
-            public boolean hasNext() {
-                curr = StoreRows.this.nextRow();
-                return curr != null;
-            }
+    StoreRows skip(long skip) ;
 
-            @Override
-            public IoRow next() {
-                return curr;
-            }
-        };
-    }
+    StoreRows limit(long limit) ;
 
-    default StoreRows skip(long skip) {
-        if (skip <= 0) {
-            return this;
-        }
-        return filter(new RowPredicate() {
-            @Override
-            public RowPredicateResult accept(IoRow row, long index) {
-                if (index <= skip) {
-                    return RowPredicateResult.SKIP;
-                }
-                return RowPredicateResult.ACCEPT;
-            }
-        });
-    }
+    StoreRows filter(StoreRowFilter filter);
 
-    default StoreRows limit(long limit) {
-        return filter(new RowPredicate() {
-            @Override
-            public RowPredicateResult accept(IoRow row, long index) {
-                if (limit >= 0 && index >= limit) {
-                    return RowPredicateResult.STOP;
-                }
-                return RowPredicateResult.ACCEPT;
-            }
-        });
-    }
+    void close();
 
-    default StoreRows filter(RowPredicate filter) {
-        return new StoreRowsFilter(this, filter);
-    }
 
-    default void consume() {
-        List<? extends StoreFieldDefinition> columns = getDefinition().getColumns();
-        while (true) {
-            IoRow r = nextRow();
-            if (r != null) {
-                r.consume();
-            } else {
-                return;
-            }
-        }
-    }
-
-    enum RowPredicateResult {
-        SKIP,
-        STOP,
-        STOP_AFTER,
-        ACCEPT,
-    }
-
-    interface RowPredicate {
-        RowPredicateResult accept(IoRow row, long index);
-    }
-
-    @Override
-    default void close() {
-
-    }
 }

@@ -1,62 +1,31 @@
 package net.thevpc.vio2.api;
 
-import net.thevpc.vio2.impl.RepeatableReadIoCell;
-import net.thevpc.vio2.model.StoreFieldDefinition;
 import net.thevpc.vio2.model.StoreStructDefinition;
-import net.thevpc.vio2.model.StoreValue;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.Closeable;
 
 /**
  * @author vpc
  */
-public interface IoRow {
-    IoCell nextColumn();
+public interface IoRow extends Closeable {
+    IoCell[] getColumns();
 
     StoreStructDefinition getDefinition();
+    IoRow repeatable();
 
-    default Iterator<IoCell> columnsIterator() {
-        return new Iterator<IoCell>() {
-            IoCell curr;
-
-            @Override
-            public boolean hasNext() {
-                curr = nextColumn();
-                return curr != null;
+    default IoCell findColumn(String name){
+        for (IoCell cell : getColumns()) {
+            if(cell.getDefinition().getFieldName().equalsIgnoreCase(name)){
+                return cell;
             }
-
-            @Override
-            public IoCell next() {
-                return curr;
-            }
-        };
-    }
-
-    default List<StoreValue> columns() {
-        List<StoreValue> a=new ArrayList<>();
-        for (IoCell ioCell : columnsIterable()) {
-            a.add(new RepeatableReadIoCell(ioCell).getValue());
         }
-        return a;
+        return null;
     }
 
-    default Iterable<IoCell> columnsIterable() {
-        return new Iterable<IoCell>() {
-            @Override
-            public Iterator<IoCell> iterator() {
-                return columnsIterator();
-            }
-        };
-    }
-
-    default void consume(){
-        for (StoreFieldDefinition column : getDefinition().getColumns()) {
-            IoCell o = nextColumn();
-            if(o!=null){
-                o.consume();
-            }
+    @Override
+    default void close() {
+        for (IoCell column : getColumns()) {
+            column.close();
         }
     }
 }

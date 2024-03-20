@@ -37,8 +37,7 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
             LOG.log(Level.FINEST, "[" + md.toStoreStructId().getFullName() + "] writing row " + rowCount + "... ");
             IOLogger.current().log("[" + md.toStoreStructId().getFullName() + "] writing row " + rowCount + "... ");
             dos.writeNonNullPrefix();
-            for (int i = 0; i < columnsCount; i++) {
-                IoCell c = r.nextColumn();
+            for (IoCell c : r.getColumns()) {
                 dos.writeStoreValue(DefaultStoreValue.ofAny(c.getDefinition().getStoreType(), c.getObject()));
             }
         }

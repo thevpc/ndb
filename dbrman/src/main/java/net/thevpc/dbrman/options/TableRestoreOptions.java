@@ -1,5 +1,10 @@
 package net.thevpc.dbrman.options;
 
+import net.thevpc.vio2.api.StoreProgressMonitor;
+import net.thevpc.vio2.api.StoreRowFilter;
+
+import java.io.File;
+
 public class TableRestoreOptions {
     private boolean dropDatabase;
     private boolean createDatabase;
@@ -11,6 +16,37 @@ public class TableRestoreOptions {
     private boolean updateRow;
     private boolean clearTable;
     private String database;
+    private File lobFolder;
+
+    public File getLobFolder() {
+        return lobFolder;
+    }
+
+    public TableRestoreOptions setLobFolder(File lobFolder) {
+        this.lobFolder = lobFolder;
+        return this;
+    }
+
+    private StoreProgressMonitor monitor;
+    private StoreRowFilter filter;
+
+    public StoreRowFilter getFilter() {
+        return filter;
+    }
+
+    public TableRestoreOptions setFilter(StoreRowFilter filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    public StoreProgressMonitor getMonitor() {
+        return monitor;
+    }
+
+    public TableRestoreOptions setMonitor(StoreProgressMonitor monitor) {
+        this.monitor = monitor;
+        return this;
+    }
 
     public String getDatabase() {
         return database;

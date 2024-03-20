@@ -9,19 +9,31 @@ import net.thevpc.vio2.model.StoreFieldDefinition;
 import net.thevpc.vio2.model.StoreValue;
 
 import java.io.*;
+import java.nio.file.Path;
 
 /**
  * @author vpc
  */
-public interface IoCell {
+public interface IoCell extends Closeable {
+    boolean isLob();
+
+    void writeLob(File file);
+
+    void writeLob(Path file);
+
     Object getObject();
+
     StoreFieldDefinition getDefinition();
+
+    IoCell repeatable();
 
     default StoreValue getValue() {
         Object o = getObject();
-        return DefaultStoreValue.ofAny(getDefinition().getStoreType(),o);
+        return DefaultStoreValue.ofAny(getDefinition().getStoreType(), o);
     }
 
+    @Override
+    void close();
 
     default void consume() {
         Object o = getObject();
@@ -32,7 +44,7 @@ public interface IoCell {
                     int c;
                     while (true) {
                         c = is.read(buf);
-                        if(c<=0){
+                        if (c <= 0) {
                             break;
                         }
                     }

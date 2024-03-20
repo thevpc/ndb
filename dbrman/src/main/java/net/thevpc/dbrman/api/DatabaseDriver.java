@@ -13,6 +13,7 @@ import net.thevpc.vio2.model.StoreDataType;
 
 
 import java.io.Closeable;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -74,6 +75,7 @@ public interface DatabaseDriver extends Closeable {
     List<TableId> getTableIds(DatabaseId catalogId);
 
     List<SchemaHeader> getSchemas(String catalog);
+
     List<SchemaHeader> getSchemas(CatalogId catalog);
 
     List<DatabaseHeader> getDatabases();
@@ -86,7 +88,7 @@ public interface DatabaseDriver extends Closeable {
 
     IoCell createCell(ResultSet rs, ColumnDefinition column);
 
-    void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value);
+    void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value, PrepareStatementContext prepareStatementContext);
 
     void close();
 
@@ -153,5 +155,11 @@ public interface DatabaseDriver extends Closeable {
     void enableConstraints(TableDefinition d, TableRestoreOptions schemaMode);
 
     void disableConstraints(TableDefinition d, TableRestoreOptions schemaMode);
+
+    QueryResult executeQuery(URL resource);
+
+    QueryResult executeQuery(String sql);
+
+    DatabaseItemQuery search();
 
 }

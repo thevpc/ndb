@@ -116,7 +116,7 @@ public class Test1 {
         StoreRows e1 = sr.readNonNullableStruct(StoreRows.class);
         Assertions.assertEquals(r.getDefinition(), e1.getDefinition());
         for (IoRow rr : e1.rowsIterable()) {
-            for (IoCell ioCell : rr.columnsIterable()) {
+            for (IoCell ioCell : rr.getColumns()) {
                 System.out.print(ioCell.getObject());
             }
             System.out.println();
@@ -146,8 +146,9 @@ public class Test1 {
         sw.writeNonNullableStruct(StoreRows.class, r);
         sw.flush();
         StoreInputStream sr = new StoreInputStreamImpl(new ByteArrayInputStream(s.toByteArray()), StoreReaderConf.get(1));
-        StoreRows e1 = sr.readNonNullableStruct(StoreRows.class);
-        e1.consume();
+        try(StoreRows e1 = sr.readNonNullableStruct(StoreRows.class)) {
+
+        }
 //        Assertions.assertEquals(r.getDefinition(), e1.getDefinition());
 //        for (IoRow rr : e1.rowsIterable()) {
 //            for (IoCell ioCell : rr.columnsIterable()) {

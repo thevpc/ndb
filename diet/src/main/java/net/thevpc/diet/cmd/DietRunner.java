@@ -1,6 +1,7 @@
 package net.thevpc.diet.cmd;
 
 import net.thevpc.dbrman.api.DatabaseDriver;
+import net.thevpc.dbrman.io.Out;
 import net.thevpc.dbrman.options.DbToDumpOptions;
 import net.thevpc.dbrman.options.DbToJsonOptions;
 import net.thevpc.dbrman.options.DumpToDbOptions;
@@ -42,7 +43,7 @@ public class DietRunner {
     private static void dumToJson(DietOptions o) {
         DumpToJsonOptions options = new DumpToJsonOptions();
         options.setIn(new In(new File(o.file)));
-        options.setOut(System.out);
+        options.setOut(new Out(System.out));
         new DbrmanService().dumpToJson(options);
     }
 

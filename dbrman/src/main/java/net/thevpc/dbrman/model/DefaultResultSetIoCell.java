@@ -3,6 +3,8 @@ package net.thevpc.dbrman.model;
 import net.thevpc.dbrman.util.DbInfoModuleInstaller;
 import net.thevpc.dbrman.util.UncheckedSQLException;
 import net.thevpc.vio2.api.IoCell;
+import net.thevpc.vio2.impl.AbstractIoCell;
+import net.thevpc.vio2.impl.RepeatableReadIoCell;
 
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -10,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class DefaultResultSetIoCell implements IoCell {
+public class DefaultResultSetIoCell extends AbstractIoCell {
     static {
         DbInfoModuleInstaller.init();
     }
@@ -25,6 +27,74 @@ public class DefaultResultSetIoCell implements IoCell {
     @Override
     public ColumnDefinition getDefinition() {
         return column;
+    }
+
+    @Override
+    public boolean isLob() {
+        try {
+            switch (column.getStoreType()) {
+                case STRING:
+                case NSTRING:
+                case BIG_INT:
+                case NBIG_INT:
+                case BIG_DECIMAL:
+                case NBIG_DECIMAL:
+                case DATE:
+                case NDATE:
+                case TIME:
+                case NTIME:
+                case TIMESTAMP:
+                case NTIMESTAMP:
+                case DOUBLE:
+                case NDOUBLE:
+                case FLOAT:
+                case NFLOAT:
+                case LONG:
+                case NLONG:
+                case BYTE:
+                case NBYTE:
+                case INT:
+                case NINT:
+                case SHORT:
+                case NSHORT:
+                case BOOLEAN:
+                case NBOOLEAN: {
+                    return false;
+                }
+                case BYTES:
+                case NBYTES:
+                case CHAR_STREAM:
+                case NCHAR_STREAM:
+                case BYTE_STREAM:
+                case NBYTE_STREAM: {
+                    return true;
+                }
+                case JAVA_OBJECT:
+                case NJAVA_OBJECT:
+                {
+                    switch (column.getSqlType()) {
+                        case Types.OTHER:
+                        case Types.JAVA_OBJECT:
+                        case Types.STRUCT: {
+                            return false;
+                        }
+                        case Types.ARRAY: {
+                            Array a = rs.getArray(column.getIndex());
+                            if (a == null) {
+                                return false;
+                            }
+                            return false;
+                        }
+                        default:{
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            //
+        }
+        return false;
     }
 
     @Override
@@ -152,4 +222,5 @@ public class DefaultResultSetIoCell implements IoCell {
 
         throw new RuntimeException("unsupported " + column.getStoreType());
     }
+
 }

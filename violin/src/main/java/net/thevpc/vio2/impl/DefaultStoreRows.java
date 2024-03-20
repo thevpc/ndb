@@ -1,10 +1,9 @@
 package net.thevpc.vio2.impl;
 
 import net.thevpc.vio2.api.IoRow;
-import net.thevpc.vio2.api.StoreRows;
 import net.thevpc.vio2.model.StoreStructDefinition;
 
-public class DefaultStoreRows implements StoreRows {
+public class DefaultStoreRows extends AbstractStoreRows {
     private StoreStructDefinition def;
     private Object[][] rows;
     private int index;
@@ -30,8 +29,4 @@ public class DefaultStoreRows implements StoreRows {
         return null;
     }
 
-    @Override
-    public void close() {
-
-    }
 }

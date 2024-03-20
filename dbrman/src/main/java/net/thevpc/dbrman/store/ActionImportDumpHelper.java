@@ -44,7 +44,7 @@ public class ActionImportDumpHelper {
             }
         }
         DbrIoHelper.check(o.getIn());
-        if(o.getIn().getInputStream()!=null){
+        if (o.getIn().getInputStream() != null) {
             throw new IllegalArgumentException("not supported yet : import from InputStream");
         }
         for (File f : FileUtils.expandExistingFiles(o.getIn().getFile().toString(), ".dump")) {
@@ -68,9 +68,9 @@ public class ActionImportDumpHelper {
                 public void visitSchema(List<StoreStructDefinition> md) {
                     SchemaId ss = driver.getSchemaId();
                     for (StoreStructDefinition dd : md) {
-                        prepareTableDefinition((TableDefinition) dd);
+                        prepareTableDefinition((TableDefinition) dd, schemaMode);
                     }
-                    this.md = ((List<?>) md).stream().map(x->((TableDefinition)x).copy().setSchemaId(ss)).collect(Collectors.toList());
+                    this.md = ((List<?>) md).stream().map(x -> ((TableDefinition) x).copy().setSchemaId(ss)).collect(Collectors.toList());
 
                     for (TableDefinition d : this.md) {
                         if (td.test(d)) {
@@ -88,7 +88,7 @@ public class ActionImportDumpHelper {
                 @Override
                 public void visitData(StoreRows md) {
                     TableDefinition definition = (TableDefinition) md.getDefinition();
-                    prepareTableDefinition(definition);
+                    prepareTableDefinition(definition, schemaMode);
                     TableDefinition d = definition.copy().setSchemaId(driver.getSchemaId());
                     try {
                         if (o.isData()) {
@@ -98,11 +98,10 @@ public class ActionImportDumpHelper {
                                 return;
                             }
                         }
-                        md.consume();
-                    }catch (UncheckedIOException ex){
+                    } catch (UncheckedIOException ex) {
                         throw new UncheckedIOException(
-                                "Error loading "+definition.getTableId().getFullName()+" -> "+d.getTableId().getFullName()
-                                        +": "+ex.getMessage(),
+                                "Error loading " + definition.getTableId().getFullName() + " -> " + d.getTableId().getFullName()
+                                        + ": " + ex.getMessage(),
                                 ex.getCause()
                         );
                     }
@@ -120,29 +119,43 @@ public class ActionImportDumpHelper {
         }
     }
 
-    private void prepareTableDefinition(TableDefinition d){
+    private void prepareTableDefinition(TableDefinition d, TableRestoreOptions schemaMode) {
         //Workaround
         for (ColumnDefinition column : d.getColumns()) {
             int precision = column.getPrecision();
-            if(precision>0){
-                switch (column.getStoreType()){
-                    case INT:
-                    case LONG:
-                    case BIG_INT:
-                    {
+            switch (column.getStoreType()) {
+                case INT:
+                case LONG:
+                case BIG_INT: {
+                    if (precision > 0) {
                         column.setStoreType(StoreDataType.BIG_DECIMAL);
-                        break;
                     }
-                    case NINT:
-                    case NLONG:
-                    case NBIG_INT:
-                    case NBIG_DECIMAL:
-                    {
+                    break;
+                }
+                case NINT:
+                case NLONG:
+                case NBIG_INT:
+                case NBIG_DECIMAL: {
+                    if (precision > 0) {
                         column.setStoreType(StoreDataType.NBIG_DECIMAL);
+                    }
+                    break;
+                }
+                case BYTES:
+                case NBYTES:
+                case NBYTE_STREAM:
+                case BYTE_STREAM:
+                case CHAR_STREAM:
+                case NCHAR_STREAM: {
+                    if (schemaMode.getLobFolder() != null) {
+                        column.setStoreType(StoreDataType.STRING);
+                        column.setScale(2000);
                         break;
                     }
+                    break;
                 }
             }
+
         }
     }
 }

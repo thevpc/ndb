@@ -321,6 +321,11 @@ public class ColumnDefinition implements StoreFieldDefinition, Cloneable {
                 '}';
     }
 
+    @Override
+    public String getFieldName() {
+        return columnName;
+    }
+
     public String getFullName() {
         return toFieldId().getFullName();
     }

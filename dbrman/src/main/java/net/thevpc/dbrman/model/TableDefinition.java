@@ -38,6 +38,11 @@ public class TableDefinition implements StoreStructDefinition,Cloneable {
         return this;
     }
 
+    @Override
+    public int getColumnsCount() {
+        return columns.length;
+    }
+
     public List<ColumnDefinition> getColumns() {
         return Arrays.asList(columns);
     }

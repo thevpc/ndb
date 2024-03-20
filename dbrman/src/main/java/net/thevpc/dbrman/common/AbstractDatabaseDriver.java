@@ -4,31 +4,31 @@
  */
 package net.thevpc.dbrman.common;
 
-import net.thevpc.dbrman.api.DatabaseId;
+import net.thevpc.dbrman.api.*;
+import net.thevpc.dbrman.impl.DefaultDatabaseItemQuery;
+import net.thevpc.dbrman.impl.ResultSetQueryResult;
 import net.thevpc.dbrman.options.TableRestoreOptions;
 import net.thevpc.dbrman.util.DbInfoModuleInstaller;
-import net.thevpc.dbrman.api.DatabaseDriver;
-import net.thevpc.dbrman.api.SqlSupplier;
 import net.thevpc.dbrman.model.*;
 import net.thevpc.dbrman.util.ResultSetMappers;
 import net.thevpc.dbrman.util.SafeResultSet;
 import net.thevpc.dbrman.util.UncheckedSQLException;
-import net.thevpc.vio2.api.IoCell;
-import net.thevpc.vio2.api.IoRow;
-import net.thevpc.vio2.api.StoreRows;
-import net.thevpc.vio2.impl.RepeatableReadIoCell;
+import net.thevpc.vio2.api.*;
+import net.thevpc.vio2.impl.AbstractIoCell;
+import net.thevpc.vio2.impl.AbstractStoreRows;
 import net.thevpc.vio2.impl.RepeatableReadIoCellArr;
+import net.thevpc.vio2.impl.StoreProgressMonitorHelper;
 import net.thevpc.vio2.model.StoreDataType;
 import net.thevpc.vio2.model.StoreFieldDefinition;
 import net.thevpc.vio2.model.YesNo;
+import net.thevpc.vio2.util.IOUtils;
 import net.thevpc.vio2.util.NumberUtils;
 import net.thevpc.vio2.util.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.nio.file.Path;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
@@ -128,16 +128,16 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
                 name.getTableName(),
                 name.getColumnName()
         );
-        if(!a.isEmpty()){
+        if (!a.isEmpty()) {
             return a.get(0);
         }
-        a= loadColumDefinitions(
+        a = loadColumDefinitions(
                 name.getCatalogName(),
                 name.getSchemaName(),
                 name.getTableName(),
                 null
         ).stream().filter(x -> Objects.equals(x.getColumnName(), name.getColumnName())).collect(Collectors.toList());
-        if(!a.isEmpty()){
+        if (!a.isEmpty()) {
             return a.get(0);
         }
         return null;
@@ -314,7 +314,7 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
 
     @Override
     public List<SchemaHeader> getSchemas(CatalogId catalog) {
-        return getSchemas(catalog==null?null:catalog.getCatalogName());
+        return getSchemas(catalog == null ? null : catalog.getCatalogName());
     }
 
     @Override
@@ -472,50 +472,7 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
         ResultSet rs = getTableResultSet(table);
         long endTime = System.currentTimeMillis();
         LOG.log(Level.FINEST, "[" + table.getFullName() + "] read in " + (endTime - startTime) + "ms... ");
-        return new StoreRows() {
-            TableRowsDefinition t;
-
-            {
-                ResultSetMetaData md;
-                try {
-                    md = rs.getMetaData();
-                } catch (SQLException ex) {
-                    throw new UncheckedSQLException(ex);
-                }
-                t = createRowsDefinition(md);
-                t.setCatalogName(table.getCatalogName());
-                t.setSchemaName(table.getSchemaName());
-                t.setTableName(table.getTableName());
-            }
-
-            @Override
-            public TableDefinition getDefinition() {
-                return tableMetaData;
-            }
-
-            @Override
-            public IoRow nextRow() {
-                try {
-                    if (rs.next()) {
-                        List<ColumnDefinition> columns = tableMetaData.getColumns();
-                        return new IoRowFromResultSet(AbstractDatabaseDriver.this, columns, rs, tableMetaData);
-                    } else {
-                        return null;
-                    }
-                } catch (SQLException ex) {
-                    throw new UncheckedSQLException(ex);
-                }
-            }
-
-            @Override
-            public void close() {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    throw new UncheckedIOException(new IOException(e));
-                }
-            }
-        };
+        return new ResultSetStoreRows(rs, table, tableMetaData);
     }
 
     public String escapeIdentifier(TableId name) {
@@ -818,7 +775,7 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
 
     @Override
     public boolean columnExists(ColumnId c) {
-        return getColumnDefinition(c)!=null;
+        return getColumnDefinition(c) != null;
     }
 
     @Override
@@ -827,11 +784,11 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
     }
 
 
-    public void prepareStatement(PreparedStatement ps, int index, StoreFieldDefinition st, Object value) {
-        this.prepareStatement(ps, index, st.getStoreType(), value);
+    public void prepareStatement(PreparedStatement ps, int index, StoreFieldDefinition st, Object value, PrepareStatementContext prepareStatementContext) {
+        this.prepareStatement(ps, index, st.getStoreType(), value, prepareStatementContext);
     }
 
-    public void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value) {
+    public void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value, PrepareStatementContext prepareStatementContext) {
         try {
             switch (st) {
                 case NULL: {
@@ -936,7 +893,12 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
                     if (value == null) {
                         ps.setNull(index, Types.VARCHAR);
                     } else {
-                        ps.setString(index, (String) value);
+                        Object u = AbstractIoCell.toLobFile(value, prepareStatementContext.getExternalLobFolder());
+                        if(u instanceof File || u instanceof Path){
+                            ps.setString(index, u.toString());
+                        }else{
+                            ps.setString(index, (String) u);
+                        }
                     }
                     break;
                 }
@@ -963,7 +925,11 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
                     if (value == null) {
                         ps.setNull(index, Types.BLOB);
                     } else {
-                        ps.setBytes(index, (byte[]) value);
+                        if (value instanceof InputStream) {
+                            ps.setBinaryStream(index, (InputStream) value);
+                        } else {
+                            ps.setBytes(index, (byte[]) value);
+                        }
                     }
                     break;
                 }
@@ -1414,12 +1380,24 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
         String sql;
     }
 
-    protected static class ImportDataContext {
+    protected static class ImportDataContext implements PrepareStatementContext {
         private PreparedStatementExt insertRowPreparedStatement;
         private TableRestoreOptions schemaMode;
         private TableId newTable;
         protected StoreRows rows;
+        protected File externalLobFolder;
+        protected boolean externalLob;
         protected boolean failFastSQL = false;
+
+        @Override
+        public boolean isExternalLob() {
+            return externalLob;
+        }
+
+        @Override
+        public Path getExternalLobFolder() {
+            return externalLobFolder == null ? null : externalLobFolder.toPath();
+        }
     }
 
     public void importData(StoreRows rows, TableRestoreOptions options) {
@@ -1428,28 +1406,70 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
         TableDefinition definition = (TableDefinition) rows.getDefinition();
         cc.newTable = new TableId(getSchemaId(), definition.getTableName());
         cc.rows = rows;
+        cc.externalLob = options.getLobFolder() != null;
+        cc.externalLobFolder = options.getLobFolder() == null ? null : new File(options.getLobFolder(), cc.newTable.getTableName());
         if (cc.schemaMode.isClearTable()) {
             this.clearTable(cc.newTable);
         }
+        StoreProgressMonitor monitor = cc.schemaMode.getMonitor();
+        if (monitor == null) {
+            monitor = StoreProgressMonitorHelper.SILIENT;
+        }
         IoRow r = null;
         TableDefinition d2 = ((TableDefinition) rows.getDefinition()).copy();
-        d2.setTableName(cc.newTable.getTableName());
+        String newTableName = cc.newTable.getTableName();
+        d2.setTableName(newTableName);
+        TableDefinition newTableDef = getTableDefinition(cc.newTable);
         cc.insertRowPreparedStatement = _createInsertQuery(d2);
-        while ((r = rows.nextRow()) != null) {
-            try (RepeatableReadIoCellArr ccc = new RepeatableReadIoCellArr(r)) {
-                executeInsert(ccc, cc);
+        Map<String, ColumnDefinition> newColumnsMap = newTableDef.getColumns().stream().collect(Collectors.toMap(x -> x.getColumnName().toLowerCase(), x -> x));
+        //should we sort columns?
+        List<ColumnDefinition> newColumns2 = new ArrayList<>();
+        for (ColumnDefinition column : d2.getColumns()) {
+            ColumnDefinition u = newColumnsMap.get(column.getColumnName().toLowerCase());
+            if (u == null) {
+                throw new IllegalArgumentException("column " + newTableDef.getTableName() + "::" + column.getColumnName() + " not found.");
+            }
+            newColumns2.add(u);
+        }
+        StoreRowFilter filter = cc.schemaMode.getFilter();
+        if (filter == null) {
+            long index = 0;
+            while ((r = rows.nextRow()) != null) {
+                index++;
+                try (IoRow ccc = new RepeatableReadIoCellArr(r)) {
+                    importDataRow(ccc, newColumns2.toArray(new ColumnDefinition[0]), cc);
+                    monitor.onProgress(Double.NaN, "[" + newTableName + "] imported row " + index);
+                }
+            }
+        } else {
+            long index = 0;
+            while ((r = rows.nextRow()) != null) {
+                index++;
+                try (IoRow ccc = new RepeatableReadIoCellArr(r)) {
+                    StoreRowAction rr = filter.accept(ccc, index);
+                    if (rr.isAccept()) {
+                        importDataRow(ccc, newColumns2.toArray(new ColumnDefinition[0]), cc);
+                        monitor.onProgress(Double.NaN, "[" + newTableName + "] imported row " + index);
+                    } else {
+                        monitor.onProgress(Double.NaN, "[" + newTableName + "] skipped row " + index);
+                    }
+                    if (rr.isStop()) {
+                        monitor.onProgress(Double.NaN, "[" + newTableName + "] stopped at row " + index);
+                        break;
+                    }
+                }
             }
         }
     }
 
-    private void executeInsert(RepeatableReadIoCellArr ccc, ImportDataContext cc) {
-        RepeatableReadIoCell[] cells = ccc.getCells();
+    private void importDataRow(IoRow ccc, ColumnDefinition[] columns, ImportDataContext cc) {
+        IoCell[] cells = ccc.getColumns();
         Object[] vals = new Object[cells.length];
         PreparedStatementExt ps = cc.insertRowPreparedStatement;
         for (int i = 0; i < cells.length; i++) {
-            RepeatableReadIoCell c = cells[i];
+            IoCell c = cells[i];
             Object vv = c.getObject();
-            this.prepareStatement(ps.ps, i + 1, c.getDefinition(), vv);
+            this.prepareStatement(ps.ps, i + 1, columns[i], vv, cc);
             vals[i] = c.getDefinition().getStoreType().name() + "@" + StringUtils.litString(vv);
         }
         LOG.log(Level.FINEST, "[" + cc.newTable.getFullName() + "] " + ps.sql + " :: " + Arrays.asList(vals));
@@ -1505,4 +1525,93 @@ public abstract class AbstractDatabaseDriver implements DatabaseDriver {
         LOG.log(Level.SEVERE, "[" + d.getTableId().getFullName() + "] not yet supported disableConstraints");
     }
 
+    @Override
+    public QueryResult executeQuery(URL resource) {
+        return executeQuery(new String(IOUtils.readyFully(resource)));
+    }
+
+    @Override
+    public QueryResult executeQuery(String sql) {
+        Statement s = null;
+        try {
+            s = getConnection().createStatement();
+            Statement finalS = s;
+            return new ResultSetQueryResult(s.executeQuery(sql), () -> {
+                try {
+                    finalS.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (SQLException ex) {
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (SQLException e) {
+                    //
+                }
+            }
+            throw new UncheckedSQLException(ex);
+        }
+    }
+
+    @Override
+    public DatabaseItemQuery search() {
+        return new DefaultDatabaseItemQuery(this);
+    }
+
+    private class ResultSetStoreRows extends AbstractStoreRows {
+        private final ResultSet rs;
+        private final TableDefinition tableMetaData;
+        TableRowsDefinition t;
+        boolean stopped;
+
+        public ResultSetStoreRows(ResultSet rs, TableId table, TableDefinition tableMetaData) {
+            this.rs = rs;
+            this.tableMetaData = tableMetaData;
+            ResultSetMetaData md;
+            try {
+                md = rs.getMetaData();
+            } catch (SQLException ex) {
+                throw new UncheckedSQLException(ex);
+            }
+            t = createRowsDefinition(md);
+            t.setCatalogName(table.getCatalogName());
+            t.setSchemaName(table.getSchemaName());
+            t.setTableName(table.getTableName());
+        }
+
+        @Override
+        public TableDefinition getDefinition() {
+            return tableMetaData;
+        }
+
+        @Override
+        public IoRow nextRow() {
+            if (stopped) {
+                return null;
+            }
+            try {
+                if (rs.next()) {
+                    List<ColumnDefinition> columns = tableMetaData.getColumns();
+                    return new IoRowFromResultSet(AbstractDatabaseDriver.this, columns, rs, tableMetaData);
+                } else {
+                    stopped = true;
+                    return null;
+                }
+            } catch (SQLException ex) {
+                throw new UncheckedSQLException(ex);
+            }
+        }
+
+        @Override
+        public void close() {
+            super.close();
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                throw new UncheckedIOException(new IOException(e));
+            }
+        }
+    }
 }

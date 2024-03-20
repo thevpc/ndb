@@ -5,16 +5,22 @@
 package net.thevpc.dbrman.impl;
 
 import net.thevpc.dbrman.api.DatabaseHeader;
+import net.thevpc.dbrman.api.PrepareStatementContext;
 import net.thevpc.dbrman.model.ColumnDefinition;
 import net.thevpc.dbrman.common.AbstractDatabaseDriver;
 import net.thevpc.dbrman.model.DefaultDatabaseHeader;
 import net.thevpc.dbrman.model.SchemaId;
 import net.thevpc.dbrman.util.UncheckedSQLException;
 import net.thevpc.vio2.model.StoreDataType;
+import net.thevpc.vio2.util.IOUtils;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -99,7 +105,7 @@ public class PostgreSqlDatabaseDriver extends AbstractDatabaseDriver {
         return createDefaultFileColType(c);
     }
 
-    public void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value) {
+    public void prepareStatement(PreparedStatement ps, int index, StoreDataType st, Object value, PrepareStatementContext prepareStatementContext) {
         try {
             switch (st) {
                 case STRING:
@@ -107,22 +113,39 @@ public class PostgreSqlDatabaseDriver extends AbstractDatabaseDriver {
                     if (value == null) {
                         ps.setNull(index, Types.VARCHAR);
                     } else {
-                        String s = (String) value;
-                        //just remove last \0
-                        int i = s.indexOf('\0');
-                        if (i >= 0) {
-                            if (i == s.length() - 1) {
-                                s = s.substring(0, s.length() - 1);
-                            } else {
-                                LOG.log(Level.SEVERE, "[" + st + "," + index + "] prepare statement : string with invalid zero char");
+                        if ((value instanceof InputStream || value instanceof Reader) && prepareStatementContext.isExternalLob()) {
+                            super.prepareStatement(ps, index, st, value, prepareStatementContext);
+                        } else {
+                            String s = (String) value;
+                            //just remove last \0
+                            int i = s.indexOf('\0');
+                            if (i >= 0) {
+                                if (i == s.length() - 1) {
+                                    s = s.substring(0, s.length() - 1);
+                                } else {
+                                    LOG.log(Level.SEVERE, "[" + st + "," + index + "] prepare statement : string with invalid zero char");
+                                }
                             }
+                            ps.setString(index, s);
                         }
-                        ps.setString(index, s);
+                    }
+                    break;
+                }
+                case BYTES:
+                case NBYTES: {
+                    if (value == null) {
+                        //BUG FIX
+                        ps.setNull(index, Types.OTHER);
+                    } else {
+                        if(value instanceof InputStream){
+                            value= IOUtils.readyFully((InputStream) value);
+                        }
+                        ps.setBytes(index, (byte[]) value);
                     }
                     break;
                 }
                 default: {
-                    super.prepareStatement(ps, index, st, value);
+                    super.prepareStatement(ps, index, st, value, prepareStatementContext);
                 }
             }
         } catch (SQLException e) {

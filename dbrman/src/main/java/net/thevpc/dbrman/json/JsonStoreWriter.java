@@ -121,7 +121,9 @@ public class JsonStoreWriter extends AbstractStoreWriter {
 
         public NumberedRow(long index, IoRow sr) {
             this.index = index;
-            this.columns = sr.columns().stream().map(x -> simpleCell(x)).collect(Collectors.toList());
+            this.columns = Arrays.stream(sr.getColumns()).map(x ->
+                    simpleCell(x.repeatable().getValue())
+            ).collect(Collectors.toList());
         }
     }
 

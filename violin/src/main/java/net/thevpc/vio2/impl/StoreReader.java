@@ -74,8 +74,11 @@ public class StoreReader implements Closeable {
                     break;
                 }
                 case DietProtocol.SECTION_DATA: {
-                    StoreRows md = dis.readNonNullableStruct(StoreRows.class);
-                    visitor.visitData(md);
+                    try(StoreRows md = dis.readNonNullableStruct(StoreRows.class)) {
+                        visitor.visitData(md);
+                    }catch (RuntimeException ex){
+                        ex.printStackTrace();
+                    }
                     break;
                 }
                 case DietProtocol.STORE_END: {

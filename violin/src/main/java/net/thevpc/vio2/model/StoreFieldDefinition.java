@@ -11,6 +11,7 @@ public interface StoreFieldDefinition {
     StoreDataType getStoreType();
 
     String getFullName();
+    String getFieldName();
 
     public StoreFieldId toFieldId();
 

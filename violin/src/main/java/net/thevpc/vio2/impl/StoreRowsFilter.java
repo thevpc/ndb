@@ -1,16 +1,18 @@
 package net.thevpc.vio2.impl;
 
 import net.thevpc.vio2.api.IoRow;
+import net.thevpc.vio2.api.StoreRowAction;
+import net.thevpc.vio2.api.StoreRowFilter;
 import net.thevpc.vio2.api.StoreRows;
 import net.thevpc.vio2.model.StoreStructDefinition;
 
-public class StoreRowsFilter implements StoreRows {
+public class StoreRowsFilter extends AbstractStoreRows {
     private StoreRows item;
-    private RowPredicate filter;
+    private StoreRowFilter filter;
     private long currIndex;
     private boolean stopped;
 
-    public StoreRowsFilter(StoreRows item, RowPredicate filter) {
+    public StoreRowsFilter(StoreRows item, StoreRowFilter filter) {
         this.item = item;
         this.filter = filter;
     }
@@ -34,7 +36,7 @@ public class StoreRowsFilter implements StoreRows {
             if (filter == null) {
                 return u;
             }
-            RowPredicateResult z = filter.accept(u, currIndex - 1);
+            StoreRowAction z = filter.accept(u, currIndex - 1);
             switch (z) {
                 case ACCEPT: {
                     return u;

@@ -3,9 +3,10 @@ package net.thevpc.dbrman.store;
 import net.thevpc.dbrman.model.TableDefinition;
 import net.thevpc.vio2.api.IoRow;
 import net.thevpc.vio2.api.StoreRows;
+import net.thevpc.vio2.impl.AbstractStoreRows;
 import net.thevpc.vio2.model.StoreStructDefinition;
 
-public class StoreRowsAdapter implements StoreRows {
+public class StoreRowsAdapter extends AbstractStoreRows {
     private final TableDefinition d;
     private final StoreRows md;
 

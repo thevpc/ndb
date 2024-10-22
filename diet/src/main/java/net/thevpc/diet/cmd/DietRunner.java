@@ -79,6 +79,7 @@ public class DietRunner {
             io.setData(o.data);
             io.setTableNameFilter(o.tableNameFilter);
             io.setSchemaMode(o.schemaMode);
+            io.setIn(new In(o.file));
             new DbrmanService().dumpToDb(io,driver);
         }
     }

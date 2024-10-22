@@ -172,4 +172,9 @@ public class PostgreSqlDatabaseDriver extends AbstractDatabaseDriver {
             throw new UncheckedSQLException(ex);
         }
     }
+
+    public void dropDatabase(String s) {
+        runDDL("drop database " + s+" WITH (FORCE) ");
+    }
+
 }

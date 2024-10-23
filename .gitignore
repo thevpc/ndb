@@ -4,3 +4,5 @@ dbrman/target
 diet/target
 violin/target
 wdbrman/target
+diet-cmd/target
+diet-desktop/target

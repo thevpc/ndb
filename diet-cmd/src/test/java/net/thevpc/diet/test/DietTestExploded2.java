@@ -1,16 +1,14 @@
 package net.thevpc.diet.test;
 
-import net.thevpc.dbrman.io.In;
-import net.thevpc.dbrman.options.DumpToJsonOptions;
-import net.thevpc.dbrman.store.DbrmanService;
-import net.thevpc.diet.cmd.DietRunner;
-import net.thevpc.diet.cmd.options.DietOptionsParser;
+import net.thevpc.nsql.dump.io.In;
+import net.thevpc.nsql.dump.options.DumpToJsonOptions;
+import net.thevpc.nsql.dump.store.NSqlDumpService;
 
 import java.io.File;
 
 public class DietTestExploded2 {
     public static void main(String[] args) {
-        DbrmanService service = new DbrmanService();
+        NSqlDumpService service = new NSqlDumpService();
         service.dumpToJson(
                 new DumpToJsonOptions()
 //                            .setIn(new In("/home/vpc/ttt/dump/"))

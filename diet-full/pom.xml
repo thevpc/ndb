@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.thevpc.diet</groupId>
-    <artifactId>diet-desktop</artifactId>
+    <artifactId>diet-full</artifactId>
     <version>0.8.5.0</version>
 
     <properties>
@@ -16,13 +16,8 @@
     <dependencies>
         <dependency>
             <groupId>net.thevpc.diet</groupId>
-            <artifactId>diet-cmd</artifactId>
+            <artifactId>diet-core</artifactId>
             <version>0.8.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.formdev</groupId>
-            <artifactId>flatlaf</artifactId>
-            <version>3.3</version>
         </dependency>
     </dependencies>
     <build>
@@ -32,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.thevpc.dbrman.desktop.Main</mainClass>
+                            <mainClass>net.thevpc.diet.desktop.DietMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

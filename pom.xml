@@ -12,6 +12,9 @@
     </properties>
     <modules>
         <module>diet-cmd</module>
-        <module>diet-desktop</module>
+        <module>diet-core</module>
+        <module>diet-import</module>
+        <module>diet-export</module>
+        <module>diet-full</module>
     </modules>
 </project>

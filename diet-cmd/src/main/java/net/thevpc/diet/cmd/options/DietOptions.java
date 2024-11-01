@@ -1,8 +1,8 @@
 package net.thevpc.diet.cmd.options;
 
-import net.thevpc.dbrman.util.NameFilter;
+import net.thevpc.nsql.dump.util.NameFilter;
 import net.thevpc.nsql.CnxInfo;
-import net.thevpc.dbrman.options.TableRestoreOptions;
+import net.thevpc.nsql.dump.options.TableRestoreOptions;
 
 public class DietOptions {
     public CnxInfo cnx = new CnxInfo();

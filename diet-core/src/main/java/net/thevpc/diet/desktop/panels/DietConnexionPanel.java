@@ -1,13 +1,15 @@
-package net.thevpc.dbrman.desktop.panels;
+package net.thevpc.diet.desktop.panels;
 
-import net.thevpc.dbrman.api.DatabaseDriver;
-import net.thevpc.dbrman.util.DatabaseDriverFactories;
-import net.thevpc.dbrman.desktop.util.GBC;
-import net.thevpc.dbrman.desktop.util.UI;
+import net.thevpc.nsql.dump.api.NSqlDump;
+import net.thevpc.nsql.dump.util.DatabaseDriverFactories;
+import net.thevpc.diet.desktop.util.GBC;
+import net.thevpc.diet.desktop.util.UI;
 import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.SqlDialect;
 import net.thevpc.nsql.UncheckedSQLException;
 import net.thevpc.nsql.model.*;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,16 +18,21 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class WdbrmanPanelConnexionPanel extends JPanel {
+public class DietConnexionPanel extends JPanel {
+    public static final Logger LOGGER = Logger.getLogger(DietConnexionPanel.class.getName());
     private final JLabel dbLabel;
     JTextField hostField = new JTextField();
     JSpinner portField = new JSpinner(new SpinnerNumberModel());
     JTextField loginField = new JTextField();
+    JTextField instanceField = new JTextField();
     JPasswordField passwordField = new JPasswordField();
     JLabel loginLabel = new JLabel("Login");
     JLabel passwordLabel = new JLabel("Mot de Passe");
+    JLabel instanceLabel = new JLabel("Instance");
     JCheckBox integratedSecurity = new JCheckBox("Sécurité Integrée");
     JComboBox serverType = new JComboBox(new Object[0]);
     JComboBox dbList = new JComboBox(new Object[0]);
@@ -35,13 +42,26 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
     List<ConnexionStatusListener> connexionStatusListeners = new ArrayList<>();
     private String currentConnexionAttemptId;
 
-    public WdbrmanPanelConnexionPanel() {
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        hostField.setEnabled(enabled);
+        portField.setEnabled(enabled);
+        instanceField.setEnabled(enabled);
+        loginField.setEnabled(enabled);
+        passwordField.setEnabled(enabled);
+        integratedSecurity.setEnabled(enabled);
+        serverType.setEnabled(enabled);
+        dbList.setEnabled(enabled);
+    }
+
+    public DietConnexionPanel() {
         super(new GridBagLayout());
         int line = 0;
         dbLabel = new JLabel("Database");
 
         serverType = new JComboBox(
-                Arrays.stream(SqlDialect.values()).map(x -> x.name()).toArray()
+                Arrays.stream(SqlDialect.values()).toArray()
         );
         add(new JLabel("Type de Serveur"), GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
         add(serverType, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).colspanReminder().build());
@@ -50,6 +70,9 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         add(hostField, GBC.of(1, line).fillHorizontal().anchorWest().insets(3).weightx(2).colspan(2).build());
         add(new JLabel("Port"), GBC.of(3, line).fillHorizontal().anchorWest().insets(3).build());
         add(portField, GBC.of(4, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
+
+        add(instanceLabel, GBC.of(3, line).fillHorizontal().anchorWest().insets(3).build());
+        add(instanceField, GBC.of(4, line++).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
         add(integratedSecurity, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).weightx(2).build());
 
@@ -107,7 +130,7 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
     }
 
 
-    public boolean acceptTable(TableId tid, DatabaseDriver d) {
+    public boolean acceptTable(TableId tid, NSqlDump d) {
         DatabaseId catalogId = selectedDatabaseId();
 
 //        if (schemaId.getSchemaName() != null) {
@@ -128,11 +151,20 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         return true;
     }
 
+    private NOptional<SqlDialect> getSelectedSqlDialect(){
+        return NOptional.of((SqlDialect) serverType.getSelectedItem());
+    }
 
     public CnxInfo cnxInfo() {
         Object value = portField.getValue();
+        if (value instanceof Number) {
+            int i = ((Number) value).intValue();
+            if (i <= 0) {
+                value = null;
+            }
+        }
         String dbName = null;
-        String dbType = serverType.getSelectedItem() == null ? SqlDialect.MSSQLSERVER.name() : (String) serverType.getSelectedItem();
+        SqlDialect dbType = getSelectedSqlDialect().orElse(SqlDialect.MSSQLSERVER);
 
         {
             dbName = selectedDatabaseId() == null ? null : selectedDatabaseId().getDatabaseName();
@@ -144,14 +176,37 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
                 .setPassword(new String(passwordField.getPassword()))
                 .setHost(hostField.getText())
                 .setPort(value == null ? null : value.toString())
-//                .setPassword("Rombatakaya")
-                .setIntegrationSecurity(integratedSecurity.isSelected());
+                .setIntegrationSecurity(integratedSecurity.isSelected())
+                .setInstanceName(NStringUtils.trimToNull(instanceField.getName()));
+
+
+        if (c.getDbName() == null) {
+            SqlDialect dbType2 = c.getType();
+            if (
+                    dbType2 == SqlDialect.MSSQLSERVER
+                            || dbType2 == SqlDialect.MSSQLSERVER_JTDS
+            ) {
+                if (dbName != null) {
+                    c.setDbName(dbName);
+                }
+            }
+
+        }
         return c;
     }
 
     void onChangeServerConnexion() {
         UI.async(() -> {
-            try (DatabaseDriver d = createDriver()) {
+            SqlDialect selectedItem =getSelectedSqlDialect().orNull();
+            instanceField.setVisible(
+                    selectedItem==SqlDialect.MSSQLSERVER
+                    ||selectedItem==SqlDialect.MSSQLSERVER_JTDS
+            );
+            instanceLabel.setVisible(
+                    selectedItem==SqlDialect.MSSQLSERVER
+                    ||selectedItem==SqlDialect.MSSQLSERVER_JTDS
+            );
+            try (NSqlDump d = createDriver()) {
                 List<DatabaseHeader> catalogs = d.getConnection().getDatabases();
                 catalogs.sort(Comparator.comparing(x -> x.getDatabaseName()));
                 UI.withinGUI(() -> {
@@ -162,7 +217,7 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
                     DatabaseHeader v = (DatabaseHeader) dbList.getSelectedItem();
                     onChangeDatabase(v == null ? null : v.toDatabaseId());
                 });
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 System.err.println(ex);
             }
         });
@@ -172,24 +227,24 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         DatabaseId old = selectedDatabase;
         selectedDatabase = item;
         pcs.firePropertyChange("database", old, item);
-        try (DatabaseDriver d = createDriver()) {
+        try (NSqlDump d = createDriver()) {
             updateTablesCount();
         } catch (Exception ex) {
             System.err.println(ex);
         }
     }
 
-    public DatabaseDriver createDriver() {
+    public NSqlDump createDriver() {
         pcs.firePropertyChange("connexion.status", null, "start");
         CnxInfo cnxInfo = null;
-        String currentConnexionAttemptId=UUID.randomUUID().toString();
+        String currentConnexionAttemptId = UUID.randomUUID().toString();
         try {
-            this.currentConnexionAttemptId=currentConnexionAttemptId;
+            this.currentConnexionAttemptId = currentConnexionAttemptId;
             cnxInfo = cnxInfo();
             for (ConnexionStatusListener listener : connexionStatusListeners) {
                 listener.onConnectionCheckStart(cnxInfo);
             }
-            DatabaseDriver r = DatabaseDriverFactories.createDatabaseDriver(cnxInfo);
+            NSqlDump r = DatabaseDriverFactories.createSqlDump(cnxInfo);
             for (ConnexionStatusListener listener : connexionStatusListeners) {
                 listener.onConnectionSuccess(cnxInfo);
             }
@@ -200,7 +255,7 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
                 ee = ee.getCause();
             }
             //ignore alder attempts!
-            if(Objects.equals(currentConnexionAttemptId,this.currentConnexionAttemptId)) {
+            if (Objects.equals(currentConnexionAttemptId, this.currentConnexionAttemptId)) {
                 for (ConnexionStatusListener listener : connexionStatusListeners) {
                     listener.onConnectionFailure(cnxInfo, ee);
                 }
@@ -211,7 +266,7 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
 
     public void checkConnexion() {
         UI.async(() -> {
-            try (DatabaseDriver d = createDriver()) {
+            try (NSqlDump d = createDriver()) {
 
             } catch (Exception ex) {
                 //
@@ -234,21 +289,24 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
     }
 
     private void updateTablesCount() {
-        try (DatabaseDriver d = createDriver()) {
+        try (NSqlDump d = createDriver()) {
             DatabaseId databaseId = selectedDatabaseId();
-            for (CatalogHeader catalog : d.getConnection().getCatalogs()) {
-                System.out.println("CATALOG : "+catalog);
-                for (SchemaHeader schema : d.getConnection().getSchemas(catalog.toCatalogId())) {
-                    System.out.println("\tSCHEMA : "+schema);
-                }
-            }
+//            for (CatalogHeader catalog : d.getConnection().getCatalogs()) {
+//                System.out.println("CATALOG : " + catalog);
+//                for (SchemaHeader schema : d.getConnection().getSchemas(catalog.toCatalogId())) {
+//                    System.out.println("\tSCHEMA : " + schema);
+//                }
+//            }
             List<TableHeader> tables = d.getConnection().getAnyTables(databaseId).stream().filter(x -> x.isTable()
                     && !d.getConnection().isSpecialTable(x.toTableId())
             ).collect(Collectors.toList());
             List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x.toTableId(), d)).collect(Collectors.toList());
-            System.out.println("updateTablesCount : " +
-                    databaseId + " : " +
-                    filtered.size() + " : " + filtered);
+//            LOGGER.log(Level.FINEST, "LOG updateTablesCount : " +
+//                    databaseId + " : " +
+//                    filtered.size() + " : " + filtered);
+//            System.out.println("updateTablesCount : " +
+//                    databaseId + " : " +
+//                    filtered.size() + " : " + filtered);
         } catch (Exception ex) {
             System.err.println(ex);
         }
@@ -259,9 +317,9 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         if (conf.getProperty("serverType") != null) {
             try {
                 serverType.setSelectedItem(
-                        SqlDialect.valueOf(conf.getProperty("serverType"))
+                        SqlDialect.parse(conf.getProperty("serverType")).orNull()
                 );
-                pcs.firePropertyChange("serverType", null, serverType.getSelectedItem());
+                pcs.firePropertyChange("serverType", null, getSelectedSqlDialect());
             } catch (Exception ex) {
                 //
             }
@@ -334,22 +392,22 @@ public class WdbrmanPanelConnexionPanel extends JPanel {
         @Override
         public void focusLost(FocusEvent e) {
             onChangeServerConnexion();
-            Object value=null;
-            switch (name){
-                case "login":{
-                    value= loginField.getText();
+            Object value = null;
+            switch (name) {
+                case "login": {
+                    value = loginField.getText();
                     break;
                 }
-                case "password":{
-                    value=new String(passwordField.getPassword());
+                case "password": {
+                    value = new String(passwordField.getPassword());
                     break;
                 }
-                case "host":{
-                    value= hostField.getText();
+                case "host": {
+                    value = hostField.getText();
                     break;
                 }
-                case "port":{
-                    value= portField.getValue();
+                case "port": {
+                    value = portField.getValue();
                     break;
                 }
             }

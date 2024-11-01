@@ -1,6 +1,6 @@
 package net.thevpc.diet.test;
 
-import net.thevpc.dbrman.model.TableDefinitionAsStoreStructDefinition;
+import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;
 import net.thevpc.nsql.SqlColumn;
 import net.thevpc.nsql.SqlColumnType;
 import net.thevpc.nsql.model.TableDefinition;
@@ -11,7 +11,6 @@ import net.thevpc.violin.impl.StoreInputStreamImpl;
 import net.thevpc.violin.impl.StoreOutputStreamImpl;
 import net.thevpc.violin.impl.StoreReaderConf;
 
-import net.thevpc.violin.model.StoreDataType;
 import net.thevpc.violin.model.StoreStructDefinition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

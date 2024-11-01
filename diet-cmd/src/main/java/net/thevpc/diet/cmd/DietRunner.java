@@ -1,13 +1,13 @@
 package net.thevpc.diet.cmd;
 
-import net.thevpc.dbrman.api.DatabaseDriver;
-import net.thevpc.dbrman.io.Out;
-import net.thevpc.dbrman.options.DbToDumpOptions;
-import net.thevpc.dbrman.options.DbToJsonOptions;
-import net.thevpc.dbrman.options.DumpToDbOptions;
-import net.thevpc.dbrman.options.DumpToJsonOptions;
-import net.thevpc.dbrman.store.DbrmanService;
-import net.thevpc.dbrman.io.In;
+import net.thevpc.nsql.dump.api.NSqlDump;
+import net.thevpc.nsql.dump.io.Out;
+import net.thevpc.nsql.dump.options.DbToDumpOptions;
+import net.thevpc.nsql.dump.options.DbToJsonOptions;
+import net.thevpc.nsql.dump.options.DumpToDbOptions;
+import net.thevpc.nsql.dump.options.DumpToJsonOptions;
+import net.thevpc.nsql.dump.store.NSqlDumpService;
+import net.thevpc.nsql.dump.io.In;
 import net.thevpc.diet.cmd.options.DietOptions;
 
 import java.io.File;
@@ -44,11 +44,11 @@ public class DietRunner {
         DumpToJsonOptions options = new DumpToJsonOptions();
         options.setIn(new In(new File(o.file)));
         options.setOut(new Out(System.out));
-        new DbrmanService().dumpToJson(options);
+        new NSqlDumpService().dumpToJson(options);
     }
 
     private static void dbToDump(DietOptions o) {
-        try(DatabaseDriver driver= DatabaseDriver.of(o.cnx)){
+        try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DbToDumpOptions eo = new DbToDumpOptions();
             eo.file = o.file;
             eo.compress = o.compress;
@@ -57,30 +57,30 @@ public class DietRunner {
             eo.data = o.data;
             eo.exploded = o.exploded;
             eo.cnx = o.cnx;
-            new DbrmanService().dbToDump(eo,driver);
+            new NSqlDumpService().dbToDump(eo,driver);
         }
     }
 
     private static void doDbToJson(DietOptions o) {
-        try(DatabaseDriver driver= DatabaseDriver.of(o.cnx)){
+        try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DbToJsonOptions jo=new DbToJsonOptions();
             jo.exploded=o.exploded;
             jo.cnx = o.cnx;
             jo.tableNameFilter = o.tableNameFilter;
             jo.data=o.data;
             jo.maxRows=o.maxRows;
-            new DbrmanService().dbToJson(jo,driver);
+            new NSqlDumpService().dbToJson(jo,driver);
         }
     }
 
     private static void dumpToDb(DietOptions o) {
-        try(DatabaseDriver driver= DatabaseDriver.of(o.cnx)){
+        try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DumpToDbOptions io=new DumpToDbOptions();
             io.setData(o.data);
             io.setTableNameFilter(o.tableNameFilter);
             io.setSchemaMode(o.schemaMode);
             io.setIn(new In(o.file));
-            new DbrmanService().dumpToDb(io,driver);
+            new NSqlDumpService().dumpToDb(io,driver);
         }
     }
 }

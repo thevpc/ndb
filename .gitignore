@@ -6,3 +6,7 @@ violin/target
 wdbrman/target
 diet-cmd/target
 diet-desktop/target
+diet-core/target
+diet-export/target
+diet-full/target
+diet-import/target

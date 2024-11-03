@@ -1,12 +1,12 @@
 package net.thevpc.diet.desktop.panels;
 
+import net.thevpc.nsql.UncheckedSqlException;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.util.DatabaseDriverFactories;
 import net.thevpc.diet.desktop.util.GBC;
 import net.thevpc.diet.desktop.util.UI;
 import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.SqlDialect;
-import net.thevpc.nsql.UncheckedSQLException;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -251,7 +251,7 @@ public class DietConnexionPanel extends JPanel {
             return r;
         } catch (RuntimeException e) {
             Throwable ee = e;
-            if (ee instanceof UncheckedSQLException) {
+            if (ee instanceof UncheckedSqlException) {
                 ee = ee.getCause();
             }
             //ignore alder attempts!

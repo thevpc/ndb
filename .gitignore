@@ -10,3 +10,4 @@ diet-core/target
 diet-export/target
 diet-full/target
 diet-import/target
+/diet-full/log/log.log.0

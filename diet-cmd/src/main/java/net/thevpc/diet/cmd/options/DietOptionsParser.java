@@ -1,7 +1,6 @@
 package net.thevpc.diet.cmd.options;
 
 import net.thevpc.nsql.CnxInfo;
-import net.thevpc.nsql.SqlDialect;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -9,6 +8,7 @@ import java.io.*;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.thevpc.nsql.NSqlDialect;
 
 public class DietOptionsParser {
     public static DietOptions parse(String... args) {
@@ -296,7 +296,7 @@ public class DietOptionsParser {
                     return true;
                 }
                 case "--db-type": {
-                    o.cnx.setType(SqlDialect.parse(p.getValue().asString().get()).get());
+                    o.cnx.setType(NSqlDialect.parse(p.getValue().asString().get()).get());
                     return true;
                 }
                 case "--db": {

@@ -6,7 +6,6 @@ import net.thevpc.nsql.dump.util.DatabaseDriverFactories;
 import net.thevpc.diet.desktop.util.GBC;
 import net.thevpc.diet.desktop.util.UI;
 import net.thevpc.nsql.CnxInfo;
-import net.thevpc.nsql.SqlDialect;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -18,11 +17,16 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import net.thevpc.nsql.NSqlDialect;
 
 public class DietConnexionPanel extends JPanel {
+
     public static final Logger LOGGER = Logger.getLogger(DietConnexionPanel.class.getName());
     private final JLabel dbLabel;
     JTextField hostField = new JTextField();
@@ -61,7 +65,7 @@ public class DietConnexionPanel extends JPanel {
         dbLabel = new JLabel("Database");
 
         serverType = new JComboBox(
-                Arrays.stream(SqlDialect.values()).toArray()
+                Arrays.stream(NSqlDialect.values()).toArray()
         );
         add(new JLabel("Type de Serveur"), GBC.of(0, line).fillHorizontal().anchorWest().insets(3).build());
         add(serverType, GBC.of(1, line++).fillHorizontal().anchorWest().insets(3).weightx(2).colspanReminder().build());
@@ -101,6 +105,35 @@ public class DietConnexionPanel extends JPanel {
                 onChangeServerConnexion();
             }
         });
+        serverType.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                resetDbList();
+            }
+        });
+        DocumentListener documentListener = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                resetDbList();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                resetDbList();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                resetDbList();
+            }
+        };
+        hostField.getDocument().addDocumentListener(documentListener);
+        portField.getModel().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                resetDbList();
+            }
+        });
         dbList.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -129,15 +162,30 @@ public class DietConnexionPanel extends JPanel {
         onChangeServerConnexion();
     }
 
+    private void resetDbList() {
+        dbList.setModel(new DefaultComboBoxModel());
+    }
 
-    public boolean acceptTable(TableId tid, NSqlDump d) {
+    public boolean acceptTable(TableHeader th, NSqlDump d) {
         DatabaseId catalogId = selectedDatabaseId();
-
+        TableId tid = th.toTableId();
 //        if (schemaId.getSchemaName() != null) {
 //            if (!Objects.equals(tid.getSchemaName(), schemaId.getSchemaName())) {
 //                return false;
 //            }
 //        }
+        NSqlDialect a = getSelectedSqlDialect().orNull();
+        if (th.isSystemTable()) {
+            return false;
+        }
+        if (a == NSqlDialect.MSSQLSERVER || a == NSqlDialect.MSSQLSERVER_JTDS) {
+            if ("sys".equals(tid.getSchemaId().getSchemaName())) {
+                return false;
+            }
+            if ("INFORMATION_SCHEMA".equals(tid.getSchemaId().getSchemaName())) {
+                return false;
+            }
+        }
         if (catalogId != null) {
             if (catalogId.getCatalogName() != null && tid.getCatalogName() != null) {
                 if (!Objects.equals(tid.getCatalogName(), catalogId.getCatalogName())) {
@@ -151,8 +199,8 @@ public class DietConnexionPanel extends JPanel {
         return true;
     }
 
-    private NOptional<SqlDialect> getSelectedSqlDialect(){
-        return NOptional.of((SqlDialect) serverType.getSelectedItem());
+    private NOptional<NSqlDialect> getSelectedSqlDialect() {
+        return NOptional.of((NSqlDialect) serverType.getSelectedItem());
     }
 
     public CnxInfo cnxInfo() {
@@ -164,7 +212,7 @@ public class DietConnexionPanel extends JPanel {
             }
         }
         String dbName = null;
-        SqlDialect dbType = getSelectedSqlDialect().orElse(SqlDialect.MSSQLSERVER);
+        NSqlDialect dbType = getSelectedSqlDialect().orElse(NSqlDialect.MSSQLSERVER);
 
         {
             dbName = selectedDatabaseId() == null ? null : selectedDatabaseId().getDatabaseName();
@@ -179,13 +227,10 @@ public class DietConnexionPanel extends JPanel {
                 .setIntegrationSecurity(integratedSecurity.isSelected())
                 .setInstanceName(NStringUtils.trimToNull(instanceField.getName()));
 
-
         if (c.getDbName() == null) {
-            SqlDialect dbType2 = c.getType();
-            if (
-                    dbType2 == SqlDialect.MSSQLSERVER
-                            || dbType2 == SqlDialect.MSSQLSERVER_JTDS
-            ) {
+            NSqlDialect dbType2 = c.getType();
+            if (dbType2 == NSqlDialect.MSSQLSERVER
+                    || dbType2 == NSqlDialect.MSSQLSERVER_JTDS) {
                 if (dbName != null) {
                     c.setDbName(dbName);
                 }
@@ -197,16 +242,16 @@ public class DietConnexionPanel extends JPanel {
 
     void onChangeServerConnexion() {
         UI.async(() -> {
-            SqlDialect selectedItem =getSelectedSqlDialect().orNull();
+            NSqlDialect selectedItem = getSelectedSqlDialect().orNull();
             instanceField.setVisible(
-                    selectedItem==SqlDialect.MSSQLSERVER
-                    ||selectedItem==SqlDialect.MSSQLSERVER_JTDS
+                    selectedItem == NSqlDialect.MSSQLSERVER
+                    || selectedItem == NSqlDialect.MSSQLSERVER_JTDS
             );
             instanceLabel.setVisible(
-                    selectedItem==SqlDialect.MSSQLSERVER
-                    ||selectedItem==SqlDialect.MSSQLSERVER_JTDS
+                    selectedItem == NSqlDialect.MSSQLSERVER
+                    || selectedItem == NSqlDialect.MSSQLSERVER_JTDS
             );
-            try (NSqlDump d = createDriver()) {
+            try (NSqlDump d = createDump()) {
                 List<DatabaseHeader> catalogs = d.getConnection().getDatabases();
                 catalogs.sort(Comparator.comparing(x -> x.getDatabaseName()));
                 UI.withinGUI(() -> {
@@ -227,14 +272,15 @@ public class DietConnexionPanel extends JPanel {
         DatabaseId old = selectedDatabase;
         selectedDatabase = item;
         pcs.firePropertyChange("database", old, item);
-        try (NSqlDump d = createDriver()) {
-            updateTablesCount();
-        } catch (Exception ex) {
-            System.err.println(ex);
-        }
+        updateTablesCount();
     }
 
-    public NSqlDump createDriver() {
+    public NSqlDump createDumpSilently() {
+        CnxInfo cnxInfo = cnxInfo();
+        return DatabaseDriverFactories.createSqlDump(cnxInfo);
+    }
+
+    public NSqlDump createDump() {
         pcs.firePropertyChange("connexion.status", null, "start");
         CnxInfo cnxInfo = null;
         String currentConnexionAttemptId = UUID.randomUUID().toString();
@@ -246,7 +292,7 @@ public class DietConnexionPanel extends JPanel {
             }
             NSqlDump r = DatabaseDriverFactories.createSqlDump(cnxInfo);
             for (ConnexionStatusListener listener : connexionStatusListeners) {
-                listener.onConnectionSuccess(cnxInfo);
+                listener.onConnectionSuccess(cnxInfo, r);
             }
             return r;
         } catch (RuntimeException e) {
@@ -266,7 +312,7 @@ public class DietConnexionPanel extends JPanel {
 
     public void checkConnexion() {
         UI.async(() -> {
-            try (NSqlDump d = createDriver()) {
+            try (NSqlDump d = createDump()) {
 
             } catch (Exception ex) {
                 //
@@ -289,7 +335,7 @@ public class DietConnexionPanel extends JPanel {
     }
 
     private void updateTablesCount() {
-        try (NSqlDump d = createDriver()) {
+        try (NSqlDump d = createDump()) {
             DatabaseId databaseId = selectedDatabaseId();
 //            for (CatalogHeader catalog : d.getConnection().getCatalogs()) {
 //                System.out.println("CATALOG : " + catalog);
@@ -300,7 +346,7 @@ public class DietConnexionPanel extends JPanel {
             List<TableHeader> tables = d.getConnection().getAnyTables(databaseId).stream().filter(x -> x.isTable()
                     && !d.getConnection().isSpecialTable(x.toTableId())
             ).collect(Collectors.toList());
-            List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x.toTableId(), d)).collect(Collectors.toList());
+            List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x, d)).collect(Collectors.toList());
 //            LOGGER.log(Level.FINEST, "LOG updateTablesCount : " +
 //                    databaseId + " : " +
 //                    filtered.size() + " : " + filtered);
@@ -317,7 +363,7 @@ public class DietConnexionPanel extends JPanel {
         if (conf.getProperty("serverType") != null) {
             try {
                 serverType.setSelectedItem(
-                        SqlDialect.parse(conf.getProperty("serverType")).orNull()
+                        NSqlDialect.parse(conf.getProperty("serverType")).orNull()
                 );
                 pcs.firePropertyChange("serverType", null, getSelectedSqlDialect());
             } catch (Exception ex) {
@@ -370,14 +416,16 @@ public class DietConnexionPanel extends JPanel {
     }
 
     public interface ConnexionStatusListener {
+
         void onConnectionCheckStart(CnxInfo info);
 
-        void onConnectionSuccess(CnxInfo info);
+        void onConnectionSuccess(CnxInfo info, NSqlDump r);
 
         void onConnectionFailure(CnxInfo info, Throwable ex);
     }
 
     private class MyFocusListener implements FocusListener {
+
         private String name;
 
         public MyFocusListener(String name) {

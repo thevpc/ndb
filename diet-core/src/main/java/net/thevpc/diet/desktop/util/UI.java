@@ -2,7 +2,6 @@ package net.thevpc.diet.desktop.util;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import net.thevpc.diet.desktop.DietInfo;
-import net.thevpc.diet.desktop.panels.DietPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.logging.*;
+import javax.imageio.ImageIO;
+import net.thevpc.nuts.util.UncheckedException;
 
 public class UI {
     public static void async(Runnable r) {
@@ -83,12 +83,17 @@ public class UI {
         prepareArgs(args);
         JComponent contentPane = pane.apply(args);
         SwingUtilities.invokeLater(()->{
-            JFrame frame = new JFrame(title+" v"+ DietInfo.VERSION);
-            frame.setContentPane(contentPane);
-            frame.setMinimumSize(new Dimension(600, 400));
-            frame.setVisible(true);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.pack();
+            try {
+                JFrame frame = new JFrame(title+" v"+ DietInfo.VERSION);
+                frame.setIconImage(ImageIO.read(UI.class.getResource("/database-svgrepo-com.png")));
+                frame.setContentPane(contentPane);
+                frame.setMinimumSize(new Dimension(600, 400));
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.pack();
+            } catch (IOException ex) {
+                throw new UncheckedException(ex);
+            }
         });
     }
 }

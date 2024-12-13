@@ -1,8 +1,8 @@
 package net.thevpc.diet.test;
 
 import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;
-import net.thevpc.nsql.SqlColumn;
-import net.thevpc.nsql.SqlColumnType;
+import net.thevpc.nsql.NSqlColumn;
+import net.thevpc.nsql.NSqlColumnType;
 import net.thevpc.nsql.model.TableDefinition;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.violin.api.*;
@@ -17,21 +17,23 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import net.thevpc.nsql.NSqlColumn;
+import net.thevpc.nsql.NSqlColumnType;
 
 public class Test1 {
 
     @Test
     public void test1() {
-        SqlColumn c = getStoreSqlColumn1();
+        NSqlColumn c = getStoreSqlColumn1();
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         StoreOutputStream sw = new StoreOutputStreamImpl(s, StoreReaderConf.get(1));
-        sw.writeNonNullableStruct(SqlColumn.class, c);
-        sw.writeNonNullableStruct(SqlColumn.class, c);
+        sw.writeNonNullableStruct(NSqlColumn.class, c);
+        sw.writeNonNullableStruct(NSqlColumn.class, c);
         sw.flush();
 
         StoreInputStream sr = new StoreInputStreamImpl(new ByteArrayInputStream(s.toByteArray()), StoreReaderConf.get(1));
-        SqlColumn e1 = sr.readNonNullableStruct(SqlColumn.class);
-        SqlColumn e2 = sr.readNonNullableStruct(SqlColumn.class);
+        NSqlColumn e1 = sr.readNonNullableStruct(NSqlColumn.class);
+        NSqlColumn e2 = sr.readNonNullableStruct(NSqlColumn.class);
         Assertions.assertEquals(c, e1);
         Assertions.assertEquals(c, e2);
     }
@@ -131,8 +133,8 @@ public class Test1 {
                 .setSchemaName("schem")
                 .setTableName("tab")
                 .setColumns(
-                        getStoreSqlColumn2("val1", SqlColumnType.BLOB),
-                        getStoreSqlColumn2("val2", SqlColumnType.BLOB)
+                        getStoreSqlColumn2("val1", NSqlColumnType.BLOB),
+                        getStoreSqlColumn2("val2", NSqlColumnType.BLOB)
                 );
         StoreRows r = new DefaultStoreRows(
                 new TableDefinitionAsStoreStructDefinition(tableDefinition),
@@ -166,18 +168,18 @@ public class Test1 {
         t.setCatalogName(null);
         t.setSchemaName("schem");
         t.setTableName("tab");
-        t.setColumns(new SqlColumn[]{
+        t.setColumns(new NSqlColumn[]{
                 getStoreSqlColumn1()
         });
         return new TableDefinitionAsStoreStructDefinition(t);
     }
 
-    private static SqlColumn getStoreSqlColumn1() {
-        SqlColumn c = new SqlColumn();
+    private static NSqlColumn getStoreSqlColumn1() {
+        NSqlColumn c = new NSqlColumn();
         c.setIndex(1);
         c.setColumnName("a");
         c.setLabel("b");
-        c.setColumnType(SqlColumnType.STRING);
+        c.setColumnType(NSqlColumnType.STRING);
         c.setSqlType(4);
         c.setSqlTypeName("hoho");
         c.setDisplaySize(4);
@@ -196,8 +198,8 @@ public class Test1 {
         return c;
     }
 
-    private static SqlColumn getStoreSqlColumn2(String name, SqlColumnType t) {
-        SqlColumn c = new SqlColumn();
+    private static NSqlColumn getStoreSqlColumn2(String name, NSqlColumnType t) {
+        NSqlColumn c = new NSqlColumn();
         c.setIndex(1);
         c.setColumnName(name);
         c.setLabel("b");

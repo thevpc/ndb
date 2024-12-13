@@ -51,7 +51,7 @@ public class DietImportPanel extends JPanel {
             }
 
             @Override
-            public void onConnectionSuccess(CnxInfo info) {
+            public void onConnectionSuccess(CnxInfo info,NSqlDump r) {
                 progressPanel.updateStatus( NMsg.ofC("Successful connection"));
                 updateStartButtonState();
             }
@@ -119,7 +119,7 @@ public class DietImportPanel extends JPanel {
                              }
                          },
                 () -> {
-                    try (NSqlDump db = cnxPanel.createDriver()) {
+                    try (NSqlDump db = cnxPanel.createDumpSilently()) {
                         NSqlDumpService s=new NSqlDumpService();
                         s.dumpToDb(
                                 new DumpToDbOptions()

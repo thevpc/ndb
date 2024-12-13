@@ -1,9 +1,7 @@
 package net.thevpc.diet.desktop.panels;
 
-import net.thevpc.diet.desktop.DietInfo;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.CnxInfo;
-import net.thevpc.nsql.SqlDialect;
 import net.thevpc.nsql.dump.model.DbStore;
 import net.thevpc.nsql.dump.model.DbStoreWriter;
 import net.thevpc.nsql.dump.model.TableIdAsStoreStructId;
@@ -22,8 +20,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.*;
+import java.util.function.Predicate;
+import net.thevpc.common.swing.list.JCheckBoxList;
+import net.thevpc.nsql.NSqlDialect;
+import net.thevpc.nsql.model.TableHeader;
 
 public class DietExportPanel extends JPanel {
+
     JButton startButton = new JButton("Commencer...");
     JRadioButton oneFile = new JRadioButton("One File Per DB");
     JRadioButton exploded = new JRadioButton("One File Per Table");
@@ -35,6 +38,8 @@ public class DietExportPanel extends JPanel {
     long optionMaxRows = -1;
     DietConnexionPanel cnxPanel = new DietConnexionPanel();
     ProgressPanel progressPanel = new ProgressPanel();
+    private JCheckBoxList selectedTables = new JCheckBoxList();
+    private SimpleProgressLogger simpleProgressLogger = new SimpleProgressLogger();
 
     public DietExportPanel() {
         super(new GridBagLayout());
@@ -52,7 +57,8 @@ public class DietExportPanel extends JPanel {
         }
         add(pp, GBC.of(0, line++).fillHorizontal().anchorWest().insets(3).colspanReminder().build());
 
-        add(cnxPanel, GBC.of(0, line).fillHorizontal().anchorWest().insets(3).colspanReminder().build());
+        add(cnxPanel, GBC.of(0, line++).fillHorizontal().anchorWest().insets(3).colspanReminder().build());
+        add(selectedTables, GBC.of(0, line++).fillBoth().anchorWest().weight(2, 2).insets(3).colspanReminder().build());
 
         add(progressPanel, GBC.of(0, line++).colspanReminder().anchorSouth().fillHorizontal().insets(3).weightx(2).weighty(1000).build());
         startButton.addActionListener(new ActionListener() {
@@ -64,22 +70,47 @@ public class DietExportPanel extends JPanel {
         cnxPanel.addConnexionStatusListener(new DietConnexionPanel.ConnexionStatusListener() {
             @Override
             public void onConnectionCheckStart(CnxInfo info) {
-                progressPanel.updateStatus( NMsg.ofC("Checking connection..."));
+                progressPanel.updateStatus(NMsg.ofC("Checking connection..."));
                 updateStartButtonState();
+                selectedTables.resetModel();
             }
 
             @Override
-            public void onConnectionSuccess(CnxInfo info) {
-                progressPanel.updateStatus( NMsg.ofC("Successful connection"));
+            public void onConnectionSuccess(CnxInfo info, NSqlDump r) {
+                progressPanel.updateStatus(NMsg.ofC("Successful connection"));
                 updateStartButtonState();
+                updateTableList(r);
             }
 
             @Override
             public void onConnectionFailure(CnxInfo info, Throwable ex) {
-                progressPanel.updateStatus( NMsg.ofC("Connection failed : %s", ex.getMessage()));
+                progressPanel.updateStatus(NMsg.ofC("Connection failed : %s", ex.getMessage()));
                 updateStartButtonState();
+                selectedTables.resetModel();
             }
         });
+    }
+
+    private String selectedFilePreferredName() {
+        String dbName = cnxPanel.selectedDatabaseId() == null ? null : cnxPanel.selectedDatabaseId().getDatabaseName();//cnxPanel.getSelectedCatalog().getCatalogName();
+        boolean allSelected = selectedTables.isAllSelected();
+        if (allSelected) {
+            return dbName;
+        }
+        int s = selectedTables.getElementCount();
+        ArrayList<TableHeader> selected = new ArrayList<>();
+        int all = 0;
+        for (int i = 0; i < s; i++) {
+            TableHeader th = (TableHeader) selectedTables.getSelectedElementAt(i);
+            if (th != null) {
+                selected.add(th);
+                all++;
+            }
+        }
+        if (selected.size() == 1 && selected.size() < all) {
+            return dbName + "." + selected.get(0).getTableName();
+        }
+        return dbName;
     }
 
     private void onStartExport() {
@@ -100,16 +131,16 @@ public class DietExportPanel extends JPanel {
 //                                (schemaId.getSchemaName() != null) ? (schemaId.getSchemaName()) :
 //                                        (schemaId.getCatalogName() != null) ? (schemaId.getCatalogName()) :
 //                                                "unknown";
-
                 String dbName = cnxPanel.selectedDatabaseId() == null ? null : cnxPanel.selectedDatabaseId().getDatabaseName();//cnxPanel.getSelectedCatalog().getCatalogName();
+                String preferredname = selectedFilePreferredName();
                 if (cnxPanel.selectedDatabase == null) {
                     return;
                 }
                 if (file == null) {
-                    file = new File(dbName + ".dump");
+                    file = new File(preferredname + ".dump");
                 }
                 if (file.isDirectory()) {
-                    file = new File(file, dbName + ".dump");
+                    file = new File(file, preferredname + ".dump");
                 }
                 JFileChooser jfc = new JFileChooser();
                 jfc.setSelectedFile(file);
@@ -122,17 +153,15 @@ public class DietExportPanel extends JPanel {
                             }
                         }
                         if (selectedFile.isDirectory()) {
-                            selectedFile = new File(selectedFile, dbName + ".dump");
+                            selectedFile = new File(selectedFile, preferredname + ".dump");
                         }
                         DbStore s = new DbStore();
                         s.setOut(selectedFile);
                         CnxInfo cnx = cnxPanel.cnxInfo();
                         if (cnx.getDbName() == null) {
-                            SqlDialect dbType = cnx.getType();
-                            if (
-                                    dbType == SqlDialect.MSSQLSERVER
-//                                            || dbType == SqlDialect.JTDS_SQLSERVER
-                            ) {
+                            NSqlDialect dbType = cnx.getType();
+                            if (dbType == NSqlDialect.MSSQLSERVER //                                            || dbType == SqlDialect.JTDS_SQLSERVER
+                                    ) {
                                 if (dbName != null) {
                                     cnx.setDbName(dbName);
                                 }
@@ -140,7 +169,15 @@ public class DietExportPanel extends JPanel {
 
                         }
                         s.setDb(cnx);
-                        doExport(cnx, selectedFile);
+                        File selectedFile0 = selectedFile;
+                        IOLogger.runWith(simpleProgressLogger,
+                                () -> {
+                                    if (oneFile.isSelected()) {
+                                        exportOneFile(cnx, selectedFile0);
+                                    } else {
+                                        exportExplodedFile(selectedFile0);
+                                    }
+                                });
                     }
                 }
             } finally {
@@ -152,28 +189,54 @@ public class DietExportPanel extends JPanel {
     }
 
     private void exportExplodedFileOne(TableId table, File nf, int i, int len) {
-        try (NSqlDump db = cnxPanel.createDriver()) {
+        try (NSqlDump db = cnxPanel.createDumpSilently()) {
             try (StoreWriter w = new DbStoreWriter(nf, db)) {
-                progressPanel.updateStatus((i) * 100 / len, NMsg.ofC("Table %s...",table.getTableName()));
+                progressPanel.updateStatus((i) * 100 / len, NMsg.ofC("Table %s...", table.getTableName()));
                 w.setCompress(optionCompress);
                 w.setData(optionData);
                 w.setMaxRows(optionMaxRows);
                 w.addStructs(new TableIdAsStoreStructId(table));
                 w.write();
                 w.flush();
-                progressPanel.updateStatus((i + 1) * 100 / len, NMsg.ofC("Table %s" , table.getTableName()));
+                progressPanel.updateStatus((i + 1) * 100 / len, NMsg.ofC("Table %s", table.getTableName()));
             }
         }
     }
 
+    private Predicate<TableHeader> tableIdFilter(NSqlDump db) {
+        boolean allSelected = selectedTables.isAllSelected();
+        boolean noneSelected = selectedTables.isNoneSelected();
+        return (allSelected || noneSelected) ? (x -> cnxPanel.acceptTable(x, db)) : (x -> {
+            boolean b = cnxPanel.acceptTable(x, db);
+            if (!b) {
+                return false;
+            }
+            int s = selectedTables.getSelectedCount();
+            for (int i = 0; i < s; i++) {
+                TableHeader th = (TableHeader) selectedTables.getSelectedElementAt(i);
+                if (th != null) {
+                    if (th.equals(x)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+    }
+
     private void exportExplodedFile(File selectedFile) {
         TableId[] tables;
-        try (NSqlDump db = cnxPanel.createDriver()) {
-            tables = db.getConnection().getTableIds(cnxPanel.selectedDatabaseId()).stream()
-                    .filter(x -> cnxPanel.acceptTable(x, db))
+        try (NSqlDump db = cnxPanel.createDumpSilently()) {
+            tables = db.getConnection().getTableHeaders(cnxPanel.selectedDatabaseId()).stream()
+                    .filter(tableIdFilter(db))
+                    .map(x -> x.toTableId())
                     .toArray(TableId[]::new);
         }
-        int errorsCount=0;
+        if (tables.length == 0) {
+            JOptionPane.showMessageDialog(DietExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int errorsCount = 0;
         for (int i = 0, tablesLength = tables.length; i < tablesLength; i++) {
             TableId table = tables[i];
             try {
@@ -185,41 +248,33 @@ public class DietExportPanel extends JPanel {
                 selectedFile.getParentFile().mkdirs();
                 File nf = new File(selectedFile.getParent(), n);
                 exportExplodedFileOne(table, nf, i, tables.length);
-                progressPanel.updateStatus(100, NMsg.ofC("%s Tables exportées",tables.length));
+                progressPanel.updateStatus(100, NMsg.ofC("%s Tables exportées", tables.length));
             } catch (Exception ex) {
                 ex.printStackTrace();
-                progressPanel.updateStatus( NMsg.ofC("Export Echoué : %s", ex.getMessage()));
+                progressPanel.updateStatus(NMsg.ofC("Export Echoué : %s", ex.getMessage()));
                 JOptionPane.showMessageDialog(DietExportPanel.this, "Erreur " + table.getTableName(), "Error", JOptionPane.ERROR_MESSAGE);
                 errorsCount++;
             }
         }
-        if(errorsCount==0) {
-            progressPanel.updateStatus( NMsg.ofC("Export réussi"));
-            JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi", "Succès", JOptionPane.INFORMATION_MESSAGE);
-        }else{
-            progressPanel.updateStatus( NMsg.ofC("Export Echoué"));
-            JOptionPane.showMessageDialog(DietExportPanel.this, "Export Echoué", "Error", JOptionPane.ERROR_MESSAGE);
+        if (errorsCount == 0) {
+            progressPanel.updateStatus(NMsg.ofC("Export réussi"));
+            JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi : " + tables.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            progressPanel.updateStatus(NMsg.ofC("Export Echoué"));
+            JOptionPane.showMessageDialog(DietExportPanel.this, "Export Echoué : " + tables.length + " Table(s)", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void doExport(CnxInfo cnx, File selectedFile) {
-        IOLogger.runWith(new IOLogger() {
-                             @Override
-                             public void log(NMsg msg) {
-                                 progressPanel.updateStatus(-1, msg);
-                             }
-                         },
-                () -> {
-                    if (oneFile.isSelected()) {
-                        exportOneFile(cnx, selectedFile);
-                    } else {
-                        exportExplodedFile(selectedFile);
-                    }
-                });
-    }
-
     private void exportOneFile(CnxInfo cnx, File selectedFile) {
-        try (NSqlDump db = cnxPanel.createDriver()) {
+        try (NSqlDump db = cnxPanel.createDumpSilently()) {
+            StoreStructId[] array = db.getConnection().getTableHeaders(cnxPanel.selectedDatabaseId()).stream()
+                    .filter(tableIdFilter(db))
+                    .map(x -> new TableIdAsStoreStructId(x.toTableId()))
+                    .toArray(StoreStructId[]::new);
+            if (array.length == 0) {
+                JOptionPane.showMessageDialog(DietExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             try (StoreWriter w = new DbStoreWriter(selectedFile, db)) {
                 w.addProgressMonitor(new StoreProgressMonitor() {
                     @Override
@@ -237,33 +292,66 @@ public class DietExportPanel extends JPanel {
                 w.setCompress(optionCompress);
                 w.setData(optionData);
                 w.setMaxRows(optionMaxRows);
-                StoreStructId[] array = db.getConnection().getTableIds(cnxPanel.selectedDatabaseId()).stream()
-                        .filter(x -> cnxPanel.acceptTable(x, db))
-                        .map(x -> new TableIdAsStoreStructId(x))
-                        .toArray(StoreStructId[]::new);
+
                 w.addStructs(
                         array
                 );
                 w.write();
                 w.flush();
-                JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi : " + array.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
 
+    private void updateTableList(NSqlDump db) {
+        CnxInfo cnxInfo = cnxPanel.cnxInfo();
+        if (cnxInfo != null) {
+            IOLogger.runWith(simpleProgressLogger,
+                    () -> {
+                        selectedTables.resetModel();
+                        try {
+                            // .toArray(JCheckBox[]::new)
+                            db.getConnection().getAnyTables().stream()
+                                    .filter(x -> cnxPanel.acceptTable(x, db))
+                                    .forEach(x -> {
+                                        System.out.println("addItem " + x);
+                                        selectedTables.addItem(x, x.getTableName(), x.toString());
+                                    });
+
+                        } catch (Exception ex) {
+                            selectedTables.resetModel();
+                        }
+                    });
+        } else {
+            selectedTables.resetModel();
+        }
+    }
+
     private void updateStartButtonState() {
-        boolean a = cnxPanel.cnxInfo() != null
-//                && selectedSchema != null
+        CnxInfo cnxInfo = cnxPanel.cnxInfo();
+        boolean a = cnxInfo != null
+                //                && selectedSchema != null
                 && !workInProgress;
         startButton.setEnabled(a);
         oneFile.setEnabled(a);
         exploded.setEnabled(a);
         cnxPanel.setEnabled(a);
-    }
 
+    }
 
     public void loadConf(Properties conf) {
         this.conf = conf;
         cnxPanel.loadConf(conf);
+    }
+
+    private class SimpleProgressLogger implements IOLogger {
+
+        public SimpleProgressLogger() {
+        }
+
+        @Override
+        public void log(NMsg msg) {
+            progressPanel.updateStatus(-1, msg);
+        }
     }
 }

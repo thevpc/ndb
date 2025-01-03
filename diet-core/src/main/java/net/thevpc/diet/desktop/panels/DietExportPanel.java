@@ -5,7 +5,7 @@ import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.dump.model.DbStore;
 import net.thevpc.nsql.dump.model.DbStoreWriter;
 import net.thevpc.nsql.dump.model.TableIdAsStoreStructId;
-import net.thevpc.nsql.model.TableId;
+import net.thevpc.nsql.model.NSqlTableId;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.violin.api.StoreWriter;
 import net.thevpc.violin.api.StoreProgressMonitor;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import net.thevpc.common.swing.list.JCheckBoxList;
 import net.thevpc.nsql.NSqlDialect;
-import net.thevpc.nsql.model.TableHeader;
+import net.thevpc.nsql.model.NSqlTableHeader;
 
 public class DietExportPanel extends JPanel {
 
@@ -98,10 +98,10 @@ public class DietExportPanel extends JPanel {
             return dbName;
         }
         int s = selectedTables.getElementCount();
-        ArrayList<TableHeader> selected = new ArrayList<>();
+        ArrayList<NSqlTableHeader> selected = new ArrayList<>();
         int all = 0;
         for (int i = 0; i < s; i++) {
-            TableHeader th = (TableHeader) selectedTables.getSelectedElementAt(i);
+            NSqlTableHeader th = (NSqlTableHeader) selectedTables.getSelectedElementAt(i);
             if (th != null) {
                 selected.add(th);
                 all++;
@@ -188,7 +188,7 @@ public class DietExportPanel extends JPanel {
         }
     }
 
-    private void exportExplodedFileOne(TableId table, File nf, int i, int len) {
+    private void exportExplodedFileOne(NSqlTableId table, File nf, int i, int len) {
         try (NSqlDump db = cnxPanel.createDumpSilently()) {
             try (StoreWriter w = new DbStoreWriter(nf, db)) {
                 progressPanel.updateStatus((i) * 100 / len, NMsg.ofC("Table %s...", table.getTableName()));
@@ -203,7 +203,7 @@ public class DietExportPanel extends JPanel {
         }
     }
 
-    private Predicate<TableHeader> tableIdFilter(NSqlDump db) {
+    private Predicate<NSqlTableHeader> tableIdFilter(NSqlDump db) {
         boolean allSelected = selectedTables.isAllSelected();
         boolean noneSelected = selectedTables.isNoneSelected();
         return (allSelected || noneSelected) ? (x -> cnxPanel.acceptTable(x, db)) : (x -> {
@@ -213,7 +213,7 @@ public class DietExportPanel extends JPanel {
             }
             int s = selectedTables.getSelectedCount();
             for (int i = 0; i < s; i++) {
-                TableHeader th = (TableHeader) selectedTables.getSelectedElementAt(i);
+                NSqlTableHeader th = (NSqlTableHeader) selectedTables.getSelectedElementAt(i);
                 if (th != null) {
                     if (th.equals(x)) {
                         return true;
@@ -225,12 +225,12 @@ public class DietExportPanel extends JPanel {
     }
 
     private void exportExplodedFile(File selectedFile) {
-        TableId[] tables;
+        NSqlTableId[] tables;
         try (NSqlDump db = cnxPanel.createDumpSilently()) {
             tables = db.getConnection().getTableHeaders(cnxPanel.selectedDatabaseId()).stream()
                     .filter(tableIdFilter(db))
                     .map(x -> x.toTableId())
-                    .toArray(TableId[]::new);
+                    .toArray(NSqlTableId[]::new);
         }
         if (tables.length == 0) {
             JOptionPane.showMessageDialog(DietExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -238,7 +238,7 @@ public class DietExportPanel extends JPanel {
         }
         int errorsCount = 0;
         for (int i = 0, tablesLength = tables.length; i < tablesLength; i++) {
-            TableId table = tables[i];
+            NSqlTableId table = tables[i];
             try {
                 String n = selectedFile.getName();
                 if (n.endsWith(".dump")) {

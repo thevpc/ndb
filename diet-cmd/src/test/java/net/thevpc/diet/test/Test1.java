@@ -3,7 +3,7 @@ package net.thevpc.diet.test;
 import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;
 import net.thevpc.nsql.NSqlColumn;
 import net.thevpc.nsql.NSqlColumnType;
-import net.thevpc.nsql.model.TableDefinition;
+import net.thevpc.nsql.model.NSqlTableDefinition;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.violin.api.*;
 import net.thevpc.violin.impl.DefaultStoreRows;
@@ -128,7 +128,7 @@ public class Test1 {
 
     @Test
     public void test6() {
-        TableDefinition tableDefinition = new TableDefinition()
+        NSqlTableDefinition tableDefinition = new NSqlTableDefinition()
                 .setCatalogName(null)
                 .setSchemaName("schem")
                 .setTableName("tab")
@@ -164,7 +164,7 @@ public class Test1 {
 
 
     private static StoreStructDefinition getStoreTableDefinition1() {
-        TableDefinition t = new TableDefinition();
+        NSqlTableDefinition t = new NSqlTableDefinition();
         t.setCatalogName(null);
         t.setSchemaName("schem");
         t.setTableName("tab");

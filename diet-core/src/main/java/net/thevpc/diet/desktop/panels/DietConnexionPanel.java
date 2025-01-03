@@ -41,7 +41,7 @@ public class DietConnexionPanel extends JPanel {
     JComboBox serverType = new JComboBox(new Object[0]);
     JComboBox dbList = new JComboBox(new Object[0]);
     Properties conf;
-    DatabaseId selectedDatabase;
+    NSqlDatabaseId selectedDatabase;
     PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     List<ConnexionStatusListener> connexionStatusListeners = new ArrayList<>();
     private String currentConnexionAttemptId;
@@ -137,7 +137,7 @@ public class DietConnexionPanel extends JPanel {
         dbList.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                String s = value == null ? null : ((DatabaseHeader) value).getDatabaseName();
+                String s = value == null ? null : ((NSqlDatabaseHeader) value).getDatabaseName();
                 return super.getListCellRendererComponent(list, s, index, isSelected, cellHasFocus);
             }
         });
@@ -146,7 +146,7 @@ public class DietConnexionPanel extends JPanel {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    DatabaseHeader item = (DatabaseHeader) e.getItem();
+                    NSqlDatabaseHeader item = (NSqlDatabaseHeader) e.getItem();
                     onChangeDatabase(item == null ? null : item.toDatabaseId());
                 }
             }
@@ -166,9 +166,9 @@ public class DietConnexionPanel extends JPanel {
         dbList.setModel(new DefaultComboBoxModel());
     }
 
-    public boolean acceptTable(TableHeader th, NSqlDump d) {
-        DatabaseId catalogId = selectedDatabaseId();
-        TableId tid = th.toTableId();
+    public boolean acceptTable(NSqlTableHeader th, NSqlDump d) {
+        NSqlDatabaseId catalogId = selectedDatabaseId();
+        NSqlTableId tid = th.toTableId();
 //        if (schemaId.getSchemaName() != null) {
 //            if (!Objects.equals(tid.getSchemaName(), schemaId.getSchemaName())) {
 //                return false;
@@ -252,14 +252,14 @@ public class DietConnexionPanel extends JPanel {
                     || selectedItem == NSqlDialect.MSSQLSERVER_JTDS
             );
             try (NSqlDump d = createDump()) {
-                List<DatabaseHeader> catalogs = d.getConnection().getDatabases();
+                List<NSqlDatabaseHeader> catalogs = d.getConnection().getDatabases();
                 catalogs.sort(Comparator.comparing(x -> x.getDatabaseName()));
                 UI.withinGUI(() -> {
                     dbList.setModel(new DefaultComboBoxModel(
                             catalogs.toArray(new Object[0])
                     ));
                     dbList.setSelectedItem(selectedDatabase);
-                    DatabaseHeader v = (DatabaseHeader) dbList.getSelectedItem();
+                    NSqlDatabaseHeader v = (NSqlDatabaseHeader) dbList.getSelectedItem();
                     onChangeDatabase(v == null ? null : v.toDatabaseId());
                 });
             } catch (Exception ex) {
@@ -268,8 +268,8 @@ public class DietConnexionPanel extends JPanel {
         });
     }
 
-    private void onChangeDatabase(DatabaseId item) {
-        DatabaseId old = selectedDatabase;
+    private void onChangeDatabase(NSqlDatabaseId item) {
+        NSqlDatabaseId old = selectedDatabase;
         selectedDatabase = item;
         pcs.firePropertyChange("database", old, item);
         updateTablesCount();
@@ -320,7 +320,7 @@ public class DietConnexionPanel extends JPanel {
         });
     }
 
-    public DatabaseId selectedDatabaseId() {
+    public NSqlDatabaseId selectedDatabaseId() {
         if (selectedDatabase != null) {
             return selectedDatabase;
         }
@@ -336,17 +336,17 @@ public class DietConnexionPanel extends JPanel {
 
     private void updateTablesCount() {
         try (NSqlDump d = createDump()) {
-            DatabaseId databaseId = selectedDatabaseId();
+            NSqlDatabaseId databaseId = selectedDatabaseId();
 //            for (CatalogHeader catalog : d.getConnection().getCatalogs()) {
 //                System.out.println("CATALOG : " + catalog);
 //                for (SchemaHeader schema : d.getConnection().getSchemas(catalog.toCatalogId())) {
 //                    System.out.println("\tSCHEMA : " + schema);
 //                }
 //            }
-            List<TableHeader> tables = d.getConnection().getAnyTables(databaseId).stream().filter(x -> x.isTable()
+            List<NSqlTableHeader> tables = d.getConnection().getAnyTables(databaseId).stream().filter(x -> x.isTable()
                     && !d.getConnection().isSpecialTable(x.toTableId())
             ).collect(Collectors.toList());
-            List<TableHeader> filtered = tables.stream().filter(x -> acceptTable(x, d)).collect(Collectors.toList());
+            List<NSqlTableHeader> filtered = tables.stream().filter(x -> acceptTable(x, d)).collect(Collectors.toList());
 //            LOGGER.log(Level.FINEST, "LOG updateTablesCount : " +
 //                    databaseId + " : " +
 //                    filtered.size() + " : " + filtered);

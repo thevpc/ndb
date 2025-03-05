@@ -1,6 +1,6 @@
 package net.thevpc.diet.cmd.options;
 
-import net.thevpc.nsql.CnxInfo;
+import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -272,7 +272,7 @@ public class DietOptionsParser {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--db-user": {
-                    o.cnx.setUser(p.getValue().asString().get());
+                    o.cnx.setUsername(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-password": {
@@ -296,11 +296,11 @@ public class DietOptionsParser {
                     return true;
                 }
                 case "--db-type": {
-                    o.cnx.setType(NSqlDialect.parse(p.getValue().asString().get()).get());
+                    o.cnx.setDialect(NSqlDialect.parse(p.getValue().asString().get()).get());
                     return true;
                 }
                 case "--db": {
-                    o.cnx=CnxInfo.parse(p.getValue().asString().get());
+                    o.cnx= NSqlConnectionStringBuilder.parse(p.getValue().asString().get());
                     return true;
                 }
             }

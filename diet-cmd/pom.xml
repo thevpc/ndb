@@ -41,10 +41,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.thevpc.nsql</groupId>
-            <artifactId>nsql</artifactId>
-            <version>0.8.5.0</version>
+            <groupId>net.thevpc.nuts</groupId>
+            <artifactId>nuts-api</artifactId>
+            <version>0.8.5</version>
         </dependency>
+        <dependency><groupId>net.thevpc.nsql</groupId><artifactId>nsql</artifactId><version>0.8.5.0</version></dependency>
     </dependencies>
     <build>
         <finalName>diet</finalName>

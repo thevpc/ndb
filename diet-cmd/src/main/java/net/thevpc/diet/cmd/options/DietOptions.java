@@ -1,11 +1,11 @@
 package net.thevpc.diet.cmd.options;
 
+import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.dump.util.NameFilter;
-import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.dump.options.TableRestoreOptions;
 
 public class DietOptions {
-    public CnxInfo cnx = new CnxInfo();
+    public NSqlConnectionStringBuilder cnx = new NSqlConnectionStringBuilder();
     public NameFilter tableNameFilter = new NameFilter();
     public boolean data=true;
     public boolean compress=true;

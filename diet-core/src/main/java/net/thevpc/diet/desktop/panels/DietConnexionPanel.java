@@ -1,11 +1,12 @@
 package net.thevpc.diet.desktop.panels;
 
+import net.thevpc.nsql.NSqlConnectionString;
+import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.UncheckedSqlException;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.util.DatabaseDriverFactories;
 import net.thevpc.diet.desktop.util.GBC;
 import net.thevpc.diet.desktop.util.UI;
-import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -203,7 +204,7 @@ public class DietConnexionPanel extends JPanel {
         return NOptional.of((NSqlDialect) serverType.getSelectedItem());
     }
 
-    public CnxInfo cnxInfo() {
+    public NSqlConnectionStringBuilder cnxInfo() {
         Object value = portField.getValue();
         if (value instanceof Number) {
             int i = ((Number) value).intValue();
@@ -217,18 +218,19 @@ public class DietConnexionPanel extends JPanel {
         {
             dbName = selectedDatabaseId() == null ? null : selectedDatabaseId().getDatabaseName();
         }
-        CnxInfo c = new CnxInfo()
-                .setType(dbType)
+        NSqlConnectionStringBuilder c = new NSqlConnectionStringBuilder()
+                .setDialect(dbType)
                 .setDbName(dbName)
-                .setUser(loginField.getText())
+                .setUsername(loginField.getText())
                 .setPassword(new String(passwordField.getPassword()))
                 .setHost(hostField.getText())
                 .setPort(value == null ? null : value.toString())
                 .setIntegrationSecurity(integratedSecurity.isSelected())
-                .setInstanceName(NStringUtils.trimToNull(instanceField.getName()));
+                .setInstanceName(NStringUtils.trimToNull(instanceField.getName()))
+                ;
 
         if (c.getDbName() == null) {
-            NSqlDialect dbType2 = c.getType();
+            NSqlDialect dbType2 = c.getDialect();
             if (dbType2 == NSqlDialect.MSSQLSERVER
                     || dbType2 == NSqlDialect.MSSQLSERVER_JTDS) {
                 if (dbName != null) {
@@ -276,23 +278,23 @@ public class DietConnexionPanel extends JPanel {
     }
 
     public NSqlDump createDumpSilently() {
-        CnxInfo cnxInfo = cnxInfo();
+        NSqlConnectionStringBuilder cnxInfo = cnxInfo();
         return DatabaseDriverFactories.createSqlDump(cnxInfo);
     }
 
     public NSqlDump createDump() {
         pcs.firePropertyChange("connexion.status", null, "start");
-        CnxInfo cnxInfo = null;
+        NSqlConnectionStringBuilder cnxInfo = null;
         String currentConnexionAttemptId = UUID.randomUUID().toString();
         try {
             this.currentConnexionAttemptId = currentConnexionAttemptId;
             cnxInfo = cnxInfo();
             for (ConnexionStatusListener listener : connexionStatusListeners) {
-                listener.onConnectionCheckStart(cnxInfo);
+                listener.onConnectionCheckStart(cnxInfo.build().get());
             }
             NSqlDump r = DatabaseDriverFactories.createSqlDump(cnxInfo);
             for (ConnexionStatusListener listener : connexionStatusListeners) {
-                listener.onConnectionSuccess(cnxInfo, r);
+                listener.onConnectionSuccess(cnxInfo.build().get(), r);
             }
             return r;
         } catch (RuntimeException e) {
@@ -303,7 +305,7 @@ public class DietConnexionPanel extends JPanel {
             //ignore alder attempts!
             if (Objects.equals(currentConnexionAttemptId, this.currentConnexionAttemptId)) {
                 for (ConnexionStatusListener listener : connexionStatusListeners) {
-                    listener.onConnectionFailure(cnxInfo, ee);
+                    listener.onConnectionFailure(cnxInfo.build().get(), ee);
                 }
             }
             throw e;
@@ -417,11 +419,11 @@ public class DietConnexionPanel extends JPanel {
 
     public interface ConnexionStatusListener {
 
-        void onConnectionCheckStart(CnxInfo info);
+        void onConnectionCheckStart(NSqlConnectionString info);
 
-        void onConnectionSuccess(CnxInfo info, NSqlDump r);
+        void onConnectionSuccess(NSqlConnectionString info, NSqlDump r);
 
-        void onConnectionFailure(CnxInfo info, Throwable ex);
+        void onConnectionFailure(NSqlConnectionString info, Throwable ex);
     }
 
     private class MyFocusListener implements FocusListener {

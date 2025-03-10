@@ -2,7 +2,7 @@ package net.thevpc.diet.desktop.panels;
 
 import net.thevpc.diet.desktop.util.GBC;
 import net.thevpc.diet.desktop.util.UI;
-import net.thevpc.nsql.CnxInfo;
+import net.thevpc.nsql.NSqlConnectionString;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.io.In;
 import net.thevpc.nsql.dump.options.DumpToDbOptions;
@@ -45,19 +45,19 @@ public class DietImportPanel extends JPanel {
         });
         cnxPanel.addConnexionStatusListener(new DietConnexionPanel.ConnexionStatusListener() {
             @Override
-            public void onConnectionCheckStart(CnxInfo info) {
+            public void onConnectionCheckStart(NSqlConnectionString info) {
                 progressPanel.updateStatus( NMsg.ofC("Checking connection..."));
                 updateStartButtonState();
             }
 
             @Override
-            public void onConnectionSuccess(CnxInfo info,NSqlDump r) {
+            public void onConnectionSuccess(NSqlConnectionString info,NSqlDump r) {
                 progressPanel.updateStatus( NMsg.ofC("Successful connection"));
                 updateStartButtonState();
             }
 
             @Override
-            public void onConnectionFailure(CnxInfo info, Throwable ex) {
+            public void onConnectionFailure(NSqlConnectionString info, Throwable ex) {
                 progressPanel.updateStatus( NMsg.ofC("Connection failed : %s", ex.getMessage()));
                 updateStartButtonState();
             }

@@ -1,7 +1,8 @@
 package net.thevpc.diet.desktop.panels;
 
+import net.thevpc.nsql.NSqlConnectionString;
+import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.dump.api.NSqlDump;
-import net.thevpc.nsql.CnxInfo;
 import net.thevpc.nsql.dump.model.DbStore;
 import net.thevpc.nsql.dump.model.DbStoreWriter;
 import net.thevpc.nsql.dump.model.TableIdAsStoreStructId;
@@ -69,21 +70,21 @@ public class DietExportPanel extends JPanel {
         });
         cnxPanel.addConnexionStatusListener(new DietConnexionPanel.ConnexionStatusListener() {
             @Override
-            public void onConnectionCheckStart(CnxInfo info) {
+            public void onConnectionCheckStart(NSqlConnectionString info) {
                 progressPanel.updateStatus(NMsg.ofC("Checking connection..."));
                 updateStartButtonState();
                 selectedTables.resetModel();
             }
 
             @Override
-            public void onConnectionSuccess(CnxInfo info, NSqlDump r) {
+            public void onConnectionSuccess(NSqlConnectionString info, NSqlDump r) {
                 progressPanel.updateStatus(NMsg.ofC("Successful connection"));
                 updateStartButtonState();
                 updateTableList(r);
             }
 
             @Override
-            public void onConnectionFailure(CnxInfo info, Throwable ex) {
+            public void onConnectionFailure(NSqlConnectionString info, Throwable ex) {
                 progressPanel.updateStatus(NMsg.ofC("Connection failed : %s", ex.getMessage()));
                 updateStartButtonState();
                 selectedTables.resetModel();
@@ -157,9 +158,9 @@ public class DietExportPanel extends JPanel {
                         }
                         DbStore s = new DbStore();
                         s.setOut(selectedFile);
-                        CnxInfo cnx = cnxPanel.cnxInfo();
+                        NSqlConnectionStringBuilder cnx = cnxPanel.cnxInfo();
                         if (cnx.getDbName() == null) {
-                            NSqlDialect dbType = cnx.getType();
+                            NSqlDialect dbType = cnx.getDialect();
                             if (dbType == NSqlDialect.MSSQLSERVER //                                            || dbType == SqlDialect.JTDS_SQLSERVER
                                     ) {
                                 if (dbName != null) {
@@ -265,7 +266,7 @@ public class DietExportPanel extends JPanel {
         }
     }
 
-    private void exportOneFile(CnxInfo cnx, File selectedFile) {
+    private void exportOneFile(NSqlConnectionStringBuilder cnx, File selectedFile) {
         try (NSqlDump db = cnxPanel.createDumpSilently()) {
             StoreStructId[] array = db.getConnection().getTableHeaders(cnxPanel.selectedDatabaseId()).stream()
                     .filter(tableIdFilter(db))
@@ -304,7 +305,7 @@ public class DietExportPanel extends JPanel {
     }
 
     private void updateTableList(NSqlDump db) {
-        CnxInfo cnxInfo = cnxPanel.cnxInfo();
+        NSqlConnectionStringBuilder cnxInfo = cnxPanel.cnxInfo();
         if (cnxInfo != null) {
             IOLogger.runWith(simpleProgressLogger,
                     () -> {
@@ -328,7 +329,7 @@ public class DietExportPanel extends JPanel {
     }
 
     private void updateStartButtonState() {
-        CnxInfo cnxInfo = cnxPanel.cnxInfo();
+        NSqlConnectionStringBuilder cnxInfo = cnxPanel.cnxInfo();
         boolean a = cnxInfo != null
                 //                && selectedSchema != null
                 && !workInProgress;

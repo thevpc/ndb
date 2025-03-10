@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>net.thevpc.nuts</groupId>
-            <artifactId>nuts-api</artifactId>
+            <artifactId>nuts</artifactId>
             <version>0.8.5</version>
         </dependency>
         <dependency><groupId>net.thevpc.nsql</groupId><artifactId>nsql</artifactId><version>0.8.5.0</version></dependency>

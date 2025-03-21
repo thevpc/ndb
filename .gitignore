@@ -13,3 +13,11 @@ diet-import/target
 /diet-full/log
 /diet-export/log
 /nsql/target/
+/nsql-dump/target/
+/ndb-servers/target/
+/ndb-cmd/target/
+/ndb-core/target/
+/ndb-export/target/
+/ndb-import/target/
+/ndb-full/target/
+

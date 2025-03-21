@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.diet</groupId>
-    <artifactId>diet-build</artifactId>
+    <artifactId>ndb-builder</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
@@ -11,10 +11,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <modules>
-        <module>diet-cmd</module>
-        <module>diet-core</module>
-        <module>diet-import</module>
-        <module>diet-export</module>
-        <module>diet-full</module>
+        <module>nsql</module>
+        <module>nsql-dump</module>
+        <module>ndb-servers</module>
+        <module>ndb-cmd</module>
+        <module>ndb-core</module>
+        <module>ndb-import</module>
+        <module>ndb-export</module>
+        <module>ndb-full</module>
     </modules>
 </project>

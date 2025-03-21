@@ -1,0 +1,45 @@
+//package net.thevpc.ndb.servers;
+//
+//import net.thevpc.nuts.NApp;
+//import net.thevpc.nuts.NApplication;
+//import net.thevpc.nuts.NMainArgs;
+//import net.thevpc.nuts.NSession;
+//import net.thevpc.nuts.cmdline.NCmdLine;
+//import net.thevpc.ndb.servers.nosql.mongodb.NMongoSupport;
+//import net.thevpc.ndb.servers.sql.derby.NDerbyMain;
+//import net.thevpc.ndb.servers.sql.nmysql.NMysqlMain;
+//import net.thevpc.ndb.servers.sql.postgres.NPostgresSupport;
+//
+//public class NdbMain implements NApplication {
+//
+//    public static void main(String[] args) {
+//        new NdbMain().main(NMainArgs.ofExit(args));
+//    }
+//
+//    @Override
+//    public void run() {
+//        run(NApp.of().getCmdLine());
+//    }
+//
+//    public void run(NCmdLine cmdLine) {
+//        NSession session = NSession.get().get();
+//        while (cmdLine.hasNext()) {
+//            if (cmdLine.next("mysql", "mariadb").isPresent()) {
+//                new NMysqlMain(session).run(cmdLine);
+//                return;
+//            } else if (cmdLine.next("derby").isPresent()) {
+//                new NDerbyMain(session).run(cmdLine);
+//                return;
+//            } else if (cmdLine.next("mongo", "mongodb").isPresent()) {
+//                new NMongoSupport(session).run(cmdLine);
+//                return;
+//            } else if (cmdLine.next("postgres", "postgresql").isPresent()) {
+//                new NPostgresSupport(session).run(cmdLine);
+//                return;
+//            } else {
+//                session.configureLast(cmdLine);
+//            }
+//        }
+//        NApp.of().printHelp();
+//    }
+//}

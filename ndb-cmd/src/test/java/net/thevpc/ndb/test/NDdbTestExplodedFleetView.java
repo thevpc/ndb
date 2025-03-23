@@ -1,11 +1,11 @@
-package net.thevpc.diet.test;
+package net.thevpc.ndb.test;
 
-import net.thevpc.diet.cmd.DietRunner;
-import net.thevpc.diet.cmd.options.DietOptionsParser;
+import net.thevpc.ndb.cmd.NDdbRunner;
+import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
 
-public class DietTestExplodedFleetView {
+public class NDdbTestExplodedFleetView {
     public static void main(String[] args) {
-        DietRunner.run(DietOptionsParser.parse(
+        NDdbRunner.run(NDdbOptionsParser.parse(
                 "dump"
                 , "--db=jtds-sqlserver://sa:Veoni2014@41.226.27.228/FleetView"
                 , "--debug"
@@ -13,7 +13,7 @@ public class DietTestExplodedFleetView {
                 , "--exploded"
                 , "--file=/home/vpc/trash/db/2023-01-10"
         ));
-//        DietRunner.run(DietOptionsParser.parse(
+//        NDdbRunner.run(NDdbOptionsParser.parse(
 //                "json"
 //                , "--debug"
 ////                , "--file=/home/vpc/trash/db"

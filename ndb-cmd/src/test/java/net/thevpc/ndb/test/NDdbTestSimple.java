@@ -1,18 +1,18 @@
-package net.thevpc.diet.test;
+package net.thevpc.ndb.test;
 
-import net.thevpc.diet.cmd.options.DietOptionsParser;
-import net.thevpc.diet.cmd.DietRunner;
+import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
+import net.thevpc.ndb.cmd.NDdbRunner;
 
-public class DietTestSimple {
+public class NDdbTestSimple {
     public static void main(String[] args) {
-        DietRunner.run(DietOptionsParser.parse(
+        NDdbRunner.run(NDdbOptionsParser.parse(
                 "db2json"
                 , "--db=postgres://postgres:postgres@/digiclaim_test"
                 , "--max-rows=1"
                 , "--debug"
                 , "--table=accident_photo"
         ));
-//        DietRunner.run(DietOptionsParser.parse(
+//        NDdbRunner.run(NDdbOptionsParser.parse(
 //                "dump"
 //                , "--db=postgres://postgres:postgres@/digiclaim_test"
 //                , "--max-rows=1"
@@ -20,7 +20,7 @@ public class DietTestSimple {
 //                , "--table=accident_photo"
 //                , "--file=/home/vpc/trash/test-simple.db"
 //        ));
-//        DietRunner.run(DietOptionsParser.parse(
+//        NDdbRunner.run(NDdbOptionsParser.parse(
 //                "json"
 //                , "--debug"
 //                , "--file=/home/vpc/trash/test-simple.db"

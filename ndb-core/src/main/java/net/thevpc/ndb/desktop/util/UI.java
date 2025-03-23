@@ -1,7 +1,7 @@
-package net.thevpc.diet.desktop.util;
+package net.thevpc.ndb.desktop.util;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import net.thevpc.diet.desktop.DietInfo;
+import net.thevpc.ndb.desktop.NDdbInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,7 +84,7 @@ public class UI {
         JComponent contentPane = pane.apply(args);
         SwingUtilities.invokeLater(()->{
             try {
-                JFrame frame = new JFrame(title+" v"+ DietInfo.VERSION);
+                JFrame frame = new JFrame(title+" v"+ NDdbInfo.VERSION);
                 frame.setIconImage(ImageIO.read(UI.class.getResource("/database-svgrepo-com.png")));
                 frame.setContentPane(contentPane);
                 frame.setMinimumSize(new Dimension(600, 400));

@@ -1,4 +1,4 @@
-package net.thevpc.diet.cmd.options;
+package net.thevpc.ndb.cmd.options;
 
 import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nuts.cmdline.NArg;
@@ -10,13 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.thevpc.nsql.NSqlDialect;
 
-public class DietOptionsParser {
-    public static DietOptions parse(String... args) {
+public class NDdbOptionsParser {
+    public static NDdbOptions parse(String... args) {
         return parse(args, new File(System.getProperty("user.dir")));
     }
 
-    public static DietOptions parse(String[] args, File cwd) {
-        DietOptions o = new DietOptions();
+    public static NDdbOptions parse(String[] args, File cwd) {
+        NDdbOptions o = new NDdbOptions();
         for (String arg : args) {
             NArg p = NArg.of(arg);
             fillAny(p, o, cwd);
@@ -25,7 +25,7 @@ public class DietOptionsParser {
     }
 
 
-    public static void fillFile(File p, DietOptions o) {
+    public static void fillFile(File p, NDdbOptions o) {
         File parentFile = p.getParentFile();
         if (parentFile == null) {
             parentFile = new File(System.getProperty("user.dir"));
@@ -49,7 +49,7 @@ public class DietOptionsParser {
         }
     }
 
-    public static void fillAny(NArg p, DietOptions o, File cwd) {
+    public static void fillAny(NArg p, NDdbOptions o, File cwd) {
         if (fillInclude(p, o, cwd)) {
             return;
         }
@@ -71,7 +71,7 @@ public class DietOptionsParser {
         throw new IllegalArgumentException("unsupported option " + p);
     }
 
-    public static boolean fillInclude(NArg p, DietOptions o, File cwd) {
+    public static boolean fillInclude(NArg p, NDdbOptions o, File cwd) {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--@include": {
@@ -90,7 +90,7 @@ public class DietOptionsParser {
         return false;
     }
 
-    public static boolean fillCommons(NArg p, DietOptions o, File cwd) {
+    public static boolean fillCommons(NArg p, NDdbOptions o, File cwd) {
         if (p.isOption()) {
             String pVal = p.getValue().asString().orNull();
             switch (p.key()) {
@@ -137,7 +137,7 @@ public class DietOptionsParser {
         return false;
     }
 
-    public static boolean fillActions(NArg p, DietOptions o) {
+    public static boolean fillActions(NArg p, NDdbOptions o) {
         if (!p.isOption()) {
             if (o.action == null) {
                 switch (p.key()) {
@@ -145,24 +145,24 @@ public class DietOptionsParser {
                     case "import":
                     case "dump-to-db":
                     case "dump2db": {
-                        o.action = DietOptions.Cmd.DUMP_TO_DB;
+                        o.action = NDdbOptions.Cmd.DUMP_TO_DB;
                         return true;
                     }
                     case "dump":
                     case "export":
                     case "db-to-export":
                     case "db2export": {
-                        o.action = DietOptions.Cmd.DB_TO_DUMP;
+                        o.action = NDdbOptions.Cmd.DB_TO_DUMP;
                         return true;
                     }
                     case "dump-to-json":
                     case "dump2json": {
-                        o.action = DietOptions.Cmd.DUMP_TO_JSON;
+                        o.action = NDdbOptions.Cmd.DUMP_TO_JSON;
                         return true;
                     }
                     case "db-to-json":
                     case "db2json": {
-                        o.action = DietOptions.Cmd.DB_TO_JSON;
+                        o.action = NDdbOptions.Cmd.DB_TO_JSON;
                         return true;
                     }
                 }
@@ -171,7 +171,7 @@ public class DietOptionsParser {
         return false;
     }
 
-    public static boolean fillDebug(NArg p, DietOptions o) {
+    public static boolean fillDebug(NArg p, NDdbOptions o) {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--debug":
@@ -223,7 +223,7 @@ public class DietOptionsParser {
         logger.log(Level.FINEST, "start debug mode : " + level);
     }
 
-    public static boolean fillSchemaMode(NArg p, DietOptions o) {
+    public static boolean fillSchemaMode(NArg p, NDdbOptions o) {
         if (p.isOption()) {
             String value = p.getValue().asString().orNull();
             switch (p.key()) {
@@ -268,7 +268,7 @@ public class DietOptionsParser {
         return false;
     }
 
-    public static boolean fillDB(NArg p, DietOptions o) {
+    public static boolean fillDB(NArg p, NDdbOptions o) {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--db-user": {

@@ -1,4 +1,4 @@
-package net.thevpc.diet.desktop.panels;
+package net.thevpc.ndb.desktop.panels;
 
 import net.thevpc.nsql.dump.util.Utils;
 
@@ -9,19 +9,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-public class DietPanel extends JPanel {
+public class NDdbPanel extends JPanel {
 
-    DietExportPanel exportPanel;
-    DietImportPanel importPanel;
-    public DietPanel(boolean exportImport,boolean withImport) {
+    NDdbExportPanel exportPanel;
+    NDdbImportPanel importPanel;
+    public NDdbPanel(boolean exportImport, boolean withImport) {
         super(new BorderLayout());
         JTabbedPane p=new JTabbedPane();
 //        p.addTab("Import",new WdbrmanPanelImportPanel());
         if(exportImport) {
-            p.addTab("Export", exportPanel=new DietExportPanel());
+            p.addTab("Export", exportPanel=new NDdbExportPanel());
         }
         if(withImport) {
-            p.addTab("Import", importPanel=new DietImportPanel());
+            p.addTab("Import", importPanel=new NDdbImportPanel());
         }
         add(p);
         reloadConfig();

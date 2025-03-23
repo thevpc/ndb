@@ -1,4 +1,4 @@
-package net.thevpc.diet.cmd;
+package net.thevpc.ndb.cmd;
 
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.io.Out;
@@ -8,12 +8,12 @@ import net.thevpc.nsql.dump.options.DumpToDbOptions;
 import net.thevpc.nsql.dump.options.DumpToJsonOptions;
 import net.thevpc.nsql.dump.store.NSqlDumpService;
 import net.thevpc.nsql.dump.io.In;
-import net.thevpc.diet.cmd.options.DietOptions;
+import net.thevpc.ndb.cmd.options.NDdbOptions;
 
 import java.io.File;
 
-public class DietRunner {
-    public static void run(DietOptions o) {
+public class NDdbRunner {
+    public static void run(NDdbOptions o) {
         if (o.action == null) {
             throw new IllegalArgumentException("missing action");
         }
@@ -40,14 +40,14 @@ public class DietRunner {
         }
     }
 
-    private static void dumToJson(DietOptions o) {
+    private static void dumToJson(NDdbOptions o) {
         DumpToJsonOptions options = new DumpToJsonOptions();
         options.setIn(new In(new File(o.file)));
         options.setOut(new Out(System.out));
         new NSqlDumpService().dumpToJson(options);
     }
 
-    private static void dbToDump(DietOptions o) {
+    private static void dbToDump(NDdbOptions o) {
         try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DbToDumpOptions eo = new DbToDumpOptions();
             eo.file = o.file;
@@ -61,7 +61,7 @@ public class DietRunner {
         }
     }
 
-    private static void doDbToJson(DietOptions o) {
+    private static void doDbToJson(NDdbOptions o) {
         try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DbToJsonOptions jo=new DbToJsonOptions();
             jo.exploded=o.exploded;
@@ -73,7 +73,7 @@ public class DietRunner {
         }
     }
 
-    private static void dumpToDb(DietOptions o) {
+    private static void dumpToDb(NDdbOptions o) {
         try(NSqlDump driver= NSqlDump.of(o.cnx)){
             DumpToDbOptions io=new DumpToDbOptions();
             io.setData(o.data);

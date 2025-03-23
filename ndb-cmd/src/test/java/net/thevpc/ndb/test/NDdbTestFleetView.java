@@ -1,11 +1,11 @@
-package net.thevpc.diet.test;
+package net.thevpc.ndb.test;
 
-import net.thevpc.diet.cmd.options.DietOptionsParser;
-import net.thevpc.diet.cmd.DietRunner;
+import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
+import net.thevpc.ndb.cmd.NDdbRunner;
 
-public class DietTestFleetView {
+public class NDdbTestFleetView {
     public static void main(String[] args) {
-        DietRunner.run(DietOptionsParser.parse(
+        NDdbRunner.run(NDdbOptionsParser.parse(
                 "import"
                 , "--db=postgres://postgres:postgres@/fleetview"
                 , "--clear-table"

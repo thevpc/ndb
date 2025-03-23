@@ -1,12 +1,12 @@
-package net.thevpc.diet.desktop.panels;
+package net.thevpc.ndb.desktop.panels;
 
 import net.thevpc.nsql.NSqlConnectionString;
 import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.UncheckedSqlException;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.util.DatabaseDriverFactories;
-import net.thevpc.diet.desktop.util.GBC;
-import net.thevpc.diet.desktop.util.UI;
+import net.thevpc.ndb.desktop.util.GBC;
+import net.thevpc.ndb.desktop.util.UI;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NStringUtils;
@@ -26,9 +26,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.thevpc.nsql.NSqlDialect;
 
-public class DietConnexionPanel extends JPanel {
+public class NDdbConnexionPanel extends JPanel {
 
-    public static final Logger LOGGER = Logger.getLogger(DietConnexionPanel.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(NDdbConnexionPanel.class.getName());
     private final JLabel dbLabel;
     JTextField hostField = new JTextField();
     JSpinner portField = new JSpinner(new SpinnerNumberModel());
@@ -60,7 +60,7 @@ public class DietConnexionPanel extends JPanel {
         dbList.setEnabled(enabled);
     }
 
-    public DietConnexionPanel() {
+    public NDdbConnexionPanel() {
         super(new GridBagLayout());
         int line = 0;
         dbLabel = new JLabel("Database");

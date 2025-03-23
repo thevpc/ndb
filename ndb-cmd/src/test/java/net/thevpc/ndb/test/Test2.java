@@ -1,7 +1,7 @@
-package net.thevpc.diet.test;
+package net.thevpc.ndb.test;
 
-import net.thevpc.diet.cmd.options.DietOptions;
-import net.thevpc.diet.cmd.options.DietOptionsParser;
+import net.thevpc.ndb.cmd.options.NDdbOptions;
+import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
 import net.thevpc.nsql.NSqlDialect;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ public class Test2 {
 
     @Test
     public void test1() {
-        DietOptions z = DietOptionsParser.parse("--db=sqlserver://sa:hoho@localhost/FleetView");
+        NDdbOptions z = NDdbOptionsParser.parse("--db=sqlserver://sa:hoho@localhost/FleetView");
         Assertions.assertEquals(null,z.cnx.getUrl());
         Assertions.assertEquals(NSqlDialect.MSSQLSERVER,z.cnx.getDialect());
         Assertions.assertEquals("sa",z.cnx.getUsername());
@@ -22,7 +22,7 @@ public class Test2 {
 
     @Test
     public void test2() {
-        DietOptions z = DietOptionsParser.parse("--db=sqlserver://sa:hoho@/FleetView");
+        NDdbOptions z = NDdbOptionsParser.parse("--db=sqlserver://sa:hoho@/FleetView");
         Assertions.assertEquals(NSqlDialect.MSSQLSERVER,z.cnx.getDialect());
         Assertions.assertEquals("sa",z.cnx.getUsername());
         Assertions.assertEquals("hoho",z.cnx.getPassword());
@@ -33,7 +33,7 @@ public class Test2 {
 
     @Test
     public void test3() {
-        DietOptions z = DietOptionsParser.parse("--db=sqlserver:///FleetView");
+        NDdbOptions z = NDdbOptionsParser.parse("--db=sqlserver:///FleetView");
         Assertions.assertEquals(NSqlDialect.MSSQLSERVER,z.cnx.getDialect());
         Assertions.assertEquals(null,z.cnx.getUsername());
         Assertions.assertEquals(null,z.cnx.getPassword());

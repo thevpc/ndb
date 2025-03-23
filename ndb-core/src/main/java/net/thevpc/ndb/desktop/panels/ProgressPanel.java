@@ -1,8 +1,8 @@
-package net.thevpc.diet.desktop.panels;
+package net.thevpc.ndb.desktop.panels;
 
-import net.thevpc.diet.desktop.DietInfo;
-import net.thevpc.diet.desktop.util.GBC;
-import net.thevpc.diet.desktop.util.UI;
+import net.thevpc.ndb.desktop.NDdbInfo;
+import net.thevpc.ndb.desktop.util.GBC;
+import net.thevpc.ndb.desktop.util.UI;
 import net.thevpc.nuts.util.NMsg;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class ProgressPanel extends JPanel {
         percentLabel.setMinimumSize(new Dimension(50, 1));
         statusBar.add(percentLabel);
         statusBar.add(Box.createHorizontalStrut(10));
-        statusBar.add(new JLabel(" | v" + DietInfo.VERSION));
+        statusBar.add(new JLabel(" | v" + NDdbInfo.VERSION));
         progressBar.setMinimum(0);
         progressBar.setMaximum(100);
         int line=0;

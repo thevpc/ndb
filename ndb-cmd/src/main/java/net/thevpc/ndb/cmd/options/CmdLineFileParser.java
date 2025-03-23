@@ -1,4 +1,4 @@
-package net.thevpc.diet.cmd.options;
+package net.thevpc.ndb.cmd.options;
 
 import java.io.BufferedReader;
 import java.io.IOException;

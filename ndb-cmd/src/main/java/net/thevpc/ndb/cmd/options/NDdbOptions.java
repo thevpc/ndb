@@ -1,10 +1,10 @@
-package net.thevpc.diet.cmd.options;
+package net.thevpc.ndb.cmd.options;
 
 import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.dump.util.NameFilter;
 import net.thevpc.nsql.dump.options.TableRestoreOptions;
 
-public class DietOptions {
+public class NDdbOptions {
     public NSqlConnectionStringBuilder cnx = new NSqlConnectionStringBuilder();
     public NameFilter tableNameFilter = new NameFilter();
     public boolean data=true;

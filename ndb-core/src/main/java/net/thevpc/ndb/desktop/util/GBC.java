@@ -1,4 +1,4 @@
-package net.thevpc.diet.desktop.util;
+package net.thevpc.ndb.desktop.util;
 
 import java.awt.*;
 

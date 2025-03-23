@@ -1,17 +1,6 @@
 /target
 /.idea
 dbrman/target
-diet/target
-violin/target
-wdbrman/target
-diet-cmd/target
-diet-desktop/target
-diet-core/target
-diet-export/target
-diet-full/target
-diet-import/target
-/diet-full/log
-/diet-export/log
 /nsql/target/
 /nsql-dump/target/
 /ndb-servers/target/

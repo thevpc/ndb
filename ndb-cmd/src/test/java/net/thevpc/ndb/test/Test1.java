@@ -1,4 +1,4 @@
-package net.thevpc.diet.test;
+package net.thevpc.ndb.test;
 
 import net.thevpc.lib.nserializer.api.*;
 import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;

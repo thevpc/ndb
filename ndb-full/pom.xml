@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.thevpc.diet</groupId>
+    <groupId>net.thevpc.ndb</groupId>
     <artifactId>ndb-full</artifactId>
     <version>0.8.5.0</version>
 
@@ -15,7 +15,7 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>net.thevpc.diet</groupId>
+            <groupId>net.thevpc.ndb</groupId>
             <artifactId>ndb-core</artifactId>
             <version>0.8.5.0</version>
         </dependency>
@@ -27,7 +27,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.thevpc.diet.desktop.DietMain</mainClass>
+                            <mainClass>net.thevpc.ndb.desktop.NDdbMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

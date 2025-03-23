@@ -1,4 +1,4 @@
-package net.thevpc.diet.desktop.panels;
+package net.thevpc.ndb.desktop.panels;
 
 import net.thevpc.nsql.NSqlConnectionString;
 import net.thevpc.nsql.NSqlConnectionStringBuilder;
@@ -10,8 +10,8 @@ import net.thevpc.nsql.model.NSqlTableId;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.lib.nserializer.api.StoreWriter;
 import net.thevpc.lib.nserializer.api.StoreProgressMonitor;
-import net.thevpc.diet.desktop.util.GBC;
-import net.thevpc.diet.desktop.util.UI;
+import net.thevpc.ndb.desktop.util.GBC;
+import net.thevpc.ndb.desktop.util.UI;
 import net.thevpc.lib.nserializer.impl.IOLogger;
 import net.thevpc.lib.nserializer.model.StoreStructId;
 
@@ -26,7 +26,7 @@ import net.thevpc.common.swing.list.JCheckBoxList;
 import net.thevpc.nsql.NSqlDialect;
 import net.thevpc.nsql.model.NSqlTableHeader;
 
-public class DietExportPanel extends JPanel {
+public class NDdbExportPanel extends JPanel {
 
     JButton startButton = new JButton("Commencer...");
     JRadioButton oneFile = new JRadioButton("One File Per DB");
@@ -37,12 +37,12 @@ public class DietExportPanel extends JPanel {
     boolean optionCompress = true;
     boolean optionData = true;
     long optionMaxRows = -1;
-    DietConnexionPanel cnxPanel = new DietConnexionPanel();
+    NDdbConnexionPanel cnxPanel = new NDdbConnexionPanel();
     ProgressPanel progressPanel = new ProgressPanel();
     private JCheckBoxList selectedTables = new JCheckBoxList();
     private SimpleProgressLogger simpleProgressLogger = new SimpleProgressLogger();
 
-    public DietExportPanel() {
+    public NDdbExportPanel() {
         super(new GridBagLayout());
         int line = 0;
         updateStartButtonState();
@@ -68,7 +68,7 @@ public class DietExportPanel extends JPanel {
                 UI.async(() -> onStartExport());
             }
         });
-        cnxPanel.addConnexionStatusListener(new DietConnexionPanel.ConnexionStatusListener() {
+        cnxPanel.addConnexionStatusListener(new NDdbConnexionPanel.ConnexionStatusListener() {
             @Override
             public void onConnectionCheckStart(NSqlConnectionString info) {
                 progressPanel.updateStatus(NMsg.ofC("Checking connection..."));
@@ -145,7 +145,7 @@ public class DietExportPanel extends JPanel {
                 }
                 JFileChooser jfc = new JFileChooser();
                 jfc.setSelectedFile(file);
-                if (jfc.showSaveDialog(DietExportPanel.this) == JFileChooser.APPROVE_OPTION) {
+                if (jfc.showSaveDialog(NDdbExportPanel.this) == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = jfc.getSelectedFile();
                     if (selectedFile != null) {
                         if (!selectedFile.exists()) {
@@ -234,7 +234,7 @@ public class DietExportPanel extends JPanel {
                     .toArray(NSqlTableId[]::new);
         }
         if (tables.length == 0) {
-            JOptionPane.showMessageDialog(DietExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(NDdbExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int errorsCount = 0;
@@ -253,16 +253,16 @@ public class DietExportPanel extends JPanel {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 progressPanel.updateStatus(NMsg.ofC("Export Echoué : %s", ex.getMessage()));
-                JOptionPane.showMessageDialog(DietExportPanel.this, "Erreur " + table.getTableName(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(NDdbExportPanel.this, "Erreur " + table.getTableName(), "Error", JOptionPane.ERROR_MESSAGE);
                 errorsCount++;
             }
         }
         if (errorsCount == 0) {
             progressPanel.updateStatus(NMsg.ofC("Export réussi"));
-            JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi : " + tables.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(NDdbExportPanel.this, "Export réussi : " + tables.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
         } else {
             progressPanel.updateStatus(NMsg.ofC("Export Echoué"));
-            JOptionPane.showMessageDialog(DietExportPanel.this, "Export Echoué : " + tables.length + " Table(s)", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(NDdbExportPanel.this, "Export Echoué : " + tables.length + " Table(s)", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -273,7 +273,7 @@ public class DietExportPanel extends JPanel {
                     .map(x -> new TableIdAsStoreStructId(x.toTableId()))
                     .toArray(StoreStructId[]::new);
             if (array.length == 0) {
-                JOptionPane.showMessageDialog(DietExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(NDdbExportPanel.this, "Aucune table a exporter", "Warning", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             try (StoreWriter w = new DbStoreWriter(selectedFile, db)) {
@@ -299,7 +299,7 @@ public class DietExportPanel extends JPanel {
                 );
                 w.write();
                 w.flush();
-                JOptionPane.showMessageDialog(DietExportPanel.this, "Export réussi : " + array.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(NDdbExportPanel.this, "Export réussi : " + array.length + " Table(s)", "Succès", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

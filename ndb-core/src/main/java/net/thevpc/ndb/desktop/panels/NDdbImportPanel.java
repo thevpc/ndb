@@ -1,7 +1,7 @@
-package net.thevpc.diet.desktop.panels;
+package net.thevpc.ndb.desktop.panels;
 
-import net.thevpc.diet.desktop.util.GBC;
-import net.thevpc.diet.desktop.util.UI;
+import net.thevpc.ndb.desktop.util.GBC;
+import net.thevpc.ndb.desktop.util.UI;
 import net.thevpc.nsql.NSqlConnectionString;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.io.In;
@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Properties;
 
-public class DietImportPanel extends JPanel {
+public class NDdbImportPanel extends JPanel {
     JButton startButton = new JButton("Commencer...");
     Properties conf;
     boolean workInProgress;
@@ -26,10 +26,10 @@ public class DietImportPanel extends JPanel {
     boolean optionCompress = true;
     boolean optionData = true;
     long optionMaxRows = -1;
-    DietConnexionPanel cnxPanel = new DietConnexionPanel();
+    NDdbConnexionPanel cnxPanel = new NDdbConnexionPanel();
     ProgressPanel progressPanel = new ProgressPanel();
 
-    public DietImportPanel() {
+    public NDdbImportPanel() {
         super(new GridBagLayout());
         int line = 0;
         updateStartButtonState();
@@ -43,7 +43,7 @@ public class DietImportPanel extends JPanel {
                 UI.async(() -> onStartExport());
             }
         });
-        cnxPanel.addConnexionStatusListener(new DietConnexionPanel.ConnexionStatusListener() {
+        cnxPanel.addConnexionStatusListener(new NDdbConnexionPanel.ConnexionStatusListener() {
             @Override
             public void onConnectionCheckStart(NSqlConnectionString info) {
                 progressPanel.updateStatus( NMsg.ofC("Checking connection..."));
@@ -96,7 +96,7 @@ public class DietImportPanel extends JPanel {
                 JFileChooser jfc = new JFileChooser();
                 jfc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 jfc.setSelectedFile(file);
-                if (jfc.showOpenDialog(DietImportPanel.this) == JFileChooser.APPROVE_OPTION) {
+                if (jfc.showOpenDialog(NDdbImportPanel.this) == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = jfc.getSelectedFile();
                     if (selectedFile != null) {
                         importExplodedFile(selectedFile);
@@ -133,7 +133,7 @@ public class DietImportPanel extends JPanel {
                     }
                 }
         );
-        JOptionPane.showMessageDialog(DietImportPanel.this, "Import réussi", "Succès", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(NDdbImportPanel.this, "Import réussi", "Succès", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void updateStartButtonState() {

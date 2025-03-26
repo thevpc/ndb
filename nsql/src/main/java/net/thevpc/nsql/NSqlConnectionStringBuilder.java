@@ -300,7 +300,7 @@ public class NSqlConnectionStringBuilder implements Cloneable {
 
     private static String preparePort(String port, String defaultValue) {
         if (!NBlankable.isBlank(port)) {
-            NOptional<Integer> anInt = NLiteral.of(port).asInt();
+            NOptional<Integer> anInt = NLiteral.of(port).asIntValue();
             if (anInt.isPresent()) {
                 int p = anInt.get();
                 if (p > 0) {

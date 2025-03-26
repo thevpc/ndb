@@ -65,18 +65,18 @@ public class NPreparedStatementHelper {
                     break;
                 }
                 case BIGINT: {
-                    BigInteger sValue = value == null ? null : NLiteral.of(value).asBigInt().get();
+                    BigInteger sValue = value == null ? null : NLiteral.of(value).asBigIntValue().get();
                     ps.setBigDecimal(index, sValue == null ? null : new BigDecimal(sValue));
                     break;
                 }
                 case DECIMAL:
                 case BIGDECIMAL: {
-                    BigDecimal sValue = value == null ? null : NLiteral.of(value).asBigDecimal().get();
+                    BigDecimal sValue = value == null ? null : NLiteral.of(value).asBigDecimalValue().get();
                     ps.setBigDecimal(index, sValue);
                     break;
                 }
                 case INT: {
-                    Integer sValue = value == null ? null : NLiteral.of(value).asInt().get();
+                    Integer sValue = value == null ? null : NLiteral.of(value).asIntValue().get();
                     if (sValue == null) {
                         ps.setNull(index, Types.INTEGER);
                     } else {
@@ -85,7 +85,7 @@ public class NPreparedStatementHelper {
                     break;
                 }
                 case LONG: {
-                    Long sValue = value == null ? null : NLiteral.of(value).asLong().get();
+                    Long sValue = value == null ? null : NLiteral.of(value).asLongValue().get();
                     if (sValue == null) {
                         ps.setNull(index, Types.BIGINT);
                     } else {
@@ -94,7 +94,7 @@ public class NPreparedStatementHelper {
                     break;
                 }
                 case DOUBLE: {
-                    Double sValue = value == null ? null : NLiteral.of(value).asDouble().get();
+                    Double sValue = value == null ? null : NLiteral.of(value).asDoubleValue().get();
                     if (sValue == null) {
                         ps.setNull(index, Types.DOUBLE);
                     } else {
@@ -103,7 +103,7 @@ public class NPreparedStatementHelper {
                     break;
                 }
                 case BOOLEAN: {
-                    Boolean sValue = value == null ? null : NLiteral.of(value).asBoolean().get();
+                    Boolean sValue = value == null ? null : NLiteral.of(value).asBooleanValue().get();
                     if (sValue == null) {
                         ps.setNull(index, Types.BOOLEAN);
                     } else {

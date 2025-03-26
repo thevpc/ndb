@@ -202,7 +202,7 @@ public class NSqlTsonUtils {
             return e.toNumber().intValue();
         }
         if (e.type() == TsonElementType.STRING) {
-            return NLiteral.of(e.toStr()).asInt().get();
+            return NLiteral.of(e.toStr()).asIntValue().get();
         }
         throw new IllegalArgumentException("not integer type : " + e);
     }

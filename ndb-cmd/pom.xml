@@ -45,7 +45,7 @@
             <artifactId>nuts</artifactId>
             <version>0.8.5</version>
         </dependency>
-        <dependency><groupId>net.thevpc.nsql</groupId><artifactId>nsql</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.ndb</groupId><artifactId>nsql</artifactId><version>0.8.5.0</version></dependency>
     </dependencies>
     <build>
         <finalName>ndb</finalName>

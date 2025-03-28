@@ -144,9 +144,9 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(commandLine.next().get().asStringValue().get()));
+                    name.set(new AtName(commandLine.next().get().asString().get()));
                 } else {
-                    sql.add(commandLine.next().flatMap(NLiteral::asStringValue).get());
+                    sql.add(commandLine.next().flatMap(NLiteral::asString).get());
                 }
             }
         }
@@ -219,7 +219,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             options.setHost(a.getStringValue().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-p", "--port").orNull()) != null) {
-            options.setPort(a.getValue().asIntValue().get());
+            options.setPort(a.getValue().asInt().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-ssl", "--ssl").orNull()) != null) {
             options.setSslmode(SSLMode.valueOf(a.getStringValue().get()));

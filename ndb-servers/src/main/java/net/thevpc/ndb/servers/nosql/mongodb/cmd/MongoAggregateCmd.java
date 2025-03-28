@@ -54,11 +54,11 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                             break;
                         }
                         case "--limit": {
-                            cmdLine.withNextValue((v, a) -> eq.setLimit(v.asLongValue().get()));
+                            cmdLine.withNextValue((v, a) -> eq.setLimit(v.asLong().get()));
                             break;
                         }
                         case "--skip": {
-                            cmdLine.withNextValue((v, a) -> eq.setSkip(v.asLongValue().get()));
+                            cmdLine.withNextValue((v, a) -> eq.setSkip(v.asLong().get()));
                             break;
                         }
                         case "--sort": {

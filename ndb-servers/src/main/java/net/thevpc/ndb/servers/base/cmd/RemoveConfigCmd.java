@@ -35,7 +35,7 @@ public class RemoveConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().asStringValue().get()));
+                    name.set(new AtName(cmdLine.next().get().asString().get()));
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }

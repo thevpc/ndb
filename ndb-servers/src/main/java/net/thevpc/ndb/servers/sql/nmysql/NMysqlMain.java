@@ -152,9 +152,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (d.name == null) {
-                    d.name = new AtName(cmdLine.next().get().asStringValue().get());
+                    d.name = new AtName(cmdLine.next().get().asString().get());
                 } else if (d.path == null) {
-                    d.path = cmdLine.next().get().asStringValue().get();
+                    d.path = cmdLine.next().get().asString().get();
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }
@@ -203,9 +203,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().asStringValue().get()));
+                    name.set(new AtName(cmdLine.next().get().asString().get()));
                 } else {
-                    sql.add(cmdLine.next().flatMap(NLiteral::asStringValue).get());
+                    sql.add(cmdLine.next().flatMap(NLiteral::asString).get());
                 }
             }
         }
@@ -279,9 +279,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().asStringValue().get()));
+                    name.set(new AtName(cmdLine.next().get().asString().get()));
                 } else if (path.isNull()) {
-                    path.set(cmdLine.next().flatMap(NLiteral::asStringValue).get());
+                    path.set(cmdLine.next().flatMap(NLiteral::asString).get());
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }
@@ -354,7 +354,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                            d.c_shutdown_wait_time = v.asIntValue().get();
+                            d.c_shutdown_wait_time = v.asInt().get();
                         });
 
                         break;
@@ -366,7 +366,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                            d.c_startup_wait_time = v.asIntValue().get();
+                            d.c_startup_wait_time = v.asInt().get();
                         });
                         break;
                     }

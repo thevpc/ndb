@@ -75,13 +75,13 @@ public class NDdbOptionsParser {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--@include": {
-                    File file = new File(cwd, p.getValue().asStringValue().get());
+                    File file = new File(cwd, p.getValue().asString().get());
                     fillFile(file, o);
                     return true;
                 }
             }
         } else {
-            if (p.getKey().asStringValue().get().startsWith("@")){
+            if (p.getKey().asString().get().startsWith("@")){
                 File file = new File(cwd, p.key().substring(1));
                 fillFile(file, o);
                 return true;
@@ -92,7 +92,7 @@ public class NDdbOptionsParser {
 
     public static boolean fillCommons(NArg p, NDdbOptions o, File cwd) {
         if (p.isOption()) {
-            String pVal = p.getValue().asStringValue().orNull();
+            String pVal = p.getValue().asString().orNull();
             switch (p.key()) {
                 case "--no-data": {
                     o.data = !(NBlankable.isBlank(p.getValue()) || Boolean.parseBoolean(pVal));
@@ -225,7 +225,7 @@ public class NDdbOptionsParser {
 
     public static boolean fillSchemaMode(NArg p, NDdbOptions o) {
         if (p.isOption()) {
-            String value = p.getValue().asStringValue().orNull();
+            String value = p.getValue().asString().orNull();
             switch (p.key()) {
                 case "--drop-database": {
                     o.schemaMode.setDropDatabase((NBlankable.isBlank(value) || Boolean.parseBoolean(value)));
@@ -272,35 +272,35 @@ public class NDdbOptionsParser {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--db-user": {
-                    o.cnx.setUsername(p.getValue().asStringValue().get());
+                    o.cnx.setUsername(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-password": {
-                    o.cnx.setPassword(p.getValue().asStringValue().get());
+                    o.cnx.setPassword(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-url": {
-                    o.cnx.setUrl(p.getValue().asStringValue().get());
+                    o.cnx.setUrl(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-name": {
-                    o.cnx.setDbName(p.getValue().asStringValue().get());
+                    o.cnx.setDbName(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-host": {
-                    o.cnx.setHost(p.getValue().asStringValue().get());
+                    o.cnx.setHost(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-port": {
-                    o.cnx.setPort(p.getValue().asStringValue().get());
+                    o.cnx.setPort(p.getValue().asString().get());
                     return true;
                 }
                 case "--db-type": {
-                    o.cnx.setDialect(NSqlDialect.parse(p.getValue().asStringValue().get()).get());
+                    o.cnx.setDialect(NSqlDialect.parse(p.getValue().asString().get()).get());
                     return true;
                 }
                 case "--db": {
-                    o.cnx= NSqlConnectionStringBuilder.parse(p.getValue().asStringValue().get());
+                    o.cnx= NSqlConnectionStringBuilder.parse(p.getValue().asString().get());
                     return true;
                 }
             }

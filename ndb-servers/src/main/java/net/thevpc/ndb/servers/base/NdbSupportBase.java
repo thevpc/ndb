@@ -152,7 +152,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             options.setHost(a.getStringValue().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-p", "--port").orNull()) != null) {
-            options.setPort(a.getValue().asIntValue().get());
+            options.setPort(a.getValue().asInt().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-n", "--dbname").orNull()) != null) {
             options.setDatabaseName(a.getStringValue().get());
@@ -170,7 +170,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 options.setRemoteUser(dbUrlString.getSsh().getUser());
                 options.setRemotePassword(dbUrlString.getSsh().getPassword());
                 options.setRemoteServer(dbUrlString.getSsh().getHost());
-                options.setRemotePort(NLiteral.of(dbUrlString.getSsh().getPort()).asIntValue().orNull());
+                options.setRemotePort(NLiteral.of(dbUrlString.getSsh().getPort()).asInt().orNull());
             }else{
                 options.setRemoteUser(null);
                 options.setRemotePassword(null);
@@ -181,7 +181,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 options.setUser(dbUrlString.getDb().getUser());
                 options.setPassword(dbUrlString.getDb().getPassword());
                 options.setHost(dbUrlString.getDb().getHost());
-                options.setPort(NLiteral.of(dbUrlString.getDb().getPort()).asIntValue().orNull());
+                options.setPort(NLiteral.of(dbUrlString.getDb().getPort()).asInt().orNull());
                 options.setDatabaseName(dbUrlString.getDb().getPath());
             }else{
                 options.setUser(null);
@@ -206,7 +206,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             options.setRemoteUser(dbUrlString.getUser());
             options.setRemotePassword(dbUrlString.getPassword());
             options.setRemoteServer(dbUrlString.getHost());
-            options.setRemotePort(NLiteral.of(dbUrlString.getPort()).asIntValue().orNull());
+            options.setRemotePort(NLiteral.of(dbUrlString.getPort()).asInt().orNull());
             return true;
         } else if (fillExtraOption(cmdLine, options)) {
             return true;

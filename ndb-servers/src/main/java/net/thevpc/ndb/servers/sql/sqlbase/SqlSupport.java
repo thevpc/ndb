@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.sql.sqlbase;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.NdbSupportBase;
@@ -12,7 +13,6 @@ import net.thevpc.ndb.servers.sql.util.SqlConnectionInfo;
 import net.thevpc.ndb.servers.sql.util.SqlHelper;
 import net.thevpc.ndb.servers.sql.util.SqlRunnable;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.util.NQuoteType;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.Arrays;
@@ -105,7 +105,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
         if (o == null || o instanceof Boolean || o instanceof Number) {
             return String.valueOf(o);
         }
-        return NStringUtils.formatStringLiteral(String.valueOf(o), NQuoteType.SIMPLE);
+        return NStringUtils.formatStringLiteral(String.valueOf(o), NElementType.SINGLE_QUOTED_STRING);
     }
 
     public List<Object> callSqlAndWaitGet(String sql, C options,Boolean forceShowSQL) {

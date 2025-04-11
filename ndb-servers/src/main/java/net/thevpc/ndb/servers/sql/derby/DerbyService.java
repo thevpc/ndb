@@ -154,8 +154,8 @@ public class DerbyService {
     public Set<String> findVersions() {
         NId java = NWorkspace.of().getPlatform();
         List<String> all = NSearchCmd.of().addId("org.apache.derby:derbynet").setDistinct(true)
-                .setIdFilter(
-                        (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[").get().to(NIdFilter.class) :
+                .setDefinitionFilter(
+                        (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[").get().to(NDefinitionFilter.class) :
                                 null)
                 .getResultIds().stream().map(x -> x.getVersion().toString()).collect(Collectors.toList());
         TreeSet<String> lastFirst = new TreeSet<>(new Comparator<String>() {
@@ -175,8 +175,8 @@ public class DerbyService {
         if (currentDerbyVersion == null) {
             NId java = NWorkspace.of().getPlatform();
             NId best = NSearchCmd.of().addId("org.apache.derby:derbynet").setDistinct(true).setLatest(true)
-                    .setIdFilter(
-                            (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[").get().to(NIdFilter.class) :
+                    .setDefinitionFilter(
+                            (java.getVersion().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
                                     null)
                     .getResultIds().findSingleton().get();
             currentDerbyVersion = best.getVersion().toString();

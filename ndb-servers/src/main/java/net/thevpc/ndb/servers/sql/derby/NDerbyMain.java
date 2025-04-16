@@ -144,9 +144,9 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(commandLine.next().get().asString().get()));
+                    name.set(new AtName(commandLine.next().get().getImage()));
                 } else {
-                    sql.add(commandLine.next().flatMap(NLiteral::asString).get());
+                    sql.add(commandLine.next().get().getImage());
                 }
             }
         }

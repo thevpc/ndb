@@ -152,9 +152,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (d.name == null) {
-                    d.name = new AtName(cmdLine.next().get().asString().get());
+                    d.name = new AtName(cmdLine.next().get().getImage());
                 } else if (d.path == null) {
-                    d.path = cmdLine.next().get().asString().get();
+                    d.path = cmdLine.next().get().getImage();
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }
@@ -203,9 +203,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().asString().get()));
+                    name.set(new AtName(cmdLine.next().get().getImage()));
                 } else {
-                    sql.add(cmdLine.next().flatMap(NLiteral::asString).get());
+                    sql.add(cmdLine.next().get().getImage());
                 }
             }
         }
@@ -279,9 +279,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().asString().get()));
+                    name.set(new AtName(cmdLine.next().get().getImage()));
                 } else if (path.isNull()) {
-                    path.set(cmdLine.next().flatMap(NLiteral::asString).get());
+                    path.set(cmdLine.next().get().getImage());
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }

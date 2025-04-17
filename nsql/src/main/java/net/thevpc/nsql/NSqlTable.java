@@ -3,9 +3,7 @@ package net.thevpc.nsql;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NStringUtils;
-import net.thevpc.tson.Tson;
-import net.thevpc.tson.TsonListContainer;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.*;
 
 import java.sql.PreparedStatement;
 import java.util.*;
@@ -16,29 +14,29 @@ public class NSqlTable {
     private NSqlColumn[] columns;
     private NDdlAuto ddlAuto = NDdlAuto.UPDATE;
 
-    public static NSqlTable ofRoot(String defaultTableName, TsonElement element, String[] defaultFields, Function<String, NSqlColumn> defs) {
-        Map<String,TsonElement> vals=new LinkedHashMap<>();
+    public static NSqlTable ofRoot(String defaultTableName, NElement element, String[] defaultFields, Function<String, NSqlColumn> defs) {
+        Map<String,NElement> vals=new LinkedHashMap<>();
         String name = NSqlTsonUtils.stringOfField("name", element, true);
         String expectedTableName = NStringUtils.firstNonBlank(name, defaultTableName);
-        TsonElement columns = NSqlTsonUtils.fieldByNameOf("columns", element);
-        vals.put("name", Tson.of(name));
+        NElement columns = NSqlTsonUtils.fieldByNameOf("columns", element);
+        vals.put("name", NElements.of().ofName(name));
         vals.put("columns", columns);
         return of(expectedTableName, vals, defaultFields, defs);
     }
 
-    public static NSqlTable of(String tableName, Map<String, TsonElement> props, String[] defaultFields, Function<String, NSqlColumn> defs) {
+    public static NSqlTable of(String tableName, Map<String, NElement> props, String[] defaultFields, Function<String, NSqlColumn> defs) {
         tableName = NStringUtils.firstNonBlank(NSqlTsonUtils.stringOf(props.get("name")), tableName);
-        TsonElement columns = props.get("columns");
+        NElement columns = props.get("columns");
         NAssert.requireNonBlank(tableName, "tableName");
         NDdlAuto mode= NDdlAuto.parse(NSqlTsonUtils.stringOf(props.get("ddl-auto")));
-        TsonListContainer expectedColumns = NSqlTsonUtils.containerOf(columns);
+        NListContainerElement expectedColumns = NSqlTsonUtils.containerOf(columns);
         List<NSqlColumn> columnsList = new ArrayList<>();
         boolean hasId = false;
         int insertIndex = 1;
         Set<String> visited = new HashSet<>();
         for (int i = 0; i < defaultFields.length; i++) {
             String field = defaultFields[i];
-            TsonElement columnDefinition = NSqlTsonUtils.fieldByNameOf(field, expectedColumns);
+            NElement columnDefinition = NSqlTsonUtils.fieldByNameOf(field, expectedColumns);
             NSqlColumn dc = defs == null ? null : defs.apply(field);
             if (dc == null) {
                 dc = new NSqlColumn();
@@ -57,11 +55,11 @@ public class NSqlTable {
                 }
             }
         }
-        if (expectedColumns.body() != null) {
-            for (TsonElement cc : expectedColumns.body()) {
+        if (expectedColumns.children() != null) {
+            for (NElement cc : expectedColumns.children()) {
                 String s = NSqlTsonUtils.nameOf(cc);
                 if (s != null) {
-                    TsonElement columnDefinition = NSqlTsonUtils.fieldByNameOf(s, expectedColumns);
+                    NElement columnDefinition = NSqlTsonUtils.fieldByNameOf(s, expectedColumns);
                     NSqlColumn dc = defs == null ? null : defs.apply(s);
                     if (dc == null) {
                         dc = new NSqlColumn();

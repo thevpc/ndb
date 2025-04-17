@@ -1,6 +1,6 @@
 package net.thevpc.nsql;
 
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.*;
 
 import java.util.function.Function;
 
@@ -21,7 +21,7 @@ public interface NSqlConnectionFactory {
         return of(NSqlConnectionString.ofString(connectionString));
     }
 
-    static NSqlConnectionFactory ofTsonFunction(Function<String, TsonElement> connectionString) {
+    static NSqlConnectionFactory ofTsonFunction(Function<String, NElement> connectionString) {
         return new NSimpleSqlConnectionFactory(NSqlConnectionString.ofTson(connectionString));
     }
 

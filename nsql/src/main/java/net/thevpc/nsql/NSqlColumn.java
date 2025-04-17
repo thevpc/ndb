@@ -6,8 +6,8 @@ import net.thevpc.nsql.model.YesNo;
 import net.thevpc.nsql.util.WithFullName;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
-import net.thevpc.tson.TsonElement;
-import net.thevpc.tson.TsonUplet;
+import net.thevpc.nuts.elem.*;
+import net.thevpc.nuts.util.NUplet;
 
 import java.sql.PreparedStatement;
 import java.util.Objects;
@@ -164,7 +164,7 @@ public class NSqlColumn implements Cloneable, WithFullName {
         NPreparedStatementHelper.set(value, index, columnType, ps);
     }
 
-    public static NSqlColumn of(TsonElement columnDefinition, NSqlColumn defaultDef) {
+    public static NSqlColumn of(NElement columnDefinition, NSqlColumn defaultDef) {
         String fieldName = defaultDef.getFieldName();
         String columnName = null;
         Integer columnLength = null;
@@ -179,20 +179,20 @@ public class NSqlColumn implements Cloneable, WithFullName {
             enabled = NSqlTsonUtils.booleanOfField("enabled", columnDefinition, true);
             columnName = NSqlTsonUtils.stringOfField("name", columnDefinition, true);
 
-            TsonElement type = NSqlTsonUtils.fieldByNameOf("type", columnDefinition);
-            if (type.isPair() && type.toPair().key().isAnyString()) {
-                columnType = NSqlColumnType.parse(type.toPair().key().toStr().value());
+            NElement type = NSqlTsonUtils.fieldByNameOf("type", columnDefinition);
+            if (type.isPair() && type.asPair().get().key().isAnyString()) {
+                columnType = NSqlColumnType.parse(type.asPair().get().key().asStringValue().get());
             } else if (type.isNamedUplet()) {
-                TsonUplet f = type.toUplet();
+                NUpletElement f = type.asUplet().get();
                 columnType = NSqlColumnType.parse(f.name());
                 if (columnType != null) {
                     switch (columnType) {
                         case STRING: {
                             if (f.params() != null) {
-                                for (TsonElement arg : f.params()) {
+                                for (NElement arg : f.params()) {
                                     if (arg.isNumber()) {
                                         if (columnLength == null) {
-                                            columnLength = arg.toInt().value();
+                                            columnLength = arg.asIntValue().get();
                                         }
                                     }
                                 }
@@ -201,10 +201,10 @@ public class NSqlColumn implements Cloneable, WithFullName {
                         }
                         case BIGINT: {
                             if (f.params() != null) {
-                                for (TsonElement arg : f.params()) {
+                                for (NElement arg : f.params()) {
                                     if (arg.isNumber()) {
                                         if (precision == null) {
-                                            precision = arg.toInt().value();
+                                            precision = arg.asIntValue().get();
                                         }
                                     }
                                 }
@@ -213,12 +213,12 @@ public class NSqlColumn implements Cloneable, WithFullName {
                         }
                         case BIGDECIMAL: {
                             if (f.params() != null) {
-                                for (TsonElement arg : f.params()) {
+                                for (NElement arg : f.params()) {
                                     if (arg.isNumber()) {
                                         if (precision == null) {
-                                            precision = arg.toInt().value();
+                                            precision = arg.asIntValue().get();
                                         } else if (scale == null) {
-                                            scale = arg.toInt().value();
+                                            scale = arg.asIntValue().get();
                                         }
                                     }
                                 }
@@ -228,11 +228,11 @@ public class NSqlColumn implements Cloneable, WithFullName {
                     }
                 }
             } else if (type.isNamedArray()) {
-                columnType = NSqlColumnType.parse(type.toArray().name());
+                columnType = NSqlColumnType.parse(type.toArray().get().name());
             } else if (type.isNamedObject()) {
-                columnType = NSqlColumnType.parse(type.toObject().name());
+                columnType = NSqlColumnType.parse(type.toObject().get().name());
             } else if (type.isAnyString()) {
-                columnType = NSqlColumnType.parse(type.toStr().value());
+                columnType = NSqlColumnType.parse(type.asStringValue().get());
             } else {
                 throw new IllegalArgumentException("invalid type");
             }

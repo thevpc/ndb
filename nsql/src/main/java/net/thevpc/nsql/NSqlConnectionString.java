@@ -1,10 +1,8 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -53,7 +51,7 @@ public class NSqlConnectionString {
         return NOptional.ofNamedEmpty("common params for url " + url);
     }
 
-    public static NSqlConnectionString ofTson(Function<String, TsonElement> props) {
+    public static NSqlConnectionString ofTson(Function<String, NElement> props) {
         return new NSqlConnectionString(
                 NSqlTsonUtils.stringOf(props.apply("url")),
                 NSqlTsonUtils.stringOf(props.apply("username")),

@@ -1,7 +1,7 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nuts.util.*;
-import net.thevpc.tson.TsonElement;
+import net.thevpc.nuts.elem.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class NSqlConnectionStringBuilder implements Cloneable {
     }
 
 
-    public static NSqlConnectionStringBuilder ofTsonFunction(Function<String, TsonElement> props) {
+    public static NSqlConnectionStringBuilder ofTsonFunction(Function<String, NElement> props) {
         return new NSqlConnectionStringBuilder()
                 .setUrl(NSqlTsonUtils.stringOf(props.apply("url")))
                 .setUsername(NSqlTsonUtils.stringOf(props.apply("username")))

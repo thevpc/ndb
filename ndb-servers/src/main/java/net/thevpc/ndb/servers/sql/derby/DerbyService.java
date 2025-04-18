@@ -140,7 +140,7 @@ public class DerbyService {
         Path targetFile = folder.resolve(iid.getArtifactId() + ".jar");
         if (!Files.exists(targetFile)) {
             NPath targetPath=NPath.of(targetFile);
-            NPath r = NFetchCmd.of(id).setFailFast(!optional).getResultPath();
+            NPath r = NFetchCmd.of(id).setFailFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
             if (r != null) {
                 r.copyTo(targetPath);
                 LOG().with().level(Level.FINEST).verb(NLogVerb.READ).log(NMsg.ofC("downloading %s to %s", id, targetFile));

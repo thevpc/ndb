@@ -6,7 +6,6 @@ import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.util.NConnexionString;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.cmd.*;
@@ -167,7 +166,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             String db = a.getStringValue().get();
             DbUrlString dbUrlString = DbUrlString.parse(db).get();
             if(dbUrlString.getSsh()!=null) {
-                options.setRemoteUser(dbUrlString.getSsh().getUser());
+                options.setRemoteUser(dbUrlString.getSsh().getUserName());
                 options.setRemotePassword(dbUrlString.getSsh().getPassword());
                 options.setRemoteServer(dbUrlString.getSsh().getHost());
                 options.setRemotePort(NLiteral.of(dbUrlString.getSsh().getPort()).asInt().orNull());
@@ -178,7 +177,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 options.setRemotePort(null);
             }
             if(dbUrlString.getDb()!=null) {
-                options.setUser(dbUrlString.getDb().getUser());
+                options.setUser(dbUrlString.getDb().getUserName());
                 options.setPassword(dbUrlString.getDb().getPassword());
                 options.setHost(dbUrlString.getDb().getHost());
                 options.setPort(NLiteral.of(dbUrlString.getDb().getPort()).asInt().orNull());
@@ -202,8 +201,8 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             return true;
         } else if ((a = cmdLine.nextEntry("--ssh").orNull()) != null) {
             String ssh = a.getStringValue().get();
-            NConnexionString dbUrlString = NConnexionString.of("ssh://"+ssh).get();
-            options.setRemoteUser(dbUrlString.getUser());
+            NConnexionString dbUrlString = DefaultNConnexionStringBuilder.of("ssh://"+ssh).get().build();
+            options.setRemoteUser(dbUrlString.getUserName());
             options.setRemotePassword(dbUrlString.getPassword());
             options.setRemoteServer(dbUrlString.getHost());
             options.setRemotePort(NLiteral.of(dbUrlString.getPort()).asInt().orNull());

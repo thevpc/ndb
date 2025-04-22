@@ -201,7 +201,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             return true;
         } else if ((a = cmdLine.nextEntry("--ssh").orNull()) != null) {
             String ssh = a.getStringValue().get();
-            NConnexionString dbUrlString = DefaultNConnexionStringBuilder.of("ssh://"+ssh).get().build();
+            NConnexionString dbUrlString = NConnexionString.of("ssh://"+ssh);
             options.setRemoteUser(dbUrlString.getUserName());
             options.setRemotePassword(dbUrlString.getPassword());
             options.setRemoteServer(dbUrlString.getHost());

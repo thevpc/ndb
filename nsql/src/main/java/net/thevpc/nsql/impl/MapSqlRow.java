@@ -6,8 +6,10 @@ import java.util.Objects;
 
 public class MapSqlRow extends AbstractSqlRow {
     private Map.Entry<String, Object>[] entries;
+    private Map<String, Object> map;
 
     public MapSqlRow(Map<String, Object> arr) {
+        this.map=arr;
         entries = arr.entrySet().toArray(new Map.Entry[0]);
     }
 
@@ -26,17 +28,8 @@ public class MapSqlRow extends AbstractSqlRow {
     }
 
     @Override
-    public Long getLong(int index) {
-        Number n = (Number) getObject(index);
-        if (n instanceof Long) {
-            return (Long) n;
-        }
-        return n == null ? null : n.longValue();
-    }
-
-    @Override
-    public String getString(int index) {
-        return (String) getObject(index);
+    public Object getObject(String name) {
+        return map.get(name);
     }
 
     @Override

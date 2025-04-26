@@ -5,6 +5,8 @@ import net.thevpc.nsql.UncheckedSqlException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 class ResultSetSqlRow extends AbstractSqlRow {
@@ -14,11 +16,6 @@ class ResultSetSqlRow extends AbstractSqlRow {
     public ResultSetSqlRow(ResultSet rs, ResultSetSqlRowContext rowContext) {
         this.rs = rs;
         this.rowContext = rowContext;
-    }
-
-    @Override
-    public Long asLong() {
-        return getLong(1);
     }
 
     @Override
@@ -35,10 +32,134 @@ class ResultSetSqlRow extends AbstractSqlRow {
         return lm;
     }
 
+
+    @Override
+    public Boolean getBoolean(int index) {
+        try {
+            boolean l = rs.getBoolean(index);
+            if (!l) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Boolean getBoolean(String name) {
+        try {
+            boolean l = rs.getBoolean(name);
+            if (!l) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
     @Override
     public Long getLong(int index) {
         try {
             long l = rs.getLong(index);
+            if (l == 0) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Long getLong(String name) {
+        try {
+            long l = rs.getLong(name);
+            if (l == 0) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    public Instant getInstant(int index) {
+        try {
+            Timestamp i = rs.getTimestamp(index);
+            return i == null ? null : i.toInstant();
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    public Instant getInstant(String name) {
+        try {
+            Timestamp i = rs.getTimestamp(name);
+            return i == null ? null : i.toInstant();
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Integer getInt(int index) {
+        try {
+            int l = rs.getInt(index);
+            if (l == 0) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Integer getInt(String name) {
+        try {
+            int l = rs.getInt(name);
+            if (l == 0) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Double getDouble(int index) {
+        try {
+            double l = rs.getDouble(index);
+            if (l == 0) {
+                if (rs.wasNull()) {
+                    return null;
+                }
+            }
+            return l;
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Double getDouble(String name) {
+        try {
+            double l = rs.getDouble(name);
             if (l == 0) {
                 if (rs.wasNull()) {
                     return null;
@@ -60,9 +181,27 @@ class ResultSetSqlRow extends AbstractSqlRow {
     }
 
     @Override
+    public String getString(String name) {
+        try {
+            return rs.getString(name);
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
     public Object getObject(int index) {
         try {
             return rs.getObject(index);
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
+    @Override
+    public Object getObject(String name) {
+        try {
+            return rs.getObject(name);
         } catch (SQLException e) {
             throw new UncheckedSqlException(e);
         }

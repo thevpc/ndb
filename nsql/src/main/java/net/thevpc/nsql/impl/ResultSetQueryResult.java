@@ -7,10 +7,7 @@ import net.thevpc.nsql.UncheckedSqlException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -80,17 +77,20 @@ public class ResultSetQueryResult implements NQueryResult {
 
     public NSqlRow columnsRow(){
         ResultSetMetaData md = null;
-        String[] all;
+        String[] allNames;
+        Object[] allValues;
         try {
             md = getResultSet().getMetaData();
-            all = new String[md.getColumnCount()];
-            for (int i = 0; i < all.length; i++) {
-                all[i] = md.getColumnName(i + 1);
+            allNames = new String[md.getColumnCount()];
+            allValues = new String[allNames.length];
+            for (int i = 0; i < allNames.length; i++) {
+                allNames[i] = md.getColumnName(i + 1);
+                allValues[i] = allNames[i];
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new ArraySqlRow(all);
+        return new ArraySqlRow(allNames,allValues);
     }
 
 

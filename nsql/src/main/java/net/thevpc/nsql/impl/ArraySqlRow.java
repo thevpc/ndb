@@ -1,17 +1,25 @@
 package net.thevpc.nsql.impl;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ArraySqlRow extends AbstractSqlRow {
+    private String[] names;
     private Object[] arr;
 
-    public ArraySqlRow(Object[] arr) {
+    public ArraySqlRow(String[] names, Object[] arr) {
+        this.names = names;
         this.arr = arr;
     }
 
     @Override
-    public Long asLong() {
-        return getLong(1);
+    public Object getObject(String name) {
+        for (int i = 0; i < names.length; i++) {
+            if (Objects.equals(names[i], name)) {
+                return arr[i];
+            }
+        }
+        throw new IllegalArgumentException("invalid column name " + name);
     }
 
     @Override
@@ -20,22 +28,8 @@ public class ArraySqlRow extends AbstractSqlRow {
     }
 
     @Override
-    public Long getLong(int index) {
-        Number n = (Number) getObject(index);
-        if (n instanceof Long) {
-            return (Long) n;
-        }
-        return n == null ? null : n.longValue();
-    }
-
-    @Override
-    public String getString(int index) {
-        return(String) getObject(index);
-    }
-
-    @Override
     public Object getObject(int index) {
-        return arr[index-1];
+        return arr[index - 1];
     }
 
     @Override

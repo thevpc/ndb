@@ -30,7 +30,7 @@ public class DbUrlString {
         String dbStr = null;
         String dbStrQ = null;
         if (value.startsWith("ssh:")) {
-            NOptional<NConnexionString> ssh = NConnexionString.of(value);
+            NOptional<NConnexionString> ssh = NConnexionString.get(value);
             if (ssh.isPresent()) {
                 v.ssh = ssh.get();
                 dbStr = v.ssh.getPath();
@@ -50,7 +50,7 @@ public class DbUrlString {
                 dbStr += '?' + dbStrQ;
             }
         }
-        NOptional<NConnexionString> db = NConnexionString.of(dbStr);
+        NOptional<NConnexionString> db = NConnexionString.get(dbStr);
         if (db.isPresent()) {
             v.db = db.get();
             String path = v.db.getPath();

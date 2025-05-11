@@ -4,6 +4,7 @@
     <groupId>net.thevpc.ndb</groupId>
     <artifactId>ndb-import</artifactId>
     <version>0.8.5.0</version>
+    <name>NDB :: App Importer</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

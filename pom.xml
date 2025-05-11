@@ -3,6 +3,7 @@
     <groupId>net.thevpc.xprojects.builders</groupId>
     <artifactId>ndb-builder</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>NDB :: All Builder</name>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

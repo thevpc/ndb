@@ -4,7 +4,7 @@
     <artifactId>nsql</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
-    <name>NSQL :: Core</name>
+    <name>NDB :: NSQL :: Core</name>
     <description>v</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

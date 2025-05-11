@@ -4,6 +4,7 @@
     <artifactId>ndb-cmd</artifactId>
     <version>0.8.5.0</version>
     <packaging>jar</packaging>
+    <name>NDB :: App Cmd</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>

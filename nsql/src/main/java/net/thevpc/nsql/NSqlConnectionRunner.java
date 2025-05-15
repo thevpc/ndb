@@ -58,7 +58,7 @@ public class NSqlConnectionRunner {
     }
 
     public <V> NOptional<V> withQueryCall(Object principal, String query, Consumer<PreparedStatement> preparer, NSqlQueryCaller<V> runnable) {
-        NRef<V> result = new NRef<>();
+        NRef<V> result = NRef.ofNull();
         withConnection((c) -> {
             try (PreparedStatement statement = c.getConnection().prepareStatement(query)) {
                 if (preparer != null) {
@@ -88,7 +88,7 @@ public class NSqlConnectionRunner {
     }
 
     public <V> NOptional<V> withUpdateCall(Object principal, String query, Consumer<PreparedStatement> preparer, boolean returnGenerated, NSqlUpdateCaller<Object, V> runnable) {
-        NRef<V> result = new NRef<>();
+        NRef<V> result = NRef.ofNull();
         withConnection((c) -> {
             try (PreparedStatement statement =
                          returnGenerated ? c.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) : c.getConnection().prepareStatement(query)) {

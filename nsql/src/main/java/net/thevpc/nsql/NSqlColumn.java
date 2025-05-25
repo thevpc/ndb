@@ -184,7 +184,7 @@ public class NSqlColumn implements Cloneable, WithFullName {
                 columnType = NSqlColumnType.parse(type.asPair().get().key().asStringValue().get());
             } else if (type.isNamedUplet()) {
                 NUpletElement f = type.asUplet().get();
-                columnType = NSqlColumnType.parse(f.name());
+                columnType = NSqlColumnType.parse(f.name().orNull());
                 if (columnType != null) {
                     switch (columnType) {
                         case STRING: {
@@ -228,9 +228,9 @@ public class NSqlColumn implements Cloneable, WithFullName {
                     }
                 }
             } else if (type.isNamedArray()) {
-                columnType = NSqlColumnType.parse(type.toArray().get().name());
+                columnType = NSqlColumnType.parse(type.toArray().get().name().orNull());
             } else if (type.isNamedObject()) {
-                columnType = NSqlColumnType.parse(type.toObject().get().name());
+                columnType = NSqlColumnType.parse(type.toObject().get().name().orNull());
             } else if (type.isAnyString()) {
                 columnType = NSqlColumnType.parse(type.asStringValue().get());
             } else {

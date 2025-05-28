@@ -4,6 +4,8 @@ import net.thevpc.nuts.util.*;
 import net.thevpc.nuts.elem.*;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -22,10 +24,13 @@ public class NSqlConnectionStringBuilder implements Cloneable {
     private String variant;
     private String instanceName;
     private String driverClass;
-    private boolean integrationSecurity;
+    private Map<String, String> properties = new LinkedHashMap<>();
+    private boolean integratedSecurity;
+    private boolean forceSecure;
+    private boolean forceUnsecure;
 
     public static NSqlConnectionStringBuilder parse(String value) {
-        Pattern pat = Pattern.compile("(?<type>[a-z-]+)://((?<user>[^:@/]+)(:(?<password>[^:@/]+))?@)?((?<host>[^:/?]*)(:(?<port>[0-9]+))?)/(?<db>[a-zA-Z0-9_-]+).*");
+        Pattern pat = Pattern.compile("(?<type>[a-z-]+)://((?<user>[^:@/]+)(:(?<password>[^:@/]+))?@)?((?<host>[^:/?]*)(:(?<port>[0-9]+))?)/(?<db>[a-zA-Z0-9_-]+)([?](?<params>.*))?");
         Matcher m = pat.matcher(value);
         if (m.matches()) {
             NSqlConnectionStringBuilder cnx = new NSqlConnectionStringBuilder();
@@ -35,12 +40,54 @@ public class NSqlConnectionStringBuilder implements Cloneable {
             cnx.setHost(m.group("host"));
             cnx.setPort(m.group("port"));
             cnx.setDbName(m.group("db"));
+            if(m.group("params")!=null && !m.group("params").isEmpty()) {
+                NOptional<Map<String, String>> params = NStringMapFormat.URL_FORMAT.parse(m.group("params"));
+                cnx.setProperties(new LinkedHashMap<>(params.orElse(new HashMap<>())));
+            }else{
+                cnx.setProperties(new LinkedHashMap<>());
+            }
+            cnx.prepareProps();
             return cnx;
         } else {
             throw new IllegalArgumentException("invalid db url should be in the form dbtype://user:password@host:port/dbName");
         }
     }
 
+    private void prepareProps(){
+        for (Iterator<Map.Entry<String, String>> iterator = this.properties.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, String> e = iterator.next();
+            switch (e.getKey()){
+                case "integrationSecurity":{
+                    String v = e.getValue();
+                    if(isValidBooleanString(v)){
+                        this.setIntegratedSecurity(Boolean.parseBoolean(v));
+                        iterator.remove();
+                    }
+                    break;
+                }
+                case "forceSecure":{
+                    String v = e.getValue();
+                    if(isValidBooleanString(v)){
+                        this.setForceSecure(Boolean.parseBoolean(v));
+                        iterator.remove();
+                    }
+                    break;
+                }
+                case "forceUnsecure":{
+                    String v = e.getValue();
+                    if(isValidBooleanString(v)){
+                        this.setForceUnsecure(Boolean.parseBoolean(v));
+                        iterator.remove();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private static boolean isValidBooleanString(String v) {
+        return v != null && (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("false"));
+    }
 
     public static NSqlConnectionStringBuilder ofTsonFunction(Function<String, NElement> props) {
         return new NSqlConnectionStringBuilder()
@@ -58,6 +105,34 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                 .setPassword(props.apply("password"))
                 .setDialect(NSqlDialect.parse(props.apply("dialect")).orNull())
                 .setDriverClass(props.apply("driverClass"));
+    }
+
+
+    public boolean isForceSecure() {
+        return forceSecure;
+    }
+
+    public NSqlConnectionStringBuilder setForceSecure(boolean forceSecure) {
+        this.forceSecure = forceSecure;
+        return this;
+    }
+
+    public boolean isForceUnsecure() {
+        return forceUnsecure;
+    }
+
+    public NSqlConnectionStringBuilder setForceUnsecure(boolean forceUnsecure) {
+        this.forceUnsecure = forceUnsecure;
+        return this;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public NSqlConnectionStringBuilder setProperties(Map<String, String> properties) {
+        this.properties = properties;
+        return this;
     }
 
     public String getApplicationName() {
@@ -162,18 +237,22 @@ public class NSqlConnectionStringBuilder implements Cloneable {
 
     public NSqlConnectionStringBuilder copy() {
         try {
-            return (NSqlConnectionStringBuilder) clone();
+            NSqlConnectionStringBuilder c = (NSqlConnectionStringBuilder) clone();
+            if(c.properties!=null){
+                c.properties=new LinkedHashMap<>(c.properties);
+            }
+            return c;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean isIntegrationSecurity() {
-        return integrationSecurity;
+    public boolean isIntegratedSecurity() {
+        return integratedSecurity;
     }
 
-    public NSqlConnectionStringBuilder setIntegrationSecurity(boolean integrationSecurity) {
-        this.integrationSecurity = integrationSecurity;
+    public NSqlConnectionStringBuilder setIntegratedSecurity(boolean integratedSecurity) {
+        this.integratedSecurity = integratedSecurity;
         return this;
     }
 
@@ -217,16 +296,25 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         StringBuilder params = new StringBuilder();
                         if (!NBlankable.isBlank(info.getInstanceName())) {
                             params.append(";instanceName=").append(info.getInstanceName());
-                            if (info.isIntegrationSecurity()) {
-                                params.append(";integratedSecurity=true");
-                            }
-                            if (!NBlankable.isBlank(info.getApplicationName())) {
-                                params.append(";applicationName=").append(info.getApplicationName());
-                            }
-                            if (!NBlankable.isBlank(info.getDbName())) {
-                                params.append(";databaseName=").append(info.getDbName());
-                            }
                         }
+                        if (!NBlankable.isBlank(info.getDbName())) {
+                            params.append(";databaseName=").append(info.getDbName());
+                        }
+                        if (info.isIntegratedSecurity()) {
+                            params.append(";integratedSecurity=true");
+                        }
+                        if (!NBlankable.isBlank(info.getApplicationName())) {
+                            params.append(";applicationName=").append(info.getApplicationName());
+                        }
+                        if(info.isForceSecure()){
+                            params.append(";encrypt=true").append(";trustServerCertificate=false");
+                        }else if(info.isForceUnsecure()){
+                            params.append(";encrypt=false").append(";trustServerCertificate=true");
+                        }else{
+                            //dev mode!
+                            params.append(";encrypt=false").append(";trustServerCertificate=true");
+                        }
+                        params.append(";sendStringParametersAsUnicode=true");
                         p.put("params", params.toString());
                         return NOptional.of(
                                 new NSqlConnectionString(
@@ -289,7 +377,7 @@ public class NSqlConnectionStringBuilder implements Cloneable {
 
     private static NSqlConnectionStringBuilder prepareLoginPassword(NSqlConnectionStringBuilder ii, String defaultLogin, String defaultPassword) {
         if (NBlankable.isBlank(ii.getUsername()) && NBlankable.isBlank(ii.getPassword())) {
-            if (!ii.isIntegrationSecurity()) {
+            if (!ii.isIntegratedSecurity()) {
                 ii = ii.copy();
                 ii = ii.setUsername(defaultLogin);
                 ii = ii.setPassword(defaultPassword);

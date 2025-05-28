@@ -1,5 +1,6 @@
 package net.thevpc.nsql.dump.options;
 
+import net.thevpc.nsql.dump.DumpProgressMonitor;
 import net.thevpc.nsql.dump.io.In;
 import net.thevpc.nsql.dump.util.NameFilter;
 
@@ -8,6 +9,16 @@ public class DumpToDbOptions {
     private In in;
     private NameFilter tableNameFilter = new NameFilter();
     private boolean data = true;
+    private DumpProgressMonitor monitor;
+
+    public DumpProgressMonitor getMonitor() {
+        return monitor;
+    }
+
+    public DumpToDbOptions setMonitor(DumpProgressMonitor monitor) {
+        this.monitor = monitor;
+        return this;
+    }
 
     public TableRestoreOptions getSchemaMode() {
         return schemaMode;

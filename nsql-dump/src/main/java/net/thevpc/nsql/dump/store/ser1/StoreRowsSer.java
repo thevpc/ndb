@@ -3,7 +3,7 @@ package net.thevpc.nsql.dump.store.ser1;
 import net.thevpc.lib.nserializer.api.*;
 import net.thevpc.nsql.NSqlColumn;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.lib.nserializer.impl.IOLogger;
+import net.thevpc.lib.nserializer.api.IOLogger;
 import net.thevpc.lib.nserializer.impl.StoreReaderIoRows;
 
 import net.thevpc.lib.nserializer.model.DefaultStoreValue;
@@ -53,6 +53,6 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
             level = Level.FINE;
         }
         LOG.log(level, msg::toString);
-        IOLogger.current().log(msg);
+        IOLogger.get().log(msg);
     }
 }

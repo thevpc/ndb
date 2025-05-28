@@ -225,7 +225,7 @@ public class NDdbConnexionPanel extends JPanel {
                 .setPassword(new String(passwordField.getPassword()))
                 .setHost(hostField.getText())
                 .setPort(value == null ? null : value.toString())
-                .setIntegrationSecurity(integratedSecurity.isSelected())
+                .setIntegratedSecurity(integratedSecurity.isSelected())
                 .setInstanceName(NStringUtils.trimToNull(instanceField.getName()))
                 ;
 

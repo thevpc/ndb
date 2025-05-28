@@ -52,6 +52,15 @@ public class NSqlConnection implements Closeable {
         return dialect;
     }
 
+    public String getDatabaseName() {
+        try {
+            return connection.getCatalog();
+//            return connection.getMetaData().getDatabaseProductName();
+        } catch (SQLException e) {
+            throw new UncheckedSqlException(e);
+        }
+    }
+
     public Connection getConnection() {
         return connection;
     }
@@ -791,6 +800,20 @@ public class NSqlConnection implements Closeable {
             String sql = "Select * from " + escapeIdentifier(table);
             LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
             return connection.createStatement().executeQuery(sql);
+        } catch (SQLException ex) {
+            throw new UncheckedSqlException(ex);
+        }
+    }
+
+    public long getTableCount(NSqlTableId table) {
+        try {
+            String sql = "Select count(1) from " + escapeIdentifier(table);
+            LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
+            ResultSet rs = connection.createStatement().executeQuery(sql);
+            if(rs.next()) {
+                return rs.getLong(1);
+            }
+            return 0L;
         } catch (SQLException ex) {
             throw new UncheckedSqlException(ex);
         }

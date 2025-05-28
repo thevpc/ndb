@@ -5,6 +5,10 @@
 package net.thevpc.nsql.dump.common;
 
 import net.thevpc.lib.nserializer.api.*;
+import net.thevpc.nsql.dump.DumpProgressEventImpl;
+import net.thevpc.nsql.dump.DumpProgressEventType;
+import net.thevpc.nsql.dump.DumpProgressMonitor;
+import net.thevpc.nsql.dump.DumpProgressMonitors;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.model.DefaultResultSetIoCell;
 import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;
@@ -16,7 +20,6 @@ import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.lib.nserializer.impl.RepeatableReadIoCellArr;
-import net.thevpc.lib.nserializer.impl.StoreProgressMonitorHelper;
 import net.thevpc.lib.nserializer.model.StoreRowsDefinition;
 import net.thevpc.lib.nserializer.util.StringUtils;
 
@@ -99,9 +102,9 @@ public class DefaultNSqlDump implements NSqlDump {
         if (cc.schemaMode.isClearTable()) {
             connection.deleteFromTable(cc.newTable);
         }
-        StoreProgressMonitor monitor = cc.schemaMode.getMonitor();
+        DumpProgressMonitor monitor = cc.schemaMode.getMonitor();
         if (monitor == null) {
-            monitor = StoreProgressMonitorHelper.SILIENT;
+            monitor = DumpProgressMonitors.SILENT;
         }
         IoRow r = null;
         NSqlTableDefinition d2 = ((TableDefinitionAsStoreStructDefinition) rows.getDefinition()).getTableDefinition().copy();
@@ -120,34 +123,39 @@ public class DefaultNSqlDump implements NSqlDump {
             newColumns2.add(u);
         }
         StoreRowFilter filter = cc.schemaMode.getFilter();
+        DumpProgressEventImpl e0 = new DumpProgressEventImpl().setTableName(newTableName).setProgress(Double.NaN);
+        monitor.onEvent(e0.setEventType(DumpProgressEventType.START_TABLE).setMessage(NMsg.ofC("Importing table [%s]", newTableName)));
+        long index = 0;
+        long importedCount = 0;
         if (filter == null) {
-            long index = 0;
             while ((r = rows.nextRow()) != null) {
                 index++;
                 try (IoRow ccc = new RepeatableReadIoCellArr(r)) {
                     importDataRow(ccc, newColumns2.toArray(new NSqlColumn[0]), cc);
-                    monitor.onProgress(Double.NaN, NMsg.ofC("[%s] imported row %s", newTableName, index));
+                    monitor.onEvent(e0.setEventType(DumpProgressEventType.PROCESSED_ROW).setRowIndex(index).setRowCount(index).setMessage(NMsg.ofC("[%s] imported row %s", newTableName, index)));
                 }
             }
+            importedCount = index;
         } else {
-            long index = 0;
             while ((r = rows.nextRow()) != null) {
                 index++;
                 try (IoRow ccc = new RepeatableReadIoCellArr(r)) {
                     StoreRowAction rr = filter.accept(ccc, index);
                     if (rr.isAccept()) {
+                        importedCount++;
                         importDataRow(ccc, newColumns2.toArray(new NSqlColumn[0]), cc);
-                        monitor.onProgress(Double.NaN, NMsg.ofC("[%s] imported row %s", newTableName, index));
+                        monitor.onEvent(e0.setEventType(DumpProgressEventType.PROCESSED_ROW).setRowIndex(index).setRowIndex(importedCount).setMessage(NMsg.ofC("[%s] imported row %s", newTableName, index)));
                     } else {
-                        monitor.onProgress(Double.NaN, NMsg.ofC("[%s] skipped row %s", newTableName, index));
+                        monitor.onEvent(e0.setEventType(DumpProgressEventType.SKIPPED_ROW).setRowIndex(index).setRowIndex(importedCount).setMessage(NMsg.ofC("[%s] skipped row %s", newTableName, index)));
                     }
                     if (rr.isStop()) {
-                        monitor.onProgress(Double.NaN, NMsg.ofC("[%s] stopped at row %s", newTableName, index));
+                        monitor.onEvent(e0.setEventType(DumpProgressEventType.STOPPED).setRowIndex(index).setRowIndex(importedCount).setMessage(NMsg.ofC("[%s] stopped at row %s", newTableName, index)));
                         break;
                     }
                 }
             }
         }
+        monitor.onEvent(e0.setEventType(DumpProgressEventType.PROCESSED_TABLE).setRowIndex(index).setRowIndex(importedCount).setMessage(NMsg.ofC("Imported table [%s] : %s", newTableName, importedCount)));
     }
 
     private void importDataRow(IoRow ccc, NSqlColumn[] columns, ImportDataContext cc) {
@@ -209,9 +217,10 @@ public class DefaultNSqlDump implements NSqlDump {
         long startTime = System.currentTimeMillis();
         LOG.log(Level.FINEST, "[" + table.getFullName() + "] reading from DB... ");
         ResultSet rs = connection.getTableResultSet(table);
+        long count = connection.getTableCount(table);
         long endTime = System.currentTimeMillis();
         LOG.log(Level.FINEST, "[" + table.getFullName() + "] read in " + (endTime - startTime) + "ms... ");
-        return new ResultSetStoreRows(this, rs, table, tableMetaData);
+        return new ResultSetStoreRows(this, rs, count, table, tableMetaData);
     }
 
 }

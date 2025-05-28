@@ -9,7 +9,7 @@ import net.thevpc.nsql.dump.options.DumpToDbOptions;
 import net.thevpc.nsql.dump.options.TableRestoreOptions;
 import net.thevpc.nsql.dump.store.NSqlDumpService;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.lib.nserializer.impl.IOLogger;
+import net.thevpc.lib.nserializer.api.IOLogger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,19 +46,19 @@ public class NDdbImportPanel extends JPanel {
         cnxPanel.addConnexionStatusListener(new NDdbConnexionPanel.ConnexionStatusListener() {
             @Override
             public void onConnectionCheckStart(NSqlConnectionString info) {
-                progressPanel.updateStatus( NMsg.ofC("Checking connection..."));
+                progressPanel.updateStatus(NMsg.ofC("Checking connection..."));
                 updateStartButtonState();
             }
 
             @Override
-            public void onConnectionSuccess(NSqlConnectionString info,NSqlDump r) {
-                progressPanel.updateStatus( NMsg.ofC("Successful connection"));
+            public void onConnectionSuccess(NSqlConnectionString info, NSqlDump r) {
+                progressPanel.updateStatus(NMsg.ofC("Successful connection"));
                 updateStartButtonState();
             }
 
             @Override
             public void onConnectionFailure(NSqlConnectionString info, Throwable ex) {
-                progressPanel.updateStatus( NMsg.ofC("Connection failed : %s", ex.getMessage()));
+                progressPanel.updateStatus(NMsg.ofC("Connection failed : %s", ex.getMessage()));
                 updateStartButtonState();
             }
         });
@@ -112,15 +112,11 @@ public class NDdbImportPanel extends JPanel {
 
     private void importExplodedFile(File selectedFile) {
 
-        IOLogger.runWith(new IOLogger() {
-                             @Override
-                             public void log(NMsg msg) {
-                                 progressPanel.updateStatus(-1, msg);
-                             }
-                         },
-                () -> {
+        IOLogger.get().add(msg -> {
+            progressPanel.updateStatus(-1, msg);
+        }).runWith(() -> {
                     try (NSqlDump db = cnxPanel.createDumpSilently()) {
-                        NSqlDumpService s=new NSqlDumpService();
+                        NSqlDumpService s = new NSqlDumpService();
                         s.dumpToDb(
                                 new DumpToDbOptions()
                                         .setData(true)
@@ -128,7 +124,7 @@ public class NDdbImportPanel extends JPanel {
                                         .setSchemaMode(
                                                 new TableRestoreOptions()
                                         )
-                                ,db
+                                , db
                         );
                     }
                 }

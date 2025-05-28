@@ -3,6 +3,8 @@ package net.thevpc.nsql.dump.options;
 import net.thevpc.nsql.NSqlPatchTableOptions;
 import net.thevpc.lib.nserializer.api.StoreProgressMonitor;
 import net.thevpc.lib.nserializer.api.StoreRowFilter;
+import net.thevpc.nsql.dump.DumpProgressMonitor;
+import net.thevpc.nsql.dump.DumpProgressMonitors;
 
 import java.io.File;
 
@@ -18,6 +20,26 @@ public class TableRestoreOptions {
     private boolean clearTable;
     private String database;
     private File lobFolder;
+    private int tableIndex;
+    private int tableCount;
+
+    public int getTableCount() {
+        return tableCount;
+    }
+
+    public TableRestoreOptions setTableCount(int tableCount) {
+        this.tableCount = tableCount;
+        return this;
+    }
+
+    public int getTableIndex() {
+        return tableIndex;
+    }
+
+    public TableRestoreOptions setTableIndex(int tableIndex) {
+        this.tableIndex = tableIndex;
+        return this;
+    }
 
     public File getLobFolder() {
         return lobFolder;
@@ -28,7 +50,7 @@ public class TableRestoreOptions {
         return this;
     }
 
-    private StoreProgressMonitor monitor;
+    private DumpProgressMonitor monitor;
     private StoreRowFilter filter;
 
     public StoreRowFilter getFilter() {
@@ -40,11 +62,11 @@ public class TableRestoreOptions {
         return this;
     }
 
-    public StoreProgressMonitor getMonitor() {
+    public DumpProgressMonitor getMonitor() {
         return monitor;
     }
 
-    public TableRestoreOptions setMonitor(StoreProgressMonitor monitor) {
+    public TableRestoreOptions setMonitor(DumpProgressMonitor monitor) {
         this.monitor = monitor;
         return this;
     }

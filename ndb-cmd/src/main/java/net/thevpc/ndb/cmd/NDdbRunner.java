@@ -1,7 +1,9 @@
 package net.thevpc.ndb.cmd;
 
+import net.thevpc.nsql.NSqlConnectionStringBuilder;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.io.Out;
+import net.thevpc.nsql.dump.io.OutputProvider;
 import net.thevpc.nsql.dump.options.DbToDumpOptions;
 import net.thevpc.nsql.dump.options.DbToJsonOptions;
 import net.thevpc.nsql.dump.options.DumpToDbOptions;
@@ -48,39 +50,38 @@ public class NDdbRunner {
     }
 
     private static void dbToDump(NDdbOptions o) {
-        try(NSqlDump driver= NSqlDump.of(o.cnx)){
+        try (NSqlDump driver = NSqlDump.of(o.cnx)) {
             DbToDumpOptions eo = new DbToDumpOptions();
-            eo.file = o.file;
+            eo.out = new OutputProvider(new File(o.file));
             eo.compress = o.compress;
             eo.maxRows = o.maxRows;
             eo.tableNameFilter = o.tableNameFilter;
             eo.data = o.data;
             eo.exploded = o.exploded;
-            eo.cnx = o.cnx;
-            new NSqlDumpService().dbToDump(eo,driver);
+            new NSqlDumpService().dbToDump(eo, driver);
         }
     }
 
     private static void doDbToJson(NDdbOptions o) {
-        try(NSqlDump driver= NSqlDump.of(o.cnx)){
-            DbToJsonOptions jo=new DbToJsonOptions();
-            jo.exploded=o.exploded;
-            jo.cnx = o.cnx;
+        try (NSqlDump driver = NSqlDump.of(o.cnx)) {
+            DbToJsonOptions jo = new DbToJsonOptions();
+            jo.exploded = o.exploded;
+            jo.cnx = o.cnx == null ? new NSqlConnectionStringBuilder() : o.cnx.copy();
             jo.tableNameFilter = o.tableNameFilter;
-            jo.data=o.data;
-            jo.maxRows=o.maxRows;
-            new NSqlDumpService().dbToJson(jo,driver);
+            jo.data = o.data;
+            jo.maxRows = o.maxRows;
+            new NSqlDumpService().dbToJson(jo, driver);
         }
     }
 
     private static void dumpToDb(NDdbOptions o) {
-        try(NSqlDump driver= NSqlDump.of(o.cnx)){
-            DumpToDbOptions io=new DumpToDbOptions();
+        try (NSqlDump driver = NSqlDump.of(o.cnx)) {
+            DumpToDbOptions io = new DumpToDbOptions();
             io.setData(o.data);
             io.setTableNameFilter(o.tableNameFilter);
             io.setSchemaMode(o.schemaMode);
             io.setIn(new In(o.file));
-            new NSqlDumpService().dumpToDb(io,driver);
+            new NSqlDumpService().dumpToDb(io, driver);
         }
     }
 }

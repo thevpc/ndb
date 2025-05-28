@@ -1,5 +1,9 @@
 package net.thevpc.nsql.dump.store;
 
+import net.thevpc.nsql.dump.DumpProgressEventImpl;
+import net.thevpc.nsql.dump.DumpProgressEventType;
+import net.thevpc.nsql.dump.DumpProgressMonitor;
+import net.thevpc.nsql.dump.DumpProgressMonitors;
 import net.thevpc.nsql.dump.api.NSqlDump;
 import net.thevpc.nsql.dump.model.TableDefinitionAsStoreStructDefinition;
 import net.thevpc.nsql.dump.options.DumpToDbOptions;
@@ -16,6 +20,9 @@ import net.thevpc.lib.nserializer.impl.StoreReader;
 import net.thevpc.lib.nserializer.api.StoreRows;
 import net.thevpc.lib.nserializer.api.StoreVisitor;
 import net.thevpc.lib.nserializer.model.StoreStructDefinition;
+import net.thevpc.nuts.util.NIntRef;
+import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.util.NRef;
 
 import java.io.File;
 import java.io.UncheckedIOException;
@@ -58,6 +65,9 @@ public class ActionImportDumpHelper {
     }
 
     private void importDumpFile(File file, DumpToDbOptions o, NSqlDump driver) {
+        DumpProgressMonitor monitor = o.getMonitor()==null?DumpProgressMonitors.SILENT:o.getMonitor();
+        NIntRef tableIndexRef = NRef.ofInt(0);
+        NIntRef tableCountRef = NRef.ofInt(0);
 //        s.setOut(file);
         try (StoreReader w = new StoreReader(file)) {
             Predicate<String> t = o.getTableNameFilter().asPredicate();
@@ -93,6 +103,8 @@ public class ActionImportDumpHelper {
 
                 @Override
                 public void visitData(StoreRows md) {
+                    tableIndexRef.inc();
+                    int tableIndex = tableIndexRef.get();
                     StoreStructDefinition ssd = md.getDefinition();
                     NSqlTableDefinition definition = ((TableDefinitionAsStoreStructDefinition) ssd).getTableDefinition();
                     prepareTableDefinition(definition, schemaMode);
@@ -101,8 +113,17 @@ public class ActionImportDumpHelper {
                         if (o.isData()) {
                             StoreRows md2 = new StoreRowsAdapter(d, md);
                             if (td.test(d)) {
+                                tableCountRef.inc();
+                                int tableCount = tableCountRef.get();
+                                schemaMode.setTableIndex(tableIndex);
+                                schemaMode.setTableCount(tableCount);
                                 driver.importData(md2, schemaMode);
                                 return;
+                            }else{
+                                String tableName = ((TableDefinitionAsStoreStructDefinition) ssd).getTableDefinition().getTableName();
+                                monitor.onEvent(new DumpProgressEventImpl().setTableIndex(tableIndex)
+                                        .setTableName(tableName).setEventType(DumpProgressEventType.SKIPPED_TABLE)
+                                        .setProgress(Double.NaN).setMessage(NMsg.ofC("[%s] skipped table %s", tableName, tableIndex)));
                             }
                         }
                     } catch (UncheckedIOException ex) {

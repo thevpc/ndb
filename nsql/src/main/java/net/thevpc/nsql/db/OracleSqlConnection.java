@@ -3,7 +3,6 @@ package net.thevpc.nsql.db;
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.NSqlDatabaseHeader;
 import net.thevpc.nsql.model.NSqlDatabaseHeaderImpl;
-import net.thevpc.nsql.model.NSqlSchemaId;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -12,13 +11,12 @@ import java.io.Reader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PostgreSqlConnection extends NSqlConnection {
-    private static Logger LOG = Logger.getLogger(PostgreSqlConnection.class.getName());
-    public PostgreSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
+public class OracleSqlConnection extends NSqlConnection {
+    private static Logger LOG = Logger.getLogger(OracleSqlConnection.class.getName());
+    public OracleSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
         super(connectionFactory, connection);
         setMaxVarcharLength(10485760);
     }
@@ -45,7 +43,7 @@ public class PostgreSqlConnection extends NSqlConnection {
     }
 
     public String getDatabaseName() {
-        return executeQuery("SELECT current_database()").first().map(x-> x.getString(1)).get();
+        return executeQuery("SELECT SYS_CONTEXT('USERENV','DB_NAME') FROM DUAL").first().map(x-> x.getString(1)).get();
     }
 
     protected String quotedIdentifier(String s) {

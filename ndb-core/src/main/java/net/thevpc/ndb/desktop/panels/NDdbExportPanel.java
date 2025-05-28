@@ -12,7 +12,7 @@ import net.thevpc.lib.nserializer.api.StoreWriter;
 import net.thevpc.lib.nserializer.api.StoreProgressMonitor;
 import net.thevpc.ndb.desktop.util.GBC;
 import net.thevpc.ndb.desktop.util.UI;
-import net.thevpc.lib.nserializer.impl.IOLogger;
+import net.thevpc.lib.nserializer.api.IOLogger;
 import net.thevpc.lib.nserializer.model.StoreStructId;
 
 import javax.swing.*;
@@ -22,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
+
 import net.thevpc.common.swing.list.JCheckBoxList;
 import net.thevpc.nsql.NSqlDialect;
 import net.thevpc.nsql.model.NSqlTableHeader;
@@ -162,7 +163,7 @@ public class NDdbExportPanel extends JPanel {
                         if (cnx.getDbName() == null) {
                             NSqlDialect dbType = cnx.getDialect();
                             if (dbType == NSqlDialect.MSSQLSERVER //                                            || dbType == SqlDialect.JTDS_SQLSERVER
-                                    ) {
+                            ) {
                                 if (dbName != null) {
                                     cnx.setDbName(dbName);
                                 }
@@ -171,7 +172,7 @@ public class NDdbExportPanel extends JPanel {
                         }
                         s.setDb(cnx);
                         File selectedFile0 = selectedFile;
-                        IOLogger.runWith(simpleProgressLogger,
+                        IOLogger.get().add(simpleProgressLogger).runWith(
                                 () -> {
                                     if (oneFile.isSelected()) {
                                         exportOneFile(cnx, selectedFile0);
@@ -307,7 +308,7 @@ public class NDdbExportPanel extends JPanel {
     private void updateTableList(NSqlDump db) {
         NSqlConnectionStringBuilder cnxInfo = cnxPanel.cnxInfo();
         if (cnxInfo != null) {
-            IOLogger.runWith(simpleProgressLogger,
+            IOLogger.get().add(simpleProgressLogger).runWith(
                     () -> {
                         selectedTables.resetModel();
                         try {

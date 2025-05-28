@@ -29,6 +29,10 @@ public class MsSqlServerConnection extends NSqlConnection {
         return "master";
     }
 
+    public String getDatabaseName() {
+        return executeQuery("SELECT DB_NAME()").first().map(x-> x.getString(1)).get();
+    }
+
 
 
     public List<NSqlDatabaseHeader> getDatabases() {

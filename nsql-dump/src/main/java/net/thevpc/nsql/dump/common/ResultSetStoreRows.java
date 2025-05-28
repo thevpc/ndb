@@ -25,11 +25,13 @@ public class ResultSetStoreRows extends AbstractStoreRows {
     private final TableDefinitionAsStoreStructDefinition structDefinition;
     StoreRowsDefinition t;
     boolean stopped;
+    long expectedCount;
 
-    public ResultSetStoreRows(DefaultNSqlDump abstractDatabaseDriver, ResultSet rs, NSqlTableId table, NSqlTableDefinition tableMetaData) {
+    public ResultSetStoreRows(DefaultNSqlDump abstractDatabaseDriver, ResultSet rs, long expectedCount,NSqlTableId table, NSqlTableDefinition tableMetaData) {
         this.abstractDatabaseDriver = abstractDatabaseDriver;
         this.rs = rs;
         this.tableMetaData = tableMetaData;
+        this.expectedCount = expectedCount;
         structDefinition = new TableDefinitionAsStoreStructDefinition(tableMetaData);
         ResultSetMetaData md;
         try {

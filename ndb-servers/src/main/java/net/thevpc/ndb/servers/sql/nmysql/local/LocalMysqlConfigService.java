@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.sql.nmysql.local;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -90,7 +91,7 @@ public class LocalMysqlConfigService {
         String name = getName();
         NPath f = getServerConfigPath();
         if (f.exists()) {
-            config = NElements.of().json().parse(f, LocalMysqlConfig.class);
+            config = NElementParser.ofJson().parse(f, LocalMysqlConfig.class);
             return this;
         } else if ("default".equals(name)) {
             //auto create default config

@@ -3,6 +3,7 @@ package net.thevpc.ndb.servers.sql.nmysql.remote;
 import java.io.File;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.format.NExecCmdFormat;
 import net.thevpc.nuts.io.NCp;
@@ -108,7 +109,7 @@ public class RemoteMysqlDatabaseConfigService {
             remoteTempPath = remoteTempPath.substring(t);
         }
         NElements elem = NElements.of();
-        Map<String, Object> resMap = elem.parse(remoteTempPath.getBytes(), Map.class);
+        Map<String, Object> resMap = NElementParser.ofJson().parse(remoteTempPath.getBytes(), Map.class);
         String ppath = (String) resMap.get("path");
 
         if (NBlankable.isBlank(localPath)) {
@@ -193,7 +194,7 @@ public class RemoteMysqlDatabaseConfigService {
         RemoteMysqlDatabaseConfig cconfig = getConfig();
         String remoteTempPath = null;
         final String searchResultString = execRemoteNuts("search --!color --json net.thevpc.nuts.toolbox:nmysql --display temp-folder --installed --first");
-        List<Map> result = NElements.of().json().parse(new StringReader(searchResultString), List.class);
+        List<Map> result = NElementParser.ofJson().parse(new StringReader(searchResultString), List.class);
         if (result.isEmpty()) {
             throw new NIllegalArgumentException(NMsg.ofPlain("Mysql is not installed on the remote machine"));
         }

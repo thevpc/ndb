@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElements;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.base.cmd.ShowTablesCmd;
 import net.thevpc.ndb.servers.nosql.mongodb.NMongoConfig;
@@ -27,7 +27,7 @@ public class MongoShowTablesCmd extends ShowTablesCmd<NMongoConfig> {
             getSupport().doWithMongoDB(options, db -> {
                 List<NElement> databases = db.listCollections()
                         .into(new ArrayList<>())
-                        .stream().map(x -> NElements.of().parse(x.toJson(), NElement.class))
+                        .stream().map(x -> NElementParser.ofJson().parse(x.toJson(), NElement.class))
                         .map(x->{
                             if(eq.isLongMode()){
                                 return x;

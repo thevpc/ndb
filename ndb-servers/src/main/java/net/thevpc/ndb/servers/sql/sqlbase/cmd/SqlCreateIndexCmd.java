@@ -1,8 +1,8 @@
 package net.thevpc.ndb.servers.sql.sqlbase.cmd;
 
 import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.util.NMsg;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.cmd.CreateIndexCmd;
@@ -30,7 +30,7 @@ public class SqlCreateIndexCmd<C extends NdbConfig> extends CreateIndexCmd<C> {
             s = s.trim();
             if (s.length() > 0) {
                 if (s.startsWith("{")) {
-                    Map<String, Object> row = NElements.of().parse(s, Map.class);
+                    Map<String, Object> row = NElementParser.ofJson().parse(s, Map.class);
                     for (Map.Entry<String, Object> e : row.entrySet()) {
                         if (setKeys.length() > 0) {
                             setKeys.append(",");

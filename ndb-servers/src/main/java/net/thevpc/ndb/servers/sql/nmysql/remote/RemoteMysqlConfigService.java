@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.sql.nmysql.remote;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -72,9 +73,7 @@ public class RemoteMysqlConfigService {
         }
         NPath f = getConfigPath();
         if (f.exists()) {
-            config = NElements.of().json()
-                    .setNtf(false)
-                    .parse(f, RemoteMysqlConfig.class);
+            config = NElementParser.ofJson().parse(f, RemoteMysqlConfig.class);
             return this;
         }
         throw new NoSuchElementException("config not found : " + name);

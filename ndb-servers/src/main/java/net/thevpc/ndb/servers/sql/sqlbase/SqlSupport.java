@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.sql.sqlbase;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.ndb.servers.NdbConfig;
@@ -81,7 +82,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
             s = s.trim();
             if (s.length() > 0) {
                 if (s.startsWith("{")) {
-                    Map<String, Object> row = elements.parse(s, Map.class);
+                    Map<String, Object> row = NElementParser.ofJson().parse(s, Map.class);
                     for (Map.Entry<String, Object> e : row.entrySet()) {
                         if (whereSb.length() > 0) {
                             whereSb.append(" and ");

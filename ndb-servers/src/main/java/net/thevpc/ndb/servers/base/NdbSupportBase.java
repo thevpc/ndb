@@ -3,6 +3,7 @@ package net.thevpc.ndb.servers.base;
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -131,8 +132,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         if (!file.exists()) {
             return NOptional.ofNamedEmpty("config " + name);
         }
-        NElements json = NElements.of().setNtf(false).json();
-        return NOptional.ofNamed(json.parse(file, configClass), "config " + name);
+        return NOptional.ofNamed(NElementParser.ofJson().parse(file, configClass), "config " + name);
     }
 
 
@@ -263,19 +263,18 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         }
 
         NPath file = sharedConfigFolder.resolve(asFullName(options.getName()) + NdbUtils.SERVER_CONFIG_EXT);
-        NElements json = NElements.of().setNtf(false).json();
         if (file.exists()) {
             if (update.get()) {
-                C old = json.parse(file, configClass);
+                C old = NElementParser.ofJson().parse(file, configClass);
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);
-                json.setValue(options).print(file);
+                NElements.of().setNtf(false).json().setValue(options).print(file);
             } else {
                 throw new RuntimeException("already found");
             }
         } else {
-            json.setValue(options).print(file);
+            NElements.of().setNtf(false).json().setValue(options).print(file);
         }
     }
 

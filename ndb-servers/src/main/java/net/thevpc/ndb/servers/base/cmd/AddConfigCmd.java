@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElements;
@@ -43,19 +44,18 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         }
 
         NPath file = getSharedConfigFolder().resolve(asFullName(options.getName()) + NdbUtils.SERVER_CONFIG_EXT);
-        NElements json = NElements.of().setNtf(false).json();
         if (file.exists()) {
             if (update.get()) {
-                C old = json.parse(file, support.getConfigClass());
+                C old = NElementParser.ofJson().setNtf(false).parse(file, support.getConfigClass());
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);
-                json.setValue(options).print(file);
+                NElements.of().setNtf(false).json().setValue(options).print(file);
             } else {
                 throw new RuntimeException("already found");
             }
         } else {
-            json.setValue(options).print(file);
+            NElements.of().setNtf(false).json().setValue(options).print(file);
         }
     }
 

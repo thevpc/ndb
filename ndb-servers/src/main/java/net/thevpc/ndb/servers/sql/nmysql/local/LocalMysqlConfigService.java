@@ -2,6 +2,7 @@ package net.thevpc.ndb.servers.sql.nmysql.local;
 
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -58,7 +59,7 @@ public class LocalMysqlConfigService {
 
     public LocalMysqlConfigService saveConfig() {
         NPath f = getServerConfigPath();
-        NElements.of().setNtf(false).json().setValue(config).print(f);
+        NElementWriter.ofJson().write(config,f);
         return this;
     }
 
@@ -108,7 +109,7 @@ public class LocalMysqlConfigService {
     }
 
     public LocalMysqlConfigService write(PrintStream out) {
-        NElements.of().json().setValue(getConfig()).setNtf(false).print(out);
+        NElementWriter.ofJson().write(getConfig(),out);
         return this;
     }
 

@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.format.NExecCmdFormat;
 import net.thevpc.nuts.io.NCp;
@@ -66,8 +67,7 @@ public class RemoteMysqlDatabaseConfigService {
     }
 
     public void write(PrintStream out) {
-        NElements.of().json().setValue(getConfig())
-                .setNtf(false).print(out);
+        NElementWriter.ofJson().write(getConfig(), out);
     }
 
     public String pull(String localPath, boolean restore, boolean deleteRemote) {

@@ -187,12 +187,12 @@ public class NSqlTsonUtils {
 
     public static NListContainerElement containerOf(NElement e) {
         if (e == null) {
-            return NElements.ofArray();
+            return NElement.ofArray();
         }
         if (e.isListContainer()) {
             return ((NListContainerElement) e);
         }
-        return NElements.ofArray(e);
+        return NElement.ofArray(e);
     }
 
     public static Integer intOf(NElement e) {

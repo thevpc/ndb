@@ -19,7 +19,7 @@ public class NSqlTable {
         String name = NSqlTsonUtils.stringOfField("name", element, true);
         String expectedTableName = NStringUtils.firstNonBlank(name, defaultTableName);
         NElement columns = NSqlTsonUtils.fieldByNameOf("columns", element);
-        vals.put("name", NElements.ofName(name));
+        vals.put("name", NElement.ofName(name));
         vals.put("columns", columns);
         return of(expectedTableName, vals, defaultFields, defs);
     }

@@ -2,6 +2,7 @@ package net.thevpc.ndb.servers.sql.nmysql.remote;
 
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -53,8 +54,7 @@ public class RemoteMysqlConfigService {
 
     public RemoteMysqlConfigService saveConfig() {
         NPath f = getConfigPath();
-        NElements.of().json().setValue(config)
-                .setNtf(false).print(f);
+        NElementWriter.ofJson().write(config, f);
         return this;
     }
 
@@ -86,8 +86,7 @@ public class RemoteMysqlConfigService {
     }
 
     public RemoteMysqlConfigService write(PrintStream out) {
-        NElements.of().json().setValue(getConfig())
-                .setNtf(false).print(out);
+        NElementWriter.ofJson().write(getConfig(), out);
         out.flush();
         return this;
     }

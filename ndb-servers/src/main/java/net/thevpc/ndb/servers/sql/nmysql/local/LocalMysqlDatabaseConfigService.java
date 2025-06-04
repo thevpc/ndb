@@ -1,6 +1,7 @@
 package net.thevpc.ndb.servers.sql.nmysql.local;
 
 import net.thevpc.nuts.*;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.format.NExecCmdFormat;
 import net.thevpc.nuts.text.NText;
@@ -60,7 +61,7 @@ public class LocalMysqlDatabaseConfigService {
     }
 
     public LocalMysqlDatabaseConfigService write(PrintStream out) {
-        NElements.of().json().setValue(getConfig()).setNtf(false).print(out);
+        NElementWriter.ofJson().write(getConfig(),out);
         return this;
     }
 

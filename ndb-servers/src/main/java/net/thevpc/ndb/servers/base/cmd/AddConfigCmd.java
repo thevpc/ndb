@@ -2,6 +2,7 @@ package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElements;
@@ -50,12 +51,12 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);
-                NElements.of().setNtf(false).json().setValue(options).print(file);
+                NElementWriter.ofJson().write(options,file);
             } else {
                 throw new RuntimeException("already found");
             }
         } else {
-            NElements.of().setNtf(false).json().setValue(options).print(file);
+            NElementWriter.ofJson().write(options,file);
         }
     }
 

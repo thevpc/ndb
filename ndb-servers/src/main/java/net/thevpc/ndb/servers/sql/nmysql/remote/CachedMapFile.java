@@ -2,6 +2,7 @@ package net.thevpc.ndb.servers.sql.nmysql.remote;
 
 import net.thevpc.nuts.*;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 
@@ -86,10 +87,7 @@ public class CachedMapFile {
             }
             map.put(k, v);
             try {
-                NElements.of().setValue(map)
-                        .json()
-                        .setNtf(false)
-                        .print(path);
+                NElementWriter.ofJson().write(map,path);
             } catch (Exception ex) {
                 //
             }

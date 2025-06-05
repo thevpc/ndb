@@ -3,6 +3,7 @@ package net.thevpc.ndb.servers.sql.sqlbase.cmd;
 import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.cmdline.NCmdLine;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.ExtendedQuery;
@@ -67,7 +68,7 @@ public class SqlShowSchemaCmd<C extends NdbConfig> extends NdbCmd<C> {
         if (path == null) {
             NOut.println(sqlDB);
         } else {
-            NElements.of().setContentType(session.getOutputFormat().orDefault()).setNtf(false).print(path);
+            NElementWriter.of().setContentType(session.getOutputFormat().orDefault()).write(sqlDB,path);
         }
     }
 

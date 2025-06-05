@@ -4,6 +4,7 @@ import net.thevpc.nuts.*;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -58,9 +59,11 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
     public NSession getSession() {
         return session;
     }
-    NWorkspace getWorkspace(){
+
+    NWorkspace getWorkspace() {
         return session.getWorkspace();
     }
+
     @Override
     public void run(NCmdLine cmdLine) {
         NArg a;
@@ -165,24 +168,24 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         } else if ((a = cmdLine.nextEntry("--db").orNull()) != null) {
             String db = a.getStringValue().get();
             DbUrlString dbUrlString = DbUrlString.parse(db).get();
-            if(dbUrlString.getSsh()!=null) {
+            if (dbUrlString.getSsh() != null) {
                 options.setRemoteUser(dbUrlString.getSsh().getUserName());
                 options.setRemotePassword(dbUrlString.getSsh().getPassword());
                 options.setRemoteServer(dbUrlString.getSsh().getHost());
                 options.setRemotePort(NLiteral.of(dbUrlString.getSsh().getPort()).asInt().orNull());
-            }else{
+            } else {
                 options.setRemoteUser(null);
                 options.setRemotePassword(null);
                 options.setRemoteServer(null);
                 options.setRemotePort(null);
             }
-            if(dbUrlString.getDb()!=null) {
+            if (dbUrlString.getDb() != null) {
                 options.setUser(dbUrlString.getDb().getUserName());
                 options.setPassword(dbUrlString.getDb().getPassword());
                 options.setHost(dbUrlString.getDb().getHost());
                 options.setPort(NLiteral.of(dbUrlString.getDb().getPort()).asInt().orNull());
                 options.setDatabaseName(dbUrlString.getDb().getPath());
-            }else{
+            } else {
                 options.setUser(null);
                 options.setPassword(null);
                 options.setHost(null);
@@ -201,7 +204,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             return true;
         } else if ((a = cmdLine.nextEntry("--ssh").orNull()) != null) {
             String ssh = a.getStringValue().get();
-            NConnexionString dbUrlString = NConnexionString.of("ssh://"+ssh);
+            NConnexionString dbUrlString = NConnexionString.of("ssh://" + ssh);
             options.setRemoteUser(dbUrlString.getUserName());
             options.setRemotePassword(dbUrlString.getPassword());
             options.setRemoteServer(dbUrlString.getHost());
@@ -269,12 +272,12 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);
-                NElements.of().setNtf(false).json().setValue(options).print(file);
+                NElementWriter.ofJson().write(options, file);
             } else {
                 throw new RuntimeException("already found");
             }
         } else {
-            NElements.of().setNtf(false).json().setValue(options).print(file);
+            NElementWriter.ofJson().write(options, file);
         }
     }
 

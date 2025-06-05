@@ -2,6 +2,7 @@ package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElements;
@@ -42,12 +43,11 @@ public class UpdateConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         if (!file.exists()) {
             throw new RuntimeException("not found");
         }
-        NElements json = NElements.of().setNtf(false).json();
         C old = NElementParser.ofJson().parse(file, getConfigClass());
         String oldName = old.getName();
         old.setNonNull(options);
         old.setName(oldName);
-        json.setValue(options).print(file);
+        NElementWriter.ofJson().write(options,file);
     }
 
 }

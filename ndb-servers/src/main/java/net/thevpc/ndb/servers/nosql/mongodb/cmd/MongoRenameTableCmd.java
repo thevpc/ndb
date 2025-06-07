@@ -23,7 +23,7 @@ public class MongoRenameTableCmd extends RenameTableCmd<NMongoConfig> {
         getSupport().doWithMongoCollection(options, eq.getTable(), mongoCollection -> {
             String dbn = options.getDatabaseName();
             mongoCollection.renameCollection(new MongoNamespace(dbn, eq.getNewName()));
-            NSession session = NSession.get().get();
+            NSession session = NSession.of();
             session.out().println(true);
         });
     }

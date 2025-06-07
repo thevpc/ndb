@@ -24,7 +24,7 @@ public class UpdateConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
     @Override
     public void run(NCmdLine cmdLine) {
         C options = createConfigInstance();
-        NSession session = NSession.get().get();
+        NSession session = NSession.of();
         while (cmdLine.hasNext()) {
             if (fillOption(cmdLine, options)) {
                 //

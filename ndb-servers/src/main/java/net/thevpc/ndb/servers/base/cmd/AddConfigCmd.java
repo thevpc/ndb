@@ -5,7 +5,6 @@ import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.NdbCmd;
@@ -26,13 +25,13 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
     public void run(NCmdLine cmdLine) {
         C options = createConfigInstance();
         NRef<Boolean> update = NRef.of(false);
-        NSession session = NSession.get().get();
+        NSession session = NSession.of();
         while (cmdLine.hasNext()) {
             if (fillOption(cmdLine, options)) {
                 //
             } else if (
-                    cmdLine.withNextFlag((v, a) -> {
-                        update.set(v);
+                    cmdLine.withNextFlag((v) -> {
+                        update.set(v.booleanValue());
                     }, "--update")
             ) {
             } else {

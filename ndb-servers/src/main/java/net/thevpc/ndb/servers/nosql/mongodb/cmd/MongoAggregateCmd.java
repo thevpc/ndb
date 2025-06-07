@@ -44,26 +44,26 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v, a) -> eq.setTable(v));
+                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
                         case "--limit": {
-                            cmdLine.withNextValue((v, a) -> eq.setLimit(v.asLong().get()));
+                            cmdLine.withNextEntry((v) -> eq.setLimit(v.asLong().get()));
                             break;
                         }
                         case "--skip": {
-                            cmdLine.withNextValue((v, a) -> eq.setSkip(v.asLong().get()));
+                            cmdLine.withNextEntry((v) -> eq.setSkip(v.asLong().get()));
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -77,7 +77,7 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                     switch (cmdLine.peek().get().key()) {
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -91,7 +91,7 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -144,7 +144,7 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                     }
                 }
             }
-            NSession session = NSession.get().get();
+            NSession session = NSession.of();
             session.out().println(values);
         });
     }

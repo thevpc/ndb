@@ -37,18 +37,18 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v, a) -> eq.setTable(v));
+                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -62,7 +62,7 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -76,7 +76,7 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }

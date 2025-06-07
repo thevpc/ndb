@@ -22,7 +22,7 @@
 //    }
 //
 //    public void run(NCmdLine cmdLine) {
-//        NSession session = NSession.get().get();
+//        NSession session = NSession.of();
 //        while (cmdLine.hasNext()) {
 //            if (cmdLine.next("mysql", "mariadb").isPresent()) {
 //                new NMysqlMain(session).run(cmdLine);

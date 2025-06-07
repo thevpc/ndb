@@ -36,7 +36,7 @@ public class MongoReplaceCmd extends ReplaceCmd<NMongoConfig> {
                     docWhere,
                     docSet
             );
-            NSession session = NSession.get().get();
+            NSession session = NSession.of();
             session.out().println(z);
         });
     }

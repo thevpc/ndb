@@ -5,7 +5,6 @@ import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.NRef;
@@ -71,8 +70,8 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         while (cmdLine.hasNext()) {
             boolean ok = false;
             for (NdbCmd<C> cc : commands.values()) {
-                if (cmdLine.withNextFlag((value, arg) -> {
-                    cmdLine.setCommandName(getDbType() + " " + arg.key());
+                if (cmdLine.withNextFlag((value) -> {
+                    cmdLine.setCommandName(getDbType() + " " + value.key());
                     cc.run(cmdLine);
                 }, cc.getNames())) {
                     ok = true;
@@ -83,7 +82,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 if (runExtraCommand(session, cmdLine)) {
 
                 } else {
-                    NSession session = NSession.get().get();
+                    NSession session = NSession.of();
                     session.configureLast(cmdLine);
                 }
             }
@@ -247,8 +246,8 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             if (fillOption(commandLine, options)) {
                 //
             } else if (
-                    commandLine.withNextFlag((v, a) -> {
-                        update.set(v);
+                    commandLine.withNextFlag((v) -> {
+                        update.set(v.booleanValue());
                     }, "--update")
             ) {
 

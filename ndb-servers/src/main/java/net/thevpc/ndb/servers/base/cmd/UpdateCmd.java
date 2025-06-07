@@ -37,22 +37,22 @@ public class UpdateCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v, a) -> eq.setTable(v));
+                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
                         case "--one": {
-                            cmdLine.withNextFlag((v, a) -> eq.setOne(v));
+                            cmdLine.withNextFlag((v) -> eq.setOne(v.booleanValue()));
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -66,7 +66,7 @@ public class UpdateCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }
@@ -80,7 +80,7 @@ public class UpdateCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v, a) -> {
+                            cmdLine.withNextFlag((v) -> {
                             });
                             break;
                         }

@@ -40,8 +40,8 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                         break;
                     }
                     case "--file": {
-                        cmdLine.withNextEntry((v, a) -> {
-                            file.set(NPath.of(v));
+                        cmdLine.withNextEntry((v) -> {
+                            file.set(NPath.of(v.stringValue()));
                         });
                         break;
                     }

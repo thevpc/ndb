@@ -39,8 +39,8 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--file": {
-                        cmdLine.withNextEntry((v, a) -> {
-                            file.set(NPath.of(v));
+                        cmdLine.withNextEntry((v) -> {
+                            file.set(NPath.of(v.stringValue()));
                         });
                         break;
                     }
@@ -159,7 +159,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                         if (/*file.get().isFile() && */file.get().getName().toLowerCase().endsWith(".zip")) {
                             NPath zipPath = file.get();
                             NPath unzippedFolder = file.get().resolveSibling(file.get().getNameParts(NPathExtensionType.SHORT).getBaseName());
-                            NSession session = NSession.get().get();
+                            NSession session = NSession.of();
                             NExecCmd zipExec = sysCmd()
                                     .addCommand("unzip")
                                     .addCommand(session.isTrace()?null:"-q")

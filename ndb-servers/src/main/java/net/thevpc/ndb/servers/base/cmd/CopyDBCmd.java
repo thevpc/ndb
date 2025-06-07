@@ -32,14 +32,14 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                 switch (key) {
                     case "--from":
                     {
-                        cmdLine.withNextEntry((v, a) ->
-                                fromOptions.addAll(Arrays.asList("--db", v)));
+                        cmdLine.withNextEntry((v) ->
+                                fromOptions.addAll(Arrays.asList("--db", v.stringValue())));
                         break;
                     }
                     case "--to":
                     {
-                        cmdLine.withNextEntry((v, a) ->
-                                toOptions.addAll(Arrays.asList("--db", v)));
+                        cmdLine.withNextEntry((v) ->
+                                toOptions.addAll(Arrays.asList("--db", v.stringValue())));
                         break;
                     }
                     case "--from-name":
@@ -54,10 +54,10 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--from-ssh":
                     case "--from-db":
                     {
-                        cmdLine.withNextEntry((v, a) ->
+                        cmdLine.withNextEntry((v) ->
                                 fromOptions.addAll(Arrays.asList(
                                         "--" + key.substring("--from-".length())
-                                        , v)));
+                                        , v.stringValue())));
                         break;
                     }
                     case "--to-name":
@@ -71,13 +71,14 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--to-remote-temp-folder":
                     case "--to-ssh":
                     case "--to-db": {
-                        cmdLine.withNextEntry((v, a) -> toOptions.addAll(Arrays.asList(
+                        cmdLine.withNextEntry((v) -> toOptions.addAll(Arrays.asList(
                                 "--" + key.substring("--to-".length())
-                                , v)));
+                                , v.stringValue())));
                         break;
                     }
                     case "--file": {
-                        cmdLine.withNextEntry((v, a) -> {
+                        cmdLine.withNextEntry((vv) -> {
+                            String v=vv.stringValue();
                             if (!v.endsWith(".zip")) {
                                 v = v + ".zip";
                             }
@@ -86,14 +87,14 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--keep-file": {
-                        cmdLine.withNextFlag((v, a) -> keepFile.set(v));
+                        cmdLine.withNextFlag((v) -> keepFile.set(v.booleanValue()));
                         break;
                     }
                     default: {
                         if (support.getSession().configureFirst(cmdLine)) {
 
                         } else {
-                            NSession session = NSession.get().get();
+                            NSession session = NSession.of();
                             session.configureLast(cmdLine);
                         }
                     }

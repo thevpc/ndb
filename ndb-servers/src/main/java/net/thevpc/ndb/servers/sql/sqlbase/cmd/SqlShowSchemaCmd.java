@@ -4,7 +4,6 @@ import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.elem.NElementWriter;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.NdbConfig;
@@ -38,11 +37,11 @@ public class SqlShowSchemaCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--long": {
-                        cmdLine.withNextFlag((v, a) -> eq.setLongMode(v));
+                        cmdLine.withNextFlag((v) -> eq.setLongMode(v.booleanValue()));
                         break;
                     }
                     case "--file": {
-                        cmdLine.withNextEntryValue((v, a) -> file.set(NPath.of(v.toString())));
+                        cmdLine.withNextEntry((v) -> file.set(NPath.of(v.toString())));
                         break;
                     }
                     default: {
@@ -64,7 +63,7 @@ public class SqlShowSchemaCmd<C extends NdbConfig> extends NdbCmd<C> {
 
     protected void runShowSchema(ExtendedQuery eq, C options, NPath path) {
         SqlDB sqlDB = SqlHelper.computeSchema(eq, (SqlSupport<C>) getSupport(), options);
-        NSession session = NSession.get().get();
+        NSession session = NSession.of();
         if (path == null) {
             NOut.println(sqlDB);
         } else {

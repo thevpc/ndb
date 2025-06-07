@@ -53,7 +53,7 @@ public class PostgresShowTableSizeCmd extends NdbCmd<NPostgresConfig> {
                         break;
                     }
                     case "--long": {
-                        cmdLine.withNextFlag((v, a) -> eq.setLongMode(v));
+                        cmdLine.withNextFlag((v) -> eq.setLongMode(v.booleanValue()));
                         break;
                     }
                     default: {
@@ -117,7 +117,7 @@ public class PostgresShowTableSizeCmd extends NdbCmd<NPostgresConfig> {
                 totalRows,
                 totalColumns
         ));
-        NSession session = NSession.get().get();
+        NSession session = NSession.of();
         NOut.println(rr);
         //SqlHelper.callSqlAndWaitGet("")
     }

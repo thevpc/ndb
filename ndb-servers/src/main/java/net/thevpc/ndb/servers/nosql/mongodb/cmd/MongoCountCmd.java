@@ -26,7 +26,7 @@ public class MongoCountCmd extends CountCmd<NMongoConfig> {
                     docWhere.putAll(Document.parse(s));
                 }
             }
-            NSession session = NSession.get().get();
+            NSession session = NSession.of();
             session.out().println(mongoCollection.countDocuments(docWhere));
         });
     }

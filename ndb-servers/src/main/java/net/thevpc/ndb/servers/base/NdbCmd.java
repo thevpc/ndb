@@ -71,9 +71,9 @@ public abstract class NdbCmd<C extends NdbConfig> {
     }
 
     protected void readConfigNameOption(NCmdLine commandLine, NRef<AtName> name) {
-        commandLine.withNextEntry((v, a) -> {
+        commandLine.withNextEntry((v) -> {
             if (name.isNull()) {
-                String name2 = NdbUtils.checkName(a.getStringValue().get());
+                String name2 = NdbUtils.checkName(v.stringValue());
                 name.set(new AtName(name2));
             } else {
                 commandLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
@@ -91,7 +91,7 @@ public abstract class NdbCmd<C extends NdbConfig> {
         } else if (support.getSession().configureFirst(commandLine)) {
             return true;
         } else {
-            NSession session = NSession.get().get();
+            NSession session = NSession.of();
             session.configureLast(commandLine);
             return true;
         }

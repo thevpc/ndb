@@ -14,6 +14,13 @@ public class NSqlClasspathLoader {
     private ClassLoader classLoader;
     public Map<String, String> queries = new HashMap<>();
 
+    public NSqlClasspathLoader() {
+    }
+
+    public NSqlClasspathLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public String getQuery(String query) {
         String queryPath = query;
         if (prefix != null && prefix.length() > 0) {

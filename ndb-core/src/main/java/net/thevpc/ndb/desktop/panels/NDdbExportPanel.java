@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 import java.util.function.Predicate;
 
 import net.thevpc.common.swing.list.JCheckBoxList;
@@ -100,16 +101,9 @@ public class NDdbExportPanel extends JPanel {
             return dbName;
         }
         int s = selectedTables.getElementCount();
-        ArrayList<NSqlTableHeader> selected = new ArrayList<>();
-        int all = 0;
-        for (int i = 0; i < s; i++) {
-            NSqlTableHeader th = (NSqlTableHeader) selectedTables.getSelectedElementAt(i);
-            if (th != null) {
-                selected.add(th);
-                all++;
-            }
-        }
-        if (selected.size() == 1 && selected.size() < all) {
+        List<NSqlTableHeader> selected =(List) selectedTables.getSelectedElements();
+        int all = selected.size();
+        if (all == 1) {
             return dbName + "." + selected.get(0).getTableName();
         }
         return dbName;
@@ -213,9 +207,8 @@ public class NDdbExportPanel extends JPanel {
             if (!b) {
                 return false;
             }
-            int s = selectedTables.getSelectedCount();
-            for (int i = 0; i < s; i++) {
-                NSqlTableHeader th = (NSqlTableHeader) selectedTables.getSelectedElementAt(i);
+            List<NSqlTableHeader> ss = (List) selectedTables.getSelectedElements();
+            for (NSqlTableHeader th : ss) {
                 if (th != null) {
                     if (th.equals(x)) {
                         return true;

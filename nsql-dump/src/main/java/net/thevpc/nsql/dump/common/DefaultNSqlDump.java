@@ -216,10 +216,10 @@ public class DefaultNSqlDump implements NSqlDump {
         NSqlTableDefinition tableMetaData = connection.getTableDefinition(table);
         long startTime = System.currentTimeMillis();
         LOG.log(Level.FINEST, "[" + table.getFullName() + "] reading from DB... ");
-        ResultSet rs = connection.getTableResultSet(table);
-        long count = connection.getTableCount(table);
+        long count = connection.getApproximateTableCount(table);
         long endTime = System.currentTimeMillis();
         LOG.log(Level.FINEST, "[" + table.getFullName() + "] read in " + (endTime - startTime) + "ms... ");
+        ResultSet rs = connection.getTableResultSet(table);
         return new ResultSetStoreRows(this, rs, count, table, tableMetaData);
     }
 

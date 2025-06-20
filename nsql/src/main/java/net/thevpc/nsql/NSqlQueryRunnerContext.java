@@ -5,13 +5,11 @@ import net.thevpc.nuts.format.NVisitResult;
 
 public class NSqlQueryRunnerContext<T> {
 
-    private T userObject;
     private NSqlConnection c;
     private ResultSet rs;
     private NVisitResult visitResult;
 
-    public NSqlQueryRunnerContext(T userObject, NSqlConnection c, ResultSet rs) {
-        this.userObject = userObject;
+    public NSqlQueryRunnerContext(NSqlConnection c, ResultSet rs) {
         this.c = c;
         this.rs = rs;
     }
@@ -22,10 +20,6 @@ public class NSqlQueryRunnerContext<T> {
 
     public void setVisitResult(NVisitResult visitResult) {
         this.visitResult = visitResult;
-    }
-
-    public T userObject() {
-        return userObject;
     }
 
     public NSqlConnection connection() {

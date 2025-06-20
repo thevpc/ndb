@@ -4,12 +4,15 @@ import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NBlankable;
 
-import java.sql.Connection;
-import java.sql.Types;
+import java.sql.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MsSqlServerConnection extends NSqlConnection {
+    private static Logger LOG = Logger.getLogger(MsSqlServerConnection.class.getName());
+
     public MsSqlServerConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
         super(connectionFactory, connection);
     }
@@ -30,10 +33,27 @@ public class MsSqlServerConnection extends NSqlConnection {
     }
 
     public String getDatabaseName() {
-        return executeQuery("SELECT DB_NAME()").first().map(x-> x.getString(1)).get();
+        return executeQuery("SELECT DB_NAME()").first().map(x -> x.getString(1)).get();
     }
 
 
+    @Override
+    public long getApproximateTableCount(NSqlTableId table) {
+        try (Statement s = getConnection().createStatement()) {
+            String sql = "SELECT SUM(row_count)\n" +
+                    "FROM sys.dm_db_partition_stats\n" +
+                    "WHERE object_id = OBJECT_ID('"+table.getFullName()+"') AND (index_id = 0 OR index_id = 1)";
+            LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
+            try (ResultSet rs = s.executeQuery(sql)) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+                return 0L;
+            }
+        } catch (SQLException ex) {
+            throw new UncheckedSqlException(ex);
+        }
+    }
 
     public List<NSqlDatabaseHeader> getDatabases() {
         return getCatalogs().stream().map(x -> new NSqlDatabaseHeaderImpl(
@@ -49,7 +69,7 @@ public class MsSqlServerConnection extends NSqlConnection {
 
     @Override
     protected String createTableDdl(NSqlTable jdbcTable) {
-        String validTableName = NBlankable.isBlank(jdbcTable.getTableName()) ? "hal_packet" : jdbcTable.getTableName();
+        String validTableName = NBlankable.isBlank(jdbcTable.getTableName()) ? "no_table" : jdbcTable.getTableName();
         // "CREATE TABLE IF NOT EXISTS packets( id SERIAL PRIMARY KEY,protocol varchar(20) NOT NULL,added_at TIMESTAMP,packet_type int NOT NULL ,latitude REAL,longitude REAL,speed REAL,terminal_id BIGINT,raw_bytes VARCHAR(1000));"
         StringBuilder ddl = new StringBuilder();
         ddl.append("IF OBJECT_ID(N'[dbo].[")
@@ -163,7 +183,7 @@ public class MsSqlServerConnection extends NSqlConnection {
         }
         return sb.toString();
     }
-    
+
     public NSqlColumnType resolveColumnType(NSqlColumn c) {
         switch (c.getSqlType()) {
             case Types.TINYINT:

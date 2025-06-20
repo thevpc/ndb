@@ -805,15 +805,20 @@ public class NSqlConnection implements Closeable {
         }
     }
 
+    public long getApproximateTableCount(NSqlTableId table) {
+        return getTableCount(table);
+    }
+
     public long getTableCount(NSqlTableId table) {
-        try {
+        try (Statement s = getConnection().createStatement()) {
             String sql = "Select count(1) from " + escapeIdentifier(table);
             LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
-            ResultSet rs = connection.createStatement().executeQuery(sql);
-            if(rs.next()) {
-                return rs.getLong(1);
+            try (ResultSet rs = s.executeQuery(sql)) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+                return 0L;
             }
-            return 0L;
         } catch (SQLException ex) {
             throw new UncheckedSqlException(ex);
         }

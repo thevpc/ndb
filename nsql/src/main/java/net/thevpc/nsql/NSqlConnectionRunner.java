@@ -32,14 +32,10 @@ public class NSqlConnectionRunner {
     }
 
     public void withQuery(String query, NSqlQueryRunner<Object> runnable) {
-        withQuery(null, query, runnable);
-    }
-
-    public void withQuery(Object principal, String query, NSqlQueryRunner<Object> runnable) {
         withConnection((c) -> {
             try (Statement statement = c.getConnection().createStatement()) {
                 try (ResultSet rs = statement.executeQuery(query)) {
-                    NSqlQueryRunnerContext<Object> context = new NSqlQueryRunnerContext<Object>(principal, c, rs);
+                    NSqlQueryRunnerContext<Object> context = new NSqlQueryRunnerContext<Object>(c, rs);
                     while (rs.next()) {
                         runnable.eachRow(context);
                         if (context.getVisitResult() == NVisitResult.TERMINATE) {

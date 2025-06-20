@@ -3,7 +3,7 @@
 
     <groupId>net.thevpc.ndb</groupId>
     <artifactId>ndb-servers</artifactId>
-    <version>0.8.5.0</version>
+    <version>0.8.5.1</version>
     <name>NDB :: Servers</name>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

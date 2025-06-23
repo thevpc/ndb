@@ -40,9 +40,7 @@ public class MsSqlServerConnection extends NSqlConnection {
     @Override
     public long getApproximateTableCount(NSqlTableId table) {
         try (Statement s = getConnection().createStatement()) {
-            String sql = "SELECT SUM(row_count)\n" +
-                    "FROM sys.dm_db_partition_stats\n" +
-                    "WHERE object_id = OBJECT_ID('"+table.getFullName()+"') AND (index_id = 0 OR index_id = 1)";
+            String sql = "SELECT SUM(row_count) FROM sys.dm_db_partition_stats WHERE object_id = OBJECT_ID('"+table.getFullName()+"') AND (index_id = 0 OR index_id = 1)";
             LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
             try (ResultSet rs = s.executeQuery(sql)) {
                 if (rs.next()) {

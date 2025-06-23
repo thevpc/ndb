@@ -971,7 +971,7 @@ public class NSqlConnection implements Closeable {
         return "postgres";
     }
 
-    protected int executeUpdate(String sql) {
+    public int executeUpdate(String sql) {
         LOG.log(Level.FINEST, "[SQL] " + sql);
         try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
             return ps.executeUpdate();
@@ -1487,6 +1487,24 @@ public class NSqlConnection implements Closeable {
             throw new UncheckedSqlException(ex);
         }
     }
+
+//    public long executeUpdate(String sql) {
+//        Statement s = null;
+//        try {
+//            s = getConnection().createStatement();
+//            Statement finalS = s;
+//            return s.executeUpdate(sql);
+//        } catch (SQLException ex) {
+//            if (s != null) {
+//                try {
+//                    s.close();
+//                } catch (SQLException e) {
+//                    //
+//                }
+//            }
+//            throw new UncheckedSqlException(ex);
+//        }
+//    }
 
     public String resolveSqlTypeDefinition(NSqlColumn def) {
         switch (def.getColumnType()) {

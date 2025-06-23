@@ -1,6 +1,7 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nuts.format.NVisitResult;
+import net.thevpc.nuts.util.NCallable;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 
@@ -9,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NSqlConnectionRunner {
@@ -63,7 +65,7 @@ public class NSqlConnectionRunner {
                 try (ResultSet rs = statement.executeQuery()) {
                     NSqlQueryCallerContext<V> context = new NSqlQueryCallerContext<V>(principal, c, rs);
                     while (rs.next()) {
-                        if(runnable!=null) {
+                        if (runnable != null) {
                             runnable.eachRow(context);
                         }
                         if (context.getVisitResult() == NVisitResult.TERMINATE) {
@@ -93,7 +95,7 @@ public class NSqlConnectionRunner {
                 }
                 int i = statement.executeUpdate();
                 NSqlUpdateCallerContext<Object, V> context = new NSqlUpdateCallerContext<>(principal, c, i, statement);
-                if(runnable!=null) {
+                if (runnable != null) {
                     runnable.run(context);
                 }
                 result.set(context.getResultValue());
@@ -117,6 +119,23 @@ public class NSqlConnectionRunner {
             }
         } else {
             runnable.accept(c);
+        }
+    }
+
+    public <T> T callWithConnection(Function<NSqlConnection, T> runnable) {
+        NSqlConnection c = curr.get();
+        if (c == null) {
+            c = new NSimpleSqlConnectionFactory(params.get()).create();
+            NSqlConnection o = curr.get();
+            curr.set(c);
+            T r = runnable.apply(c);
+            curr.set(o);
+            if (o == null) {
+                c.close();
+            }
+            return r;
+        } else {
+            return runnable.apply(c);
         }
     }
 }

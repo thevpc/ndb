@@ -102,7 +102,7 @@ public class DefaultResultSetIoCell extends AbstractIoCell {
                 }
                 case BIG_INT: {
                     BigDecimal v = rs.getBigDecimal(column.getIndex());
-                    return (v == null && !fileColType.isNullable()) ? BigInteger.ZERO : v.toBigInteger();
+                    return (v == null && !fileColType.isNullable()) ? BigInteger.ZERO : (v == null) ? null : v.toBigInteger();
                 }
                 case BIG_DECIMAL: {
                     BigDecimal v = rs.getBigDecimal(column.getIndex());
@@ -123,27 +123,27 @@ public class DefaultResultSetIoCell extends AbstractIoCell {
                 }
                 case FLOAT: {
                     float d = rs.getFloat(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case LONG: {
                     long d = rs.getLong(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case BYTE: {
                     byte d = rs.getByte(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case INT: {
                     int d = rs.getInt(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case SHORT: {
                     short d = rs.getShort(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case BOOLEAN: {
                     boolean d = rs.getBoolean(column.getIndex());
-                    return rs.wasNull() && fileColType.isNullable()? null : d;
+                    return rs.wasNull() && fileColType.isNullable() ? null : d;
                 }
                 case BYTES: {
                     byte[] v = rs.getBytes(column.getIndex());

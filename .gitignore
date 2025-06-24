@@ -10,3 +10,6 @@ dbrman/target
 /ndb-import/target/
 /ndb-full/target/
 
+/ndb-desktop/target/
+
+/ndb/target/

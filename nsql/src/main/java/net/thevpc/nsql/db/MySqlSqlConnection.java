@@ -3,8 +3,10 @@ package net.thevpc.nsql.db;
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.NSqlDatabaseHeader;
 import net.thevpc.nsql.model.NSqlDatabaseHeaderImpl;
+import net.thevpc.nsql.model.NSqlTableId;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NMsg;
 
 import java.io.InputStream;
 import java.io.Reader;
@@ -16,6 +18,7 @@ import java.util.logging.Logger;
 
 public class MySqlSqlConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(MySqlSqlConnection.class.getName());
+
     public MySqlSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
         super(connectionFactory, connection);
         setMaxVarcharLength(10485760);
@@ -43,7 +46,7 @@ public class MySqlSqlConnection extends NSqlConnection {
     }
 
     public String getDatabaseName() {
-        return executeQuery("SELECT DATABASE()").first().map(x-> x.getString(1)).get();
+        return executeQuery("SELECT DATABASE()").first().map(x -> x.getString(1)).get();
     }
 
     protected String quotedIdentifier(String s) {
@@ -110,16 +113,15 @@ public class MySqlSqlConnection extends NSqlConnection {
         return super.resolveColumnType(c);
     }
 
-    public void prepareStatement(PreparedStatement ps, int index, NSqlColumn column, Object value, NPrepareStatementContext prepareStatementContext) {
+    public void prepareStatement(PreparedStatement ps, int index, NSqlColumnType st, String columnName, Object value, NPrepareStatementContext prepareStatementContext) {
         try {
-            NSqlColumnType st = resolveColumnType(column);
             switch (st) {
                 case STRING: {
                     if (value == null) {
                         ps.setNull(index, Types.VARCHAR);
                     } else {
                         if ((value instanceof InputStream || value instanceof Reader) && prepareStatementContext.isExternalLob()) {
-                            super.prepareStatement(ps, index, column, value, prepareStatementContext);
+                            super.prepareStatement(ps, index, st, columnName, value, prepareStatementContext);
                         } else {
                             String s = (String) value;
                             //just remove invalid \0
@@ -128,7 +130,7 @@ public class MySqlSqlConnection extends NSqlConnection {
                                 if (i == s.length() - 1) {
                                     s = s.substring(0, s.length() - 1);
                                 } else {
-                                    LOG.log(Level.SEVERE, "[" + st + "," + index + "] prepare statement : string with invalid zero char in "+column);
+                                    LOG.log(Level.SEVERE, "[" + st + "," + index + "] prepare statement : string with invalid zero char in " + columnName);
                                 }
                             }
                             ps.setString(index, s);
@@ -146,7 +148,7 @@ public class MySqlSqlConnection extends NSqlConnection {
                     break;
                 }
                 default: {
-                    super.prepareStatement(ps, index, column, value, prepareStatementContext);
+                    super.prepareStatement(ps, index, st, columnName, value, prepareStatementContext);
                 }
             }
         } catch (SQLException e) {
@@ -275,5 +277,11 @@ public class MySqlSqlConnection extends NSqlConnection {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public long reindexTable(NSqlTableId nSqlTableId) {
+        String q = NMsg.ofC("OPTIMIZE TABLE %s", nSqlTableId.getTableName()).toString();
+        return executeUpdate(q);
     }
 }

@@ -2,7 +2,9 @@ package net.thevpc.nsql.db;
 
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
+import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NMsg;
 
 import java.sql.*;
 import java.util.List;
@@ -189,5 +191,11 @@ public class MsSqlServerConnection extends NSqlConnection {
                 return NSqlColumnType.SHORT;
         }
         return super.resolveColumnType(c);
+    }
+
+    @Override
+    public long reindexTable(NSqlTableId nSqlTableId) {
+        String q = NMsg.ofC("ALTER INDEX ALL ON %s REBUILD",nSqlTableId.toString()).toString();
+        return executeUpdate(q);
     }
 }

@@ -3,6 +3,8 @@ package net.thevpc.nsql.impl;
 import net.thevpc.nsql.NQueryResult;
 import net.thevpc.nsql.NSqlRow;
 import net.thevpc.nsql.UncheckedSqlException;
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStream;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -26,15 +28,16 @@ public class ResultSetQueryResult implements NQueryResult {
 
 
     @Override
-    public Optional<NSqlRow> first() {
+    public NOptional<NSqlRow> first() {
         return stream().findFirst();
     }
 
     @Override
-    public Stream<NSqlRow> stream() {
-        return StreamSupport.stream(
+    public NStream<NSqlRow> stream() {
+        Stream<NSqlRow> s = StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(iterable().iterator(), Spliterator.ORDERED),
                 false);
+        return NStream.ofStream(s);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class ResultSetQueryResult implements NQueryResult {
         }
     }
 
-    public NSqlRow columnsRow(){
+    public NSqlRow columnsRow() {
         ResultSetMetaData md = null;
         String[] allNames;
         Object[] allValues;
@@ -90,7 +93,7 @@ public class ResultSetQueryResult implements NQueryResult {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return new ArraySqlRow(allNames,allValues);
+        return new ArraySqlRow(allNames, allValues);
     }
 
 

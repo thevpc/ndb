@@ -1,14 +1,17 @@
 package net.thevpc.nsql;
 
+import net.thevpc.nuts.util.NOptional;
+import net.thevpc.nuts.util.NStream;
+
 import java.io.Closeable;
 import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface NQueryResult extends Closeable {
-    Optional<NSqlRow> first();
+    NOptional<NSqlRow> first();
 
-    Stream<NSqlRow> stream();
+    NStream<NSqlRow> stream();
 
     Iterable<NSqlRow> iterable();
 

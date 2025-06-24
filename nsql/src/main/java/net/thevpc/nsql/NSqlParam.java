@@ -9,11 +9,11 @@ public class NSqlParam implements Cloneable {
     public Object value;
 
     public static NSqlParam of(String columnName, NSqlColumnType columnType, Object value) {
-        return new NSqlParam(Mode.NAME, columnName,null,columnType, null,value);
+        return new NSqlParam(Mode.NAME, columnName, null, columnType, null, value);
     }
 
     public static NSqlParam of(int columnIndex, NSqlColumnType columnType, Object value) {
-        return new NSqlParam(Mode.INDEX, null,columnIndex,columnType, null,value);
+        return new NSqlParam(Mode.INDEX, null, columnIndex, columnType, null, value);
     }
 
     private NSqlParam(Mode mode, String columnName, Integer columnIndex, NSqlColumnType columnType, Integer rawType, Object value) {
@@ -25,7 +25,7 @@ public class NSqlParam implements Cloneable {
         this.value = value;
     }
 
-    public static  enum Mode{
+    public static enum Mode {
         NAME,
         INDEX,
     }

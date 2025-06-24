@@ -1016,7 +1016,10 @@ public class NSqlConnection implements Closeable {
     }
 
     public void prepareStatement(PreparedStatement ps, int index, NSqlColumn column, Object value, NPrepareStatementContext prepareStatementContext) {
-        NSqlColumnType st = resolveColumnType(column);
+        prepareStatement(ps, index, column.getColumnType(), column.getColumnName(), value, prepareStatementContext);
+    }
+
+    public void prepareStatement(PreparedStatement ps, int index, NSqlColumnType st, String columnName, Object value, NPrepareStatementContext prepareStatementContext) {
         try {
             switch (st) {
                 case NULL: {
@@ -1115,7 +1118,7 @@ public class NSqlConnection implements Closeable {
                     if (value == null) {
                         ps.setNull(index, Types.VARCHAR);
                     } else {
-                        String cn = column.getColumnName();
+                        String cn = columnName;
                         Object u = NLobUtils.toLobFile(value, NBlankable.isBlank(cn) ? prepareStatementContext.getExternalLobFolder() : prepareStatementContext.getExternalLobFolder().resolve(cn));
                         if (u instanceof File || u instanceof Path) {
                             ps.setString(index, u.toString());
@@ -1124,7 +1127,7 @@ public class NSqlConnection implements Closeable {
                         } else if (u instanceof char[]) {
                             ps.setString(index, new String((char[]) u));
                         } else {
-                            throw new IllegalArgumentException("Unsupported type for column " + column + " value " + value);
+                            throw new IllegalArgumentException("Unsupported type for column " + columnName + " value " + value);
                         }
                     }
                     break;
@@ -1170,7 +1173,7 @@ public class NSqlConnection implements Closeable {
                     break;
                 }
                 default: {
-                    throw new UncheckedIOException(new IOException("Unsupported type for column " + column + " value " + value));
+                    throw new UncheckedIOException(new IOException("Unsupported type for column " + columnName + " value " + value));
                 }
             }
         } catch (SQLException e) {
@@ -1464,6 +1467,14 @@ public class NSqlConnection implements Closeable {
         return executeQuery(new String(NIOUtils.readBytes(resource)));
     }
 
+    public NSqlQuery query(String sql) {
+        return query().append(sql);
+    }
+
+    public NSqlQuery query() {
+        return new DefaultNSqlQuery(this);
+    }
+
     public NQueryResult executeQuery(String sql) {
         Statement s = null;
         try {
@@ -1736,4 +1747,9 @@ public class NSqlConnection implements Closeable {
 
         }
     }
+
+    public long reindexTable(NSqlTableId nSqlTableId) {
+        return 0;
+    }
+
 }

@@ -1,7 +1,6 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nuts.format.NVisitResult;
-import net.thevpc.nuts.util.NCallable;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 
@@ -14,11 +13,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NSqlConnectionRunner {
-    private Supplier<NSqlConnectionString> params;
+    private Supplier<NSqlConnectionString> connectionStringSupplier;
     private ThreadLocal<NSqlConnection> curr = new ThreadLocal<>();
 
-    public NSqlConnectionRunner(Supplier<NSqlConnectionString> params) {
-        this.params = params;
+    public NSqlConnectionRunner(Supplier<NSqlConnectionString> connectionStringSupplier) {
+        this.connectionStringSupplier = connectionStringSupplier;
     }
 
     public NSqlQueryRunnerBuilder withQuery(String query) {
@@ -109,7 +108,7 @@ public class NSqlConnectionRunner {
     public void withConnection(Consumer<NSqlConnection> runnable) {
         NSqlConnection c = curr.get();
         if (c == null) {
-            c = new NSimpleSqlConnectionFactory(params.get()).create();
+            c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create();
             NSqlConnection o = curr.get();
             curr.set(c);
             runnable.accept(c);
@@ -125,7 +124,7 @@ public class NSqlConnectionRunner {
     public <T> T callWithConnection(Function<NSqlConnection, T> runnable) {
         NSqlConnection c = curr.get();
         if (c == null) {
-            c = new NSimpleSqlConnectionFactory(params.get()).create();
+            c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create();
             NSqlConnection o = curr.get();
             curr.set(c);
             T r = runnable.apply(c);

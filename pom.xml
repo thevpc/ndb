@@ -14,8 +14,8 @@
         <module>nsql</module>
         <module>nsql-dump</module>
         <module>ndb-servers</module>
-        <module>ndb-cmd</module>
-        <module>ndb-core</module>
+        <module>ndb</module>
+        <module>ndb-desktop</module>
         <module>ndb-import</module>
         <module>ndb-export</module>
         <module>ndb-full</module>

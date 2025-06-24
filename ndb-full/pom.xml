@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency><groupId>net.thevpc.ndb</groupId><artifactId>ndb-core</artifactId><version>0.8.5.1</version></dependency>
+        <dependency><groupId>net.thevpc.ndb</groupId><artifactId>ndb-desktop</artifactId><version>0.8.5.1</version></dependency>
     </dependencies>
     <build>
         <plugins>
@@ -21,7 +21,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>net.thevpc.ndb.desktop.NDdbMain</mainClass>
+                            <mainClass>net.thevpc.ndb.desktop.NDdbDesktop</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

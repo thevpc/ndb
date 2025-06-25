@@ -284,14 +284,15 @@ public class OracleSqlConnection extends NSqlConnection {
     @Override
     public long reindexTable(NSqlTableId nSqlTableId) {
         Set<String> indexNames = query("Select index_name FROM user_indexes WHERE table_name = :tableName")
-                .setParam(NSqlParam.of("tableName", NSqlColumnType.STRING, nSqlTableId.getTableName().toUpperCase()))
+                .setParam(NSqlParam.ofString("tableName", nSqlTableId.getTableName().toUpperCase()))
                 .executeQuery().stream().map(x -> {
                     return x.getString(0);
                 }).toSet();
         long count = 0;
         for (String indexName : indexNames) {
             String q = NMsg.ofC("ALTER INDEX %s REBUILD", indexName).toString();
-            return executeUpdate(q);
+            count += executeUpdate(q);
         }
+        return count;
     }
 }

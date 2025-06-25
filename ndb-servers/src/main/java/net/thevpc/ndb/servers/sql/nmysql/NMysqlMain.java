@@ -354,7 +354,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                            d.c_shutdown_wait_time = v.asInt().get();
+                            d.c_shutdown_wait_time = v.intValue();
                         });
 
                         break;
@@ -366,7 +366,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                            d.c_startup_wait_time = v.asInt().get();
+                            d.c_startup_wait_time = v.intValue();
                         });
                         break;
                     }

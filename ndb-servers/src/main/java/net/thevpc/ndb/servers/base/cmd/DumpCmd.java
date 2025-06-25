@@ -131,7 +131,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                     }
                     case "--roll": {
                         cmdLine.withNextEntry((v) -> {
-                            roll.set(v.asInt().get());
+                            roll.set(v.intValue());
                         });
                         break;
                     }

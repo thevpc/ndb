@@ -53,11 +53,11 @@ public class FindCmd<C extends NdbConfig> extends NdbCmd<C> {
                             break;
                         }
                         case "--limit": {
-                            cmdLine.withNextEntry((v) -> eq.setLimit(v.asLong().get()));
+                            cmdLine.withNextEntry((v) -> eq.setLimit(v.intValue()));
                             break;
                         }
                         case "--skip": {
-                            cmdLine.withNextEntry((v) -> eq.setSkip(v.asLong().get()));
+                            cmdLine.withNextEntry((v) -> eq.setSkip(v.intValue()));
                             break;
                         }
                         default: {

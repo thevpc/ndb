@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndb</groupId>
     <artifactId>nsql</artifactId>
-    <version>0.8.5.1</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDB :: NSQL :: Core</name>
     <description>v</description>
@@ -21,7 +21,7 @@
     </properties>
 
     <dependencies>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-lib</artifactId><version>0.8.5.0</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-lib</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
 
     <organization>

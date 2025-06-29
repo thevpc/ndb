@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.thevpc.ndb</groupId>
     <artifactId>ndb</artifactId>
-    <version>0.8.5.1</version>
+    <version>0.8.6.0</version>
     <packaging>jar</packaging>
     <name>NDB :: App Cmd</name>
     <properties>
@@ -12,15 +12,15 @@
         <exec.mainClass>net.thevpc.ndb.NDdbMain</exec.mainClass>
     </properties>
     <dependencies>
-        <dependency><groupId>net.thevpc.nsql</groupId><artifactId>nsql-dump</artifactId><version>0.8.5.1</version></dependency>
+        <dependency><groupId>net.thevpc.nsql</groupId><artifactId>nsql-dump</artifactId><version>0.8.6.0</version></dependency>
         <dependency><groupId>com.microsoft.sqlserver</groupId><artifactId>mssql-jdbc</artifactId><version>12.4.2.jre8</version></dependency>
         <dependency><groupId>com.google.code.gson</groupId><artifactId>gson</artifactId><version>2.10.1</version></dependency>
 
         <dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId><version>42.6.0</version></dependency>
 
         <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.10.0</version><scope>test</scope></dependency>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.5</version></dependency>
-        <dependency><groupId>net.thevpc.ndb</groupId><artifactId>nsql</artifactId><version>0.8.5.1</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.6</version></dependency>
+        <dependency><groupId>net.thevpc.ndb</groupId><artifactId>nsql</artifactId><version>0.8.6.0</version></dependency>
     </dependencies>
     <build>
         <finalName>ndb</finalName>

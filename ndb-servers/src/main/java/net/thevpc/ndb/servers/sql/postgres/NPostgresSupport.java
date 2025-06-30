@@ -62,7 +62,7 @@ public class NPostgresSupport extends SqlSupport<NPostgresConfig> {
             NPath pgpass = NPath.ofUserHome().resolve(".pgpass");
             String u = options.getHost() + ":" + options.getPort() + ":" + options.getDatabaseName() + ":" + options.getUser();
             if (pgpass.exists()) {
-                String q = pgpass.getLines().filter(x -> x.startsWith(u + ":")).findFirst().orElse(null);
+                String q = pgpass.lines().filter(x -> x.startsWith(u + ":")).findFirst().orElse(null);
                 if (q != null) {
                     String storedPassword = q.substring(u.length() + 1);
                     if (!NBlankable.isBlank(options.getPassword()) && !Objects.equals(options.getPassword(), storedPassword)) {

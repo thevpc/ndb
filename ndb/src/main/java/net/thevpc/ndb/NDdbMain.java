@@ -6,12 +6,13 @@ import net.thevpc.nuts.NApp;
 import net.thevpc.nuts.NApplication;
 import net.thevpc.nuts.NMainArgs;
 
-public class NDdbMain implements NApplication {
+@NApp.Info
+public class NDdbMain  {
     public static void main(String[] args) {
         NApp.builder(args).run();
     }
 
-    @Override
+    @NApp.Main
     public void run() {
         NDdbRunner.run(NDdbOptionsParser.parse(NApp.of().getCmdLine()));
     }

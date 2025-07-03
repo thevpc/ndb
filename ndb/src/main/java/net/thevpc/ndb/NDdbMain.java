@@ -8,7 +8,7 @@ import net.thevpc.nuts.NMainArgs;
 
 public class NDdbMain implements NApplication {
     public static void main(String[] args) {
-        new NDdbMain().main(NMainArgs.ofExit(args));
+        NApp.builder(args).run();
     }
 
     @Override

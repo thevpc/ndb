@@ -25,12 +25,11 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
     public void run(NCmdLine cmdLine) {
         C options = createConfigInstance();
         NRef<Boolean> update = NRef.of(false);
-        NSession session = NSession.of();
         while (cmdLine.hasNext()) {
             if (!fillOption(cmdLine, options)) {
                 cmdLine.selector().with("--update").nextFlag((v) -> {
                     update.set(v.booleanValue());
-                }).requireWithDefault()
+                }).requireWithDefault();
             }
         }
         options.setName(NStringUtils.trimToNull(options.getName()));

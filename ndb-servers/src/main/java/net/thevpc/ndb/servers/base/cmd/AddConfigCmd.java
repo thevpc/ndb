@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
     public AddConfigCmd(NdbSupportBase<C> support, String... names) {
-        super(support,"add-config");
+        super(support, "add-config");
         this.names.addAll(Arrays.asList(names));
     }
 
@@ -27,15 +27,10 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         NRef<Boolean> update = NRef.of(false);
         NSession session = NSession.of();
         while (cmdLine.hasNext()) {
-            if (fillOption(cmdLine, options)) {
-                //
-            } else if (
-                    cmdLine.withNextFlag((v) -> {
-                        update.set(v.booleanValue());
-                    }, "--update")
-            ) {
-            } else {
-                session.configureLast(cmdLine);
+            if (!fillOption(cmdLine, options)) {
+                cmdLine.selector().with("--update").nextFlag((v) -> {
+                    update.set(v.booleanValue());
+                }).requireWithDefault()
             }
         }
         options.setName(NStringUtils.trimToNull(options.getName()));
@@ -50,12 +45,12 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);
-                NElementWriter.ofJson().write(options,file);
+                NElementWriter.ofJson().write(options, file);
             } else {
                 throw new RuntimeException("already found");
             }
         } else {
-            NElementWriter.ofJson().write(options,file);
+            NElementWriter.ofJson().write(options, file);
         }
     }
 

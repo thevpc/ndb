@@ -70,10 +70,10 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         while (cmdLine.hasNext()) {
             boolean ok = false;
             for (NdbCmd<C> cc : commands.values()) {
-                if (cmdLine.withNextFlag((value) -> {
+                if (cmdLine.selector().with(cc.getNames()).nextFlag((value) -> {
                     cmdLine.setCommandName(getDbType() + " " + value.key());
                     cc.run(cmdLine);
-                }, cc.getNames())) {
+                }).anyMatch()) {
                     ok = true;
                     break;
                 }
@@ -245,18 +245,13 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         while (commandLine.hasNext()) {
             if (fillOption(commandLine, options)) {
                 //
-            } else if (
-                    commandLine.withNextFlag((v) -> {
-                        update.set(v.booleanValue());
-                    }, "--update")
-            ) {
-
-            } else if (fillAddConfigOption(commandLine)) {
-
-            } else if (session.configureFirst(commandLine)) {
-
             } else {
-                commandLine.throwUnexpectedArgument();
+                commandLine.selector()
+                        .with("--update").nextFlag((v) -> {
+                            update.set(v.booleanValue());
+                        })
+                        .withProcessor((a, c) -> fillAddConfigOption(c))
+                        .requireWithDefault();
             }
         }
         options.setName(NStringUtils.trimToNull(options.getName()));

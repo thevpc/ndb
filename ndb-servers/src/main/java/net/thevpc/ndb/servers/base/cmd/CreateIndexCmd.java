@@ -24,9 +24,9 @@ public class CreateIndexCmd<C extends NdbConfig> extends NdbCmd<C> {
         ExtendedQuery eq = new ExtendedQuery(getName());
         C otherOptions = createConfigInstance();
 
-        String status = "";
+        NRef<String> status = NRef.of("");
         while (cmdLine.hasNext()) {
-            switch (status) {
+            switch (status.get()) {
                 case "": {
                     switch (cmdLine.peek().get().key()) {
                         case "--config": {
@@ -36,7 +36,7 @@ public class CreateIndexCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
+                            cmdLine.selector().withNextEntry((v) -> eq.setTable(v.stringValue())).require();
                             break;
                         }
                         case "--one": {
@@ -44,9 +44,9 @@ public class CreateIndexCmd<C extends NdbConfig> extends NdbCmd<C> {
                             break;
                         }
                         case "--set": {
-                            status = "--set";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.selector().withNextFlag((v) -> {
+                                status.set("--set");
+                            }).require();
                             break;
                         }
                         default: {

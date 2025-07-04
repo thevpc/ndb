@@ -32,14 +32,14 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                 switch (key) {
                     case "--from":
                     {
-                        cmdLine.withNextEntry((v) ->
-                                fromOptions.addAll(Arrays.asList("--db", v.stringValue())));
+                        cmdLine.selector().withNextEntry((v) ->
+                                fromOptions.addAll(Arrays.asList("--db", v.stringValue()))).require();
                         break;
                     }
                     case "--to":
                     {
-                        cmdLine.withNextEntry((v) ->
-                                toOptions.addAll(Arrays.asList("--db", v.stringValue())));
+                        cmdLine.selector().withNextEntry((v) ->
+                                toOptions.addAll(Arrays.asList("--db", v.stringValue()))).require();
                         break;
                     }
                     case "--from-name":
@@ -54,10 +54,10 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--from-ssh":
                     case "--from-db":
                     {
-                        cmdLine.withNextEntry((v) ->
+                        cmdLine.selector().withNextEntry((v) ->
                                 fromOptions.addAll(Arrays.asList(
                                         "--" + key.substring("--from-".length())
-                                        , v.stringValue())));
+                                        , v.stringValue()))).require();
                         break;
                     }
                     case "--to-name":
@@ -71,19 +71,19 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--to-remote-temp-folder":
                     case "--to-ssh":
                     case "--to-db": {
-                        cmdLine.withNextEntry((v) -> toOptions.addAll(Arrays.asList(
+                        cmdLine.selector().withNextEntry((v) -> toOptions.addAll(Arrays.asList(
                                 "--" + key.substring("--to-".length())
-                                , v.stringValue())));
+                                , v.stringValue()))).require();
                         break;
                     }
                     case "--file": {
-                        cmdLine.withNextEntry((vv) -> {
+                        cmdLine.selector().withNextEntry((vv) -> {
                             String v=vv.stringValue();
                             if (!v.endsWith(".zip")) {
                                 v = v + ".zip";
                             }
                             tempDataFile.set(NPath.of(v).toAbsolute());
-                        });
+                        }).require();
                         break;
                     }
                     case "--keep-file": {

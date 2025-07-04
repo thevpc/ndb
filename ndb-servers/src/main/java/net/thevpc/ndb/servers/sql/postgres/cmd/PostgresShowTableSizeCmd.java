@@ -53,7 +53,7 @@ public class PostgresShowTableSizeCmd extends NdbCmd<NPostgresConfig> {
                         break;
                     }
                     case "--long": {
-                        cmdLine.withNextFlag((v) -> eq.setLongMode(v.booleanValue()));
+                        cmdLine.matcher().matchFlag((v) -> eq.setLongMode(v.booleanValue())).anyMatch();
                         break;
                     }
                     default: {

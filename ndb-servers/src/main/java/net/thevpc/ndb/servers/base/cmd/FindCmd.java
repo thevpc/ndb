@@ -37,27 +37,27 @@ public class FindCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
+                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         case "--limit": {
-                            cmdLine.withNextEntry((v) -> eq.setLimit(v.intValue()));
+                            cmdLine.matcher().matchEntry((v) -> eq.setLimit(v.intValue())).anyMatch();
                             break;
                         }
                         case "--skip": {
-                            cmdLine.withNextEntry((v) -> eq.setSkip(v.intValue()));
+                            cmdLine.matcher().matchEntry((v) -> eq.setSkip(v.intValue())).anyMatch();
                             break;
                         }
                         default: {
@@ -70,8 +70,8 @@ public class FindCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         default: {
@@ -84,8 +84,8 @@ public class FindCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         default: {

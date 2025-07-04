@@ -37,19 +37,19 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
+                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         default: {
@@ -62,8 +62,8 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         default: {
@@ -76,8 +76,8 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         default: {

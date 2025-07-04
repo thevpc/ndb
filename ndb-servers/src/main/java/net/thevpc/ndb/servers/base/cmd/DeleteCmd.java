@@ -37,17 +37,17 @@ public class DeleteCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.withNextEntry((v) -> eq.setTable(v.stringValue()));
+                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.withNextFlag((v) -> {
-                            });
+                            cmdLine.matcher().matchFlag((v) -> {
+                            }).anyMatch();
                             break;
                         }
                         case "--one": {
-                            cmdLine.withNextFlag((v) -> eq.setOne(v.booleanValue()));
+                            cmdLine.matcher().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
                             break;
                         }
                         default: {

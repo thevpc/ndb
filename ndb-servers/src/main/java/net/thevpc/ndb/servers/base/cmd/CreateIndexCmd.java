@@ -36,15 +36,15 @@ public class CreateIndexCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.selector().withNextEntry((v) -> eq.setTable(v.stringValue())).require();
+                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).require();
                             break;
                         }
                         case "--one": {
-                            cmdLine.withNextFlag((v) -> eq.setOne(v.booleanValue()));
+                            cmdLine.matcher().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
                             break;
                         }
                         case "--set": {
-                            cmdLine.selector().withNextFlag((v) -> {
+                            cmdLine.matcher().matchFlag((v) -> {
                                 status.set("--set");
                             }).require();
                             break;

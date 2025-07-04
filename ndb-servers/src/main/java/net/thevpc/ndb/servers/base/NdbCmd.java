@@ -71,14 +71,14 @@ public abstract class NdbCmd<C extends NdbConfig> {
     }
 
     protected void readConfigNameOption(NCmdLine commandLine, NRef<AtName> name) {
-        commandLine.withNextEntry((v) -> {
+        commandLine.matcher().matchEntry((v) -> {
             if (name.isNull()) {
                 String name2 = NdbUtils.checkName(v.stringValue());
                 name.set(new AtName(name2));
             } else {
                 commandLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
             }
-        });
+        }).anyMatch();
     }
 
     protected String getDbType() {

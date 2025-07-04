@@ -127,23 +127,23 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--path": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.path == null) {
                                 d.path = v.stringValue();
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     default: {
@@ -182,19 +182,19 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--show-sql": {
-                        cmdLine.withNextFlag((v) -> {
+                        cmdLine.matcher().matchFlag((v) -> {
                             forceShowSQL.set(v.booleanValue());
-                        });
+                        }).anyMatch();
                         break;
                     }
                     default: {
@@ -254,23 +254,23 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--path": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (path.isNull()) {
                                 path.set(v.stringValue());
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     default: {
@@ -338,150 +338,150 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--shutdown-wait-time": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_shutdown_wait_time = v.intValue();
-                        });
+                        }).anyMatch();
 
                         break;
                     }
                     case "--startup-wait-time": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_startup_wait_time = v.intValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--backup-folder": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_archive_folder = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--running-folder": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_running_folder = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--log-file": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_log_file = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--mysql-command": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_mysql_command = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--mysqldump-command": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_mysqldump_command = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--kill": {
-                        cmdLine.withNextFlag((v) -> {
+                        cmdLine.matcher().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.c_kill = v.booleanValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--user": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.user = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--password": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.password = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--ask-password": {
-                        cmdLine.withNextFlag((v) -> {
+                        cmdLine.matcher().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.askPassword = v.booleanValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--db": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
                             d.dbname = v.stringValue();
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--local-name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -492,11 +492,11 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--remote-name": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -507,11 +507,11 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--server": {
-                        cmdLine.withNextEntry((v) -> {
+                        cmdLine.matcher().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -522,27 +522,27 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             } else {
                                 cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--local": {
-                        cmdLine.withNextFlag((v) -> {
+                        cmdLine.matcher().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = !v.booleanValue();
                             } else if (d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     case "--remote": {
-                        cmdLine.withNextFlag((v) -> {
+                        cmdLine.matcher().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = v.booleanValue();
                             } else if (!d.expectedRemote) {
                                 cmdLine.throwUnexpectedArgument();
                             }
-                        });
+                        }).anyMatch();
                         break;
                     }
                     default: {

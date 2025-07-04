@@ -36,7 +36,7 @@ public class RenameTableCmd<C extends NdbConfig> extends NdbCmd<C> {
                 case "--entity":
                 case "--table":
                 case "--collection": {
-                    cmdLine.withNextEntry((v) -> table.set(v.stringValue()));
+                    cmdLine.matcher().matchEntry((v) -> table.set(v.stringValue())).anyMatch();
                     break;
                 }
                 default: {

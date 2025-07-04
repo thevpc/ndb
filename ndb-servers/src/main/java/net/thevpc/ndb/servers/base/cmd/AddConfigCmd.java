@@ -1,6 +1,5 @@
 package net.thevpc.ndb.servers.base.cmd;
 
-import net.thevpc.nuts.NSession;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.util.NBlankable;
@@ -27,7 +26,7 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         NRef<Boolean> update = NRef.of(false);
         while (cmdLine.hasNext()) {
             if (!fillOption(cmdLine, options)) {
-                cmdLine.selector().with("--update").nextFlag((v) -> {
+                cmdLine.matcher().with("--update").matchFlag((v) -> {
                     update.set(v.booleanValue());
                 }).requireWithDefault();
             }

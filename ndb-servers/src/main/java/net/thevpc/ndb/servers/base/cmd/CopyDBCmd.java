@@ -32,13 +32,13 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                 switch (key) {
                     case "--from":
                     {
-                        cmdLine.selector().withNextEntry((v) ->
+                        cmdLine.matcher().matchEntry((v) ->
                                 fromOptions.addAll(Arrays.asList("--db", v.stringValue()))).require();
                         break;
                     }
                     case "--to":
                     {
-                        cmdLine.selector().withNextEntry((v) ->
+                        cmdLine.matcher().matchEntry((v) ->
                                 toOptions.addAll(Arrays.asList("--db", v.stringValue()))).require();
                         break;
                     }
@@ -54,7 +54,7 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--from-ssh":
                     case "--from-db":
                     {
-                        cmdLine.selector().withNextEntry((v) ->
+                        cmdLine.matcher().matchEntry((v) ->
                                 fromOptions.addAll(Arrays.asList(
                                         "--" + key.substring("--from-".length())
                                         , v.stringValue()))).require();
@@ -71,13 +71,13 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case "--to-remote-temp-folder":
                     case "--to-ssh":
                     case "--to-db": {
-                        cmdLine.selector().withNextEntry((v) -> toOptions.addAll(Arrays.asList(
+                        cmdLine.matcher().matchEntry((v) -> toOptions.addAll(Arrays.asList(
                                 "--" + key.substring("--to-".length())
                                 , v.stringValue()))).require();
                         break;
                     }
                     case "--file": {
-                        cmdLine.selector().withNextEntry((vv) -> {
+                        cmdLine.matcher().matchEntry((vv) -> {
                             String v=vv.stringValue();
                             if (!v.endsWith(".zip")) {
                                 v = v + ".zip";
@@ -87,7 +87,7 @@ public class CopyDBCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--keep-file": {
-                        cmdLine.withNextFlag((v) -> keepFile.set(v.booleanValue()));
+                        cmdLine.matcher().matchFlag((v) -> keepFile.set(v.booleanValue())).anyMatch();
                         break;
                     }
                     default: {

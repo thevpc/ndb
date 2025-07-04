@@ -152,9 +152,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (d.name == null) {
-                    d.name = new AtName(cmdLine.next().get().getImage());
+                    d.name = new AtName(cmdLine.next().get().image());
                 } else if (d.path == null) {
-                    d.path = cmdLine.next().get().getImage();
+                    d.path = cmdLine.next().get().image();
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }
@@ -203,9 +203,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().getImage()));
+                    name.set(new AtName(cmdLine.next().get().image()));
                 } else {
-                    sql.add(cmdLine.next().get().getImage());
+                    sql.add(cmdLine.next().get().image());
                 }
             }
         }
@@ -279,9 +279,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 }
             } else {
                 if (name.isNull()) {
-                    name.set(new AtName(cmdLine.next().get().getImage()));
+                    name.set(new AtName(cmdLine.next().get().image()));
                 } else if (path.isNull()) {
-                    path.set(cmdLine.next().get().getImage());
+                    path.set(cmdLine.next().get().image());
                 } else {
                     cmdLine.throwUnexpectedArgument();
                 }

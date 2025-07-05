@@ -4,7 +4,7 @@ import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
 import net.thevpc.ndb.cmd.NDdbRunner;
 import net.thevpc.nuts.NApp;
 
-@NApp.Info
+@NApp.Definition
 public class NDdbMain  {
     public static void main(String[] args) {
         NApp.builder(args).run();

@@ -250,7 +250,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                         .with("--update").matchFlag((v) -> {
                             update.set(v.booleanValue());
                         })
-                        .matchProcessor((a, c) -> fillAddConfigOption(c))
+                        .matchAll((c) -> fillAddConfigOption(c))
                         .requireWithDefault();
             }
         }

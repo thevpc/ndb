@@ -251,7 +251,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                             update.set(v.booleanValue());
                         })
                         .matchAll((c) -> fillAddConfigOption(c))
-                        .requireWithDefault();
+                        .requireDefaults();
             }
         }
         options.setName(NStringUtils.trimToNull(options.getName()));

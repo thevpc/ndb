@@ -29,7 +29,7 @@ import net.thevpc.nuts.*;
 import net.thevpc.nuts.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
-import net.thevpc.nuts.log.NLogVerb;
+import net.thevpc.nuts.log.NMsgIntent;
 import net.thevpc.nuts.util.NMsg;
 
 import java.io.File;
@@ -143,10 +143,10 @@ public class DerbyService {
             NPath r = NFetchCmd.of(id).setFailFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
             if (r != null) {
                 r.copyTo(targetPath);
-                LOG().with().level(Level.FINEST).verb(NLogVerb.READ).log(NMsg.ofC("downloading %s to %s", id, targetFile));
+                LOG().log(NMsg.ofC("downloading %s to %s", id, targetFile).asFinest().withIntent(NMsgIntent.READ));
             }
         } else {
-            LOG().with().level(Level.FINEST).verb(NLogVerb.READ).log(NMsg.ofC("using %s form %s", id, targetFile));
+            LOG().log(NMsg.ofC("using %s form %s", id, targetFile).asFinest().withIntent(NMsgIntent.READ));
         }
         return targetFile;
     }

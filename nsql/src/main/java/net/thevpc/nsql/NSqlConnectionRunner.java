@@ -1,5 +1,6 @@
 package net.thevpc.nsql;
 
+import net.thevpc.nuts.NScopedValue;
 import net.thevpc.nuts.format.NVisitResult;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
 
 public class NSqlConnectionRunner {
     private Supplier<NSqlConnectionString> connectionStringSupplier;
-    private ThreadLocal<NSqlConnection> curr = new ThreadLocal<>();
+    private NScopedValue<NSqlConnection> curr = new NScopedValue<>();
 
     public NSqlConnectionRunner(Supplier<NSqlConnectionString> connectionStringSupplier) {
         this.connectionStringSupplier = connectionStringSupplier;
@@ -106,35 +107,24 @@ public class NSqlConnectionRunner {
     }
 
     public void withConnection(Consumer<NSqlConnection> runnable) {
-        NSqlConnection c = curr.get();
-        if (c == null) {
-            c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create();
-            NSqlConnection o = curr.get();
-            curr.set(c);
-            runnable.accept(c);
-            curr.set(o);
-            if (o == null) {
-                c.close();
+        NSqlConnection old = curr.get();
+        if (old == null) {
+            try (NSqlConnection c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create()) {
+                curr.runWith(c, () -> runnable.accept(c));
             }
         } else {
-            runnable.accept(c);
+            runnable.accept(old);
         }
     }
 
     public <T> T callWithConnection(Function<NSqlConnection, T> runnable) {
-        NSqlConnection c = curr.get();
-        if (c == null) {
-            c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create();
-            NSqlConnection o = curr.get();
-            curr.set(c);
-            T r = runnable.apply(c);
-            curr.set(o);
-            if (o == null) {
-                c.close();
+        NSqlConnection old = curr.get();
+        if (old == null) {
+            try (NSqlConnection c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create()) {
+                return curr.callWith(c, () -> runnable.apply(c));
             }
-            return r;
         } else {
-            return runnable.apply(c);
+            return runnable.apply(old);
         }
     }
 }

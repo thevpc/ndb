@@ -155,7 +155,7 @@ public class DerbyService {
         NId java = NWorkspace.of().getPlatform();
         List<String> all = NSearchCmd.of().addId("org.apache.derby:derbynet").setDistinct(true)
                 .setDefinitionFilter(
-                        (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[").get().to(NDefinitionFilter.class) :
+                        (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
                 .getResultIds().stream().map(x -> x.getVersion().toString()).collect(Collectors.toList());
         TreeSet<String> lastFirst = new TreeSet<>(new Comparator<String>() {

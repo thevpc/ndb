@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class NSqlConnection implements Closeable {
+public class NSqlConnection implements AutoCloseable {
     public static NSqlConnection of(NSqlConnectionString params) {
         return NSqlConnectionFactory.of(params).create();
     }

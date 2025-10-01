@@ -3,7 +3,7 @@
 
     <groupId>net.thevpc.ndb</groupId>
     <artifactId>ndb-servers</artifactId>
-    <version>0.8.6.0</version>
+    <version>0.8.7.0</version>
     <name>NDB :: Servers</name>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -14,8 +14,8 @@
         <logback-classic.version>1.2.11</logback-classic.version>
     </properties>
     <dependencies>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.6</version></dependency>
-        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-ssh</artifactId><version>0.8.6.0</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts</artifactId><version>0.8.7</version></dependency>
+        <dependency><groupId>net.thevpc.nuts</groupId><artifactId>nuts-ssh</artifactId><version>0.8.7.0</version></dependency>
 
         <dependency><groupId>org.mongodb</groupId><artifactId>mongodb-driver-sync</artifactId><version>${mongodb-driver-sync.version}</version></dependency>
         <dependency><groupId>org.mongodb</groupId><artifactId>mongodb-crypt</artifactId><version>${mongodb-crypt.version}</version></dependency>

@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.util;
 
 import net.thevpc.nuts.NSession;
-import net.thevpc.nuts.concurrent.NScheduler;
+import net.thevpc.nuts.concurrent.NConcurrent;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +13,7 @@ public class ClassloaderAwareCallable<V> {
     private Context context;
 
     public ClassloaderAwareCallable(NSession session, ExecutorService executorService, ClassLoader classLoader) {
-        this.context=new Context(session, executorService!=null?executorService: NScheduler.of().executorService(), classLoader);
+        this.context=new Context(session, executorService!=null?executorService: NConcurrent.of().executorService(), classLoader);
     }
 
     public V runAndWaitFor(Function<Context,V> callable) {

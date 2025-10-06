@@ -24,8 +24,8 @@
  */
 package net.thevpc.ndb.servers.util;
 
-import net.thevpc.nuts.*;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 
 /**

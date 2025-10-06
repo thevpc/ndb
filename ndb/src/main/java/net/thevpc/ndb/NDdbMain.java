@@ -2,9 +2,9 @@ package net.thevpc.ndb;
 
 import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
 import net.thevpc.ndb.cmd.NDdbRunner;
-import net.thevpc.nuts.NApp;
-import net.thevpc.nuts.NAppDefinition;
-import net.thevpc.nuts.NAppRunner;
+import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NAppDefinition;
+import net.thevpc.nuts.app.NAppRunner;
 
 @NAppDefinition
 public class NDdbMain  {

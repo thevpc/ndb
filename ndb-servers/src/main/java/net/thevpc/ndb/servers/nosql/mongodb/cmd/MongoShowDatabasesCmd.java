@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
-import net.thevpc.nuts.NOut;
+import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.ndb.servers.ExtendedQuery;

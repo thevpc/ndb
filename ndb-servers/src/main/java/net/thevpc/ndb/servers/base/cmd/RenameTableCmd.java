@@ -1,6 +1,5 @@
 package net.thevpc.ndb.servers.base.cmd;
 
-import net.thevpc.nuts.*;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.ndb.servers.ExtendedQuery;
@@ -9,6 +8,7 @@ import net.thevpc.ndb.servers.base.NdbCmd;
 import net.thevpc.ndb.servers.base.NdbSupportBase;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
 import net.thevpc.nuts.util.NBlankable;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NRef;
 

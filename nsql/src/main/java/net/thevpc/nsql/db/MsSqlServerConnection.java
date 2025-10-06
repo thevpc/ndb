@@ -2,7 +2,6 @@ package net.thevpc.nsql.db;
 
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
-import net.thevpc.nuts.NOut;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NMsg;
 

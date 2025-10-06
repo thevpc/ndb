@@ -1,6 +1,6 @@
 package net.thevpc.nsql;
 
-import net.thevpc.nuts.format.NVisitResult;
+import net.thevpc.nuts.text.NVisitResult;
 
 import java.sql.ResultSet;
 

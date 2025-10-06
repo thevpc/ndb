@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElement;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.ndb.servers.ExtendedQuery;

@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.util;
 
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.concurrent.NConcurrent;
 
 import java.util.concurrent.Callable;

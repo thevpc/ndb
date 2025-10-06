@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.sql.derby;
 
-import net.thevpc.nuts.NPlatformFamily;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.platform.NPlatformFamily;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NPs;
 
 import java.io.ByteArrayOutputStream;

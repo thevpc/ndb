@@ -1,7 +1,7 @@
 package net.thevpc.nsql;
 
-import net.thevpc.nuts.NScopedValue;
-import net.thevpc.nuts.format.NVisitResult;
+import net.thevpc.nuts.concurrent.NScopedValue;
+import net.thevpc.nuts.text.NVisitResult;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 

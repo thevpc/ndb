@@ -1,7 +1,7 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nsql.impl.ResultSetQueryResult;
-import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NStreamTokenizer;
 

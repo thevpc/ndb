@@ -1,13 +1,16 @@
 package net.thevpc.ndb.servers.sql.nmysql;
 
-import net.thevpc.nuts.*;
+import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.core.NOpenMode;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementDescribables;
-import net.thevpc.nuts.NStoreType;
+import net.thevpc.nuts.platform.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.sql.nmysql.local.LocalMysqlConfigService;
 import net.thevpc.ndb.servers.sql.nmysql.local.config.LocalMysqlConfig;
 import net.thevpc.ndb.servers.sql.nmysql.remote.RemoteMysqlConfigService;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlConfig;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NPredicate;
 import net.thevpc.nuts.util.NUnsafeFunction;

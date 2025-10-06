@@ -11,9 +11,8 @@ import net.thevpc.nsql.dump.options.DumpToJsonOptions;
 import net.thevpc.nsql.dump.store.NSqlDumpService;
 import net.thevpc.nsql.dump.io.In;
 import net.thevpc.ndb.cmd.options.NDdbOptions;
-import net.thevpc.nuts.NApp;
-import net.thevpc.nuts.NSearchCmd;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.command.NSearchCmd;
+import net.thevpc.nuts.core.NSession;
 
 import java.io.File;
 

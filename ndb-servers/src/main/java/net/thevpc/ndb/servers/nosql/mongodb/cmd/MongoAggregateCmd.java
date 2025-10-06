@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCursor;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.ndb.servers.ExtendedQuery;

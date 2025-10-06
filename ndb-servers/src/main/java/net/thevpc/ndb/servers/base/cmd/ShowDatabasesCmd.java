@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.base.cmd;
 
-import net.thevpc.nuts.NIllegalArgumentException;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.ndb.servers.ExtendedQuery;

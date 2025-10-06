@@ -1,7 +1,7 @@
 package net.thevpc.ndb.cmd.options;
 
 import net.thevpc.nsql.NSqlConnectionStringBuilder;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.util.NBlankable;

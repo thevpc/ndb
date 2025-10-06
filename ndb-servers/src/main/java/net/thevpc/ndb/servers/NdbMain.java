@@ -1,9 +1,9 @@
 //package net.thevpc.ndb.servers;
 //
-//import net.thevpc.nuts.NApp;
-//import net.thevpc.nuts.NApplication;
-//import net.thevpc.nuts.NMainArgs;
-//import net.thevpc.nuts.NSession;
+//import net.thevpc.nuts.app.NApp;
+//import net.thevpc.nuts.app.NApplication;
+//import net.thevpc.nuts.app.NMainArgs;
+//import net.thevpc.nuts.core.NSession;
 //import net.thevpc.nuts.cmdline.NCmdLine;
 //import net.thevpc.ndb.servers.nosql.mongodb.NMongoSupport;
 //import net.thevpc.ndb.servers.sql.derby.NDerbyMain;

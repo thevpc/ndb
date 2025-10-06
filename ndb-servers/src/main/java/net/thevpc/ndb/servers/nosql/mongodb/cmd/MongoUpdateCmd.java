@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
 import com.mongodb.client.result.UpdateResult;
-import net.thevpc.nuts.NSession;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.base.cmd.UpdateCmd;

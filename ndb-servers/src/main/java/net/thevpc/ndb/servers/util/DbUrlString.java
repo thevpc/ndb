@@ -1,5 +1,8 @@
 package net.thevpc.ndb.servers.util;
 
+import net.thevpc.nuts.net.DefaultNConnexionString;
+import net.thevpc.nuts.net.DefaultNConnexionStringBuilder;
+import net.thevpc.nuts.net.NConnexionString;
 import net.thevpc.nuts.util.*;
 
 import java.util.Objects;

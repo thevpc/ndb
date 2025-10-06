@@ -1,7 +1,8 @@
 package net.thevpc.ndb.servers.base.cmd;
 
-import net.thevpc.nuts.*;
 import net.thevpc.nuts.cmdline.NCmdLine;
+import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NExecInput;
 import net.thevpc.nuts.io.NPathExtensionType;
 import net.thevpc.nuts.io.NIOException;
@@ -11,6 +12,7 @@ import net.thevpc.ndb.servers.base.CmdRedirect;
 import net.thevpc.ndb.servers.base.NdbCmd;
 import net.thevpc.ndb.servers.base.NdbSupportBase;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
+import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.util.NMsg;
 import net.thevpc.nuts.util.NRef;
 

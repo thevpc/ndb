@@ -3,7 +3,7 @@ package net.thevpc.ndb.desktop.panels;
 import net.thevpc.ndb.desktop.NDdbInfo;
 import net.thevpc.ndb.desktop.util.GBC;
 import net.thevpc.ndb.desktop.util.UI;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 import javax.swing.*;
 import java.awt.*;

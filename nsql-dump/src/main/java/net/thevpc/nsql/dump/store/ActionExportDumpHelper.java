@@ -13,7 +13,7 @@ import net.thevpc.nsql.dump.util.DbrIoHelper;
 import net.thevpc.nsql.model.NSqlTableHeader;
 import net.thevpc.nsql.model.NSqlTableId;
 import net.thevpc.lib.nserializer.api.StoreWriter;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 import java.io.File;
 import java.io.OutputStream;

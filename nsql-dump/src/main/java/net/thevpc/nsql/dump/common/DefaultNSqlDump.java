@@ -18,7 +18,7 @@ import net.thevpc.nsql.dump.util.NSqlDumpModuleInstaller;
 import net.thevpc.nsql.UncheckedSqlException;
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.lib.nserializer.impl.RepeatableReadIoCellArr;
 import net.thevpc.lib.nserializer.model.StoreRowsDefinition;
 import net.thevpc.lib.nserializer.util.StringUtils;

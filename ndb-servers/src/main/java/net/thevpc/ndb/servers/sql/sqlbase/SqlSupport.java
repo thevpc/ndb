@@ -17,7 +17,7 @@ import net.thevpc.ndb.servers.sql.util.SqlConnectionInfo;
 import net.thevpc.ndb.servers.sql.util.SqlHelper;
 import net.thevpc.ndb.servers.sql.util.SqlRunnable;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.util.Arrays;

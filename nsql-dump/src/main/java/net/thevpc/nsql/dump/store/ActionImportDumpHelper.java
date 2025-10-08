@@ -21,7 +21,7 @@ import net.thevpc.lib.nserializer.api.StoreRows;
 import net.thevpc.lib.nserializer.api.StoreVisitor;
 import net.thevpc.lib.nserializer.model.StoreStructDefinition;
 import net.thevpc.nuts.util.NIntRef;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NRef;
 
 import java.io.File;

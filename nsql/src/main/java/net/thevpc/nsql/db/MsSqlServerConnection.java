@@ -3,7 +3,7 @@ package net.thevpc.nsql.db;
 import net.thevpc.nsql.*;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 import java.sql.*;
 import java.util.List;

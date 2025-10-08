@@ -2,7 +2,7 @@ package net.thevpc.nsql.dump.store.ser1;
 
 import net.thevpc.lib.nserializer.api.*;
 import net.thevpc.nsql.NSqlColumn;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.lib.nserializer.api.IOLogger;
 import net.thevpc.lib.nserializer.impl.StoreReaderIoRows;
 

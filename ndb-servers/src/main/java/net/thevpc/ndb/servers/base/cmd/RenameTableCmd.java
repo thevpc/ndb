@@ -9,7 +9,7 @@ import net.thevpc.ndb.servers.base.NdbSupportBase;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NRef;
 
 import java.util.Arrays;

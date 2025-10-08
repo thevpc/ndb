@@ -11,7 +11,7 @@ import net.thevpc.ndb.servers.base.cmd.RestoreCmd;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
 import net.thevpc.ndb.servers.sql.sqlbase.SqlSupport;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NRef;
 
 import java.io.IOException;

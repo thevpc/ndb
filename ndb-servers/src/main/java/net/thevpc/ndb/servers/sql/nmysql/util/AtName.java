@@ -27,7 +27,7 @@ package net.thevpc.ndb.servers.sql.nmysql.util;
 
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.ndb.servers.util.NdbUtils;
 

@@ -1,5 +1,6 @@
 package net.thevpc.nsql;
 
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.*;
 import net.thevpc.nuts.elem.*;
 

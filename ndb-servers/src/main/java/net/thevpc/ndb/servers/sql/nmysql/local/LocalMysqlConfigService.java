@@ -18,7 +18,7 @@ import java.util.*;
 import net.thevpc.ndb.servers.sql.nmysql.util.MysqlUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 public class LocalMysqlConfigService {
 

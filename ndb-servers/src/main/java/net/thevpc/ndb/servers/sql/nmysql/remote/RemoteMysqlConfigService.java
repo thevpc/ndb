@@ -13,7 +13,7 @@ import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlConfig;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlDatabaseConfig;
 import net.thevpc.ndb.servers.sql.nmysql.util.MysqlUtils;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

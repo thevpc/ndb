@@ -1,6 +1,6 @@
 package net.thevpc.nsql.dump;
 
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 public class DumpProgressEventImpl implements DumpProgressEvent, Cloneable{
     private double progress;

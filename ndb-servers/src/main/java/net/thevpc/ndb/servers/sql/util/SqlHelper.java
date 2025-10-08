@@ -9,7 +9,7 @@ import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.sql.sqlbase.SqlSupport;
 import net.thevpc.ndb.servers.util.ClassloaderAwareCallable;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
 
 import java.io.Closeable;

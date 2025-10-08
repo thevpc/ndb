@@ -5,6 +5,7 @@ import net.thevpc.nsql.impl.ResultSetQueryResult;
 import net.thevpc.nsql.mapper.NResultSetMappers;
 import net.thevpc.nsql.model.*;
 import net.thevpc.nuts.log.NLog;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.*;
 import net.thevpc.nuts.io.NIOUtils;
 

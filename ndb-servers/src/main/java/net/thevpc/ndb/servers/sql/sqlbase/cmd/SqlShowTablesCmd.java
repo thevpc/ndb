@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.sql.sqlbase.cmd;
 
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.cmd.ShowTablesCmd;

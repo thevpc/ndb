@@ -1,6 +1,6 @@
 package net.thevpc.nsql.dump;
 
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 public interface DumpProgressEvent {
     long getRowCount();

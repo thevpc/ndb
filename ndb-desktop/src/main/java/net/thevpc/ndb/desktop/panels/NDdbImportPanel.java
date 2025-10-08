@@ -8,7 +8,7 @@ import net.thevpc.nsql.dump.io.In;
 import net.thevpc.nsql.dump.options.DumpToDbOptions;
 import net.thevpc.nsql.dump.options.TableRestoreOptions;
 import net.thevpc.nsql.dump.store.NSqlDumpService;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.lib.nserializer.api.IOLogger;
 
 import javax.swing.*;

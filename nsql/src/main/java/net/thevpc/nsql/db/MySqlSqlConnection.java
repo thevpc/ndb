@@ -6,7 +6,7 @@ import net.thevpc.nsql.model.NSqlDatabaseHeaderImpl;
 import net.thevpc.nsql.model.NSqlTableId;
 import net.thevpc.nsql.model.YesNo;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 
 import java.io.InputStream;
 import java.io.Reader;

@@ -7,7 +7,7 @@ import net.thevpc.nsql.dump.model.DbStore;
 import net.thevpc.nsql.dump.model.DbStoreWriter;
 import net.thevpc.nsql.dump.model.TableIdAsStoreStructId;
 import net.thevpc.nsql.model.NSqlTableId;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.lib.nserializer.api.StoreWriter;
 import net.thevpc.lib.nserializer.api.StoreProgressMonitor;
 import net.thevpc.ndb.desktop.util.GBC;

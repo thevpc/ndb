@@ -11,7 +11,7 @@ import net.thevpc.ndb.servers.sql.nmysql.local.config.LocalMysqlConfig;
 import net.thevpc.ndb.servers.sql.nmysql.remote.RemoteMysqlConfigService;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlConfig;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NPredicate;
 import net.thevpc.nuts.util.NUnsafeFunction;
 

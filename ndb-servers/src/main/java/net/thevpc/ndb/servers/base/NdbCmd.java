@@ -7,7 +7,7 @@ import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
 import net.thevpc.ndb.servers.util.NdbUtils;
-import net.thevpc.nuts.util.NMsg;
+import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NRef;
 
 import java.util.*;

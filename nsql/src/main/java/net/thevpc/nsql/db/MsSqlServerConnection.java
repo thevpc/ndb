@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class MsSqlServerConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(MsSqlServerConnection.class.getName());
 
-    public MsSqlServerConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
-        super(connectionFactory, connection);
+    public MsSqlServerConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
+        super(connectionFactory, connection,sharedConnection);
     }
 
     @Override

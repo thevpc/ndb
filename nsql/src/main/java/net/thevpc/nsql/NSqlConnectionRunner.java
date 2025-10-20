@@ -2,6 +2,7 @@ package net.thevpc.nsql;
 
 import net.thevpc.nuts.concurrent.NScopedValue;
 import net.thevpc.nuts.text.NVisitResult;
+import net.thevpc.nuts.util.NAssert;
 import net.thevpc.nuts.util.NOptional;
 import net.thevpc.nuts.util.NRef;
 
@@ -14,11 +15,28 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class NSqlConnectionRunner {
-    private Supplier<NSqlConnectionString> connectionStringSupplier;
+    //private Supplier<NSqlConnectionString> connectionStringSupplier;
+    private Supplier<NSqlConnectionFactory> connectionFactorySupplier;
     private NScopedValue<NSqlConnection> curr = new NScopedValue<>();
 
-    public NSqlConnectionRunner(Supplier<NSqlConnectionString> connectionStringSupplier) {
-        this.connectionStringSupplier = connectionStringSupplier;
+    public static NSqlConnectionRunner byConnexionString(Supplier<NSqlConnectionString> connectionStringSupplier) {
+        NAssert.requireNonNull(connectionStringSupplier, "connectionStringSupplier");
+        return new NSqlConnectionRunner(new Supplier<NSqlConnectionFactory>() {
+            @Override
+            public NSqlConnectionFactory get() {
+                return new NSimpleSqlConnectionFactory(connectionStringSupplier.get());
+            }
+        });
+    }
+
+    public static NSqlConnectionRunner byConnexionFactory(Supplier<NSqlConnectionFactory> connectionFactorySupplier) {
+        NAssert.requireNonNull(connectionFactorySupplier, "connectionStringSupplier");
+        return new NSqlConnectionRunner(connectionFactorySupplier);
+    }
+
+    public NSqlConnectionRunner(Supplier<NSqlConnectionFactory> connectionFactorySupplier) {
+        NAssert.requireNonNull(connectionFactorySupplier, "connectionFactorySupplier");
+        this.connectionFactorySupplier = connectionFactorySupplier;
     }
 
     public NSqlQueryRunnerBuilder withQuery(String query) {
@@ -109,7 +127,7 @@ public class NSqlConnectionRunner {
     public void withConnection(Consumer<NSqlConnection> runnable) {
         NSqlConnection old = curr.get();
         if (old == null) {
-            try (NSqlConnection c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create()) {
+            try (NSqlConnection c = connectionFactorySupplier.get().create()) {
                 curr.runWith(c, () -> runnable.accept(c));
             }
         } else {
@@ -120,7 +138,7 @@ public class NSqlConnectionRunner {
     public <T> T callWithConnection(Function<NSqlConnection, T> runnable) {
         NSqlConnection old = curr.get();
         if (old == null) {
-            try (NSqlConnection c = new NSimpleSqlConnectionFactory(connectionStringSupplier.get()).create()) {
+            try (NSqlConnection c = connectionFactorySupplier.get().create()) {
                 return curr.callWith(c, () -> runnable.apply(c));
             }
         } else {

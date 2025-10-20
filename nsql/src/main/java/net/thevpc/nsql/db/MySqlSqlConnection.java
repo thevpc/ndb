@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public class MySqlSqlConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(MySqlSqlConnection.class.getName());
 
-    public MySqlSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
-        super(connectionFactory, connection);
+    public MySqlSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
+        super(connectionFactory, connection,sharedConnection);
         setMaxVarcharLength(10485760);
     }
 

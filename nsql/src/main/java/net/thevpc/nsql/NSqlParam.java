@@ -1,8 +1,5 @@
 package net.thevpc.nsql;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;

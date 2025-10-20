@@ -20,8 +20,8 @@ import java.util.logging.Logger;
 public class OracleSqlConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(OracleSqlConnection.class.getName());
 
-    public OracleSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
-        super(connectionFactory, connection);
+    public OracleSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
+        super(connectionFactory, connection,sharedConnection);
         setMaxVarcharLength(10485760);
     }
 

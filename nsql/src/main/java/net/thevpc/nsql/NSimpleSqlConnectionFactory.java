@@ -13,17 +13,16 @@ import java.util.logging.Logger;
 public class NSimpleSqlConnectionFactory implements NSqlConnectionFactory {
     private Boolean autoCommit = true;
     private NSqlConnectionString params;
-    public static final Logger LOG= Logger.getLogger(NSimpleSqlConnectionFactory.class.getName());
+    public static final Logger LOG = Logger.getLogger(NSimpleSqlConnectionFactory.class.getName());
 
     public NSimpleSqlConnectionFactory(NSqlConnectionString params) {
-        this.params=params.autoResolve();
+        this.params = params.autoResolve();
     }
 
     @Override
     public NSqlDialect dialect() {
         return params.getDialect();
     }
-
 
 
     public Boolean getAutoCommit() {
@@ -37,30 +36,29 @@ public class NSimpleSqlConnectionFactory implements NSqlConnectionFactory {
 
     @Override
     public NSqlConnection create() {
-        NAssert.requireNonBlank(params.getUrl(),"url");
-        NAssert.requireNonBlank(params.getDialect(),"dialect");
-        NAssert.requireNonBlank(params.getDriverClass(),"driverClassName");
+        NAssert.requireNonBlank(params.getUrl(), "url");
+        NAssert.requireNonBlank(params.getDialect(), "dialect");
+        NAssert.requireNonBlank(params.getDriverClass(), "driverClassName");
         Connection connection = null;
-        LOG.log(Level.FINE, "create connexion {0}",params);
+        LOG.log(Level.FINE, "create connexion {0}", params);
         try {
             Class.forName(params.getDriverClass());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         try {
-            connection = DriverManager.getConnection(params.getUrl(), params.getUsername(),params.getPassword());
+            connection = DriverManager.getConnection(params.getUrl(), params.getUsername(), params.getPassword());
             prepareConnection(connection);
-            switch (params.getDialect()){
+            switch (params.getDialect()) {
                 case MSSQLSERVER:
-                case MSSQLSERVER_JTDS:
-                {
-                    return new MsSqlServerConnection(this, connection);
+                case MSSQLSERVER_JTDS: {
+                    return new MsSqlServerConnection(this, connection,false);
                 }
-                case POSTGRESQL:{
-                    return new PostgreSqlConnection(this, connection);
+                case POSTGRESQL: {
+                    return new PostgreSqlConnection(this, connection,false);
                 }
             }
-            return new NSqlConnection(this, connection);
+            return new NSqlConnection(this, connection, false);
         } catch (SQLException e) {
             throw new UncheckedSqlException(e);
         }

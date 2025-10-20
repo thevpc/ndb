@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 public class PostgreSqlConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(PostgreSqlConnection.class.getName());
 
-    public PostgreSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
-        super(connectionFactory, connection);
+    public PostgreSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
+        super(connectionFactory, connection,sharedConnection);
         setMaxVarcharLength(10485760);
     }
 

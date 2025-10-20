@@ -32,11 +32,13 @@ public class NSqlConnection implements AutoCloseable {
     private Map<String, PreparedStatement> insertPreparedStatementMap = new LinkedHashMap<>();
     private Map<String, NSqlTable> tables = new LinkedHashMap<>();
     private long maxVarcharLength;
+    private boolean sharedConnection;
 
-    public NSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection) {
+    public NSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
         this.connectionFactory = connectionFactory;
         this.dialect = connectionFactory.dialect();
         this.connection = connection;
+        this.sharedConnection = sharedConnection;
     }
 
     public void declareTable(NSqlTable sqlTable) {
@@ -258,6 +260,9 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public void refresh() {
+        if(sharedConnection){
+            return;
+        }
         close();
         ensureConnectionReady(false);
     }
@@ -371,6 +376,9 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public void close() {
+        if(sharedConnection){
+            return;
+        }
         for (PreparedStatement value : insertPreparedStatementMap.values()) {
             if (value != null) {
                 try {

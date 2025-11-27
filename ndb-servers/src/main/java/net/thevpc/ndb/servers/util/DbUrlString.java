@@ -1,8 +1,8 @@
 package net.thevpc.ndb.servers.util;
 
-import net.thevpc.nuts.net.DefaultNConnexionString;
-import net.thevpc.nuts.net.DefaultNConnexionStringBuilder;
-import net.thevpc.nuts.net.NConnexionString;
+import net.thevpc.nuts.net.DefaultNConnectionString;
+import net.thevpc.nuts.net.DefaultNConnectionStringBuilder;
+import net.thevpc.nuts.net.NConnectionString;
 import net.thevpc.nuts.util.*;
 
 import java.util.Objects;
@@ -21,8 +21,8 @@ public class DbUrlString {
                     "(/(?<dpath>(.*)))?)"
     );
     private static Pattern DB_NAME = Pattern.compile("[a-zA-Z]([a-zA-Z0-9_-])*");
-    private NConnexionString ssh;
-    private NConnexionString db;
+    private NConnectionString ssh;
+    private NConnectionString db;
 
     public static NOptional<DbUrlString> parse(String value) {
         if (value == null || NBlankable.isBlank(value)) {
@@ -33,7 +33,7 @@ public class DbUrlString {
         String dbStr = null;
         String dbStrQ = null;
         if (value.startsWith("ssh:")) {
-            NOptional<NConnexionString> ssh = NConnexionString.get(value);
+            NOptional<NConnectionString> ssh = NConnectionString.get(value);
             if (ssh.isPresent()) {
                 v.ssh = ssh.get();
                 dbStr = v.ssh.getPath();
@@ -53,7 +53,7 @@ public class DbUrlString {
                 dbStr += '?' + dbStrQ;
             }
         }
-        NOptional<NConnexionString> db = NConnexionString.get(dbStr);
+        NOptional<NConnectionString> db = NConnectionString.get(dbStr);
         if (db.isPresent()) {
             v.db = db.get();
             String path = v.db.getPath();
@@ -63,7 +63,7 @@ public class DbUrlString {
             }
             return NOptional.of(v);
         } else {
-            v.db = new DefaultNConnexionStringBuilder().setPath(dbStr).build();
+            v.db = new DefaultNConnectionStringBuilder().setPath(dbStr).build();
         }
         return NOptional.of(v);
     }
@@ -86,20 +86,20 @@ public class DbUrlString {
         return "";
     }
 
-    public NConnexionString getSsh() {
+    public NConnectionString getSsh() {
         return ssh;
     }
 
-    public DbUrlString setSsh(NConnexionString ssh) {
+    public DbUrlString setSsh(NConnectionString ssh) {
         this.ssh = ssh;
         return this;
     }
 
-    public NConnexionString getDb() {
+    public NConnectionString getDb() {
         return db;
     }
 
-    public DbUrlString setDb(DefaultNConnexionString db) {
+    public DbUrlString setDb(DefaultNConnectionString db) {
         this.db = db;
         return this;
     }

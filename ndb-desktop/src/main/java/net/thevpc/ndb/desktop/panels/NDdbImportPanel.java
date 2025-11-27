@@ -26,7 +26,7 @@ public class NDdbImportPanel extends JPanel {
     boolean optionCompress = true;
     boolean optionData = true;
     long optionMaxRows = -1;
-    NDdbConnexionPanel cnxPanel = new NDdbConnexionPanel();
+    NDdbConnectionPanel cnxPanel = new NDdbConnectionPanel();
     ProgressPanel progressPanel = new ProgressPanel();
 
     public NDdbImportPanel() {
@@ -43,7 +43,7 @@ public class NDdbImportPanel extends JPanel {
                 UI.async(() -> onStartExport());
             }
         });
-        cnxPanel.addConnexionStatusListener(new NDdbConnexionPanel.ConnexionStatusListener() {
+        cnxPanel.addConnectionStatusListener(new NDdbConnectionPanel.ConnectionStatusListener() {
             @Override
             public void onConnectionCheckStart(NSqlConnectionString info) {
                 progressPanel.updateStatus(NMsg.ofC("Checking connection..."));

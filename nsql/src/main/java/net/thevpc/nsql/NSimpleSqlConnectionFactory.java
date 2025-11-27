@@ -40,7 +40,7 @@ public class NSimpleSqlConnectionFactory implements NSqlConnectionFactory {
         NAssert.requireNonBlank(params.getDialect(), "dialect");
         NAssert.requireNonBlank(params.getDriverClass(), "driverClassName");
         Connection connection = null;
-        LOG.log(Level.FINE, "create connexion {0}", params);
+        LOG.log(Level.FINE, "create connection {0}", params);
         try {
             Class.forName(params.getDriverClass());
         } catch (Exception e) {

@@ -19,7 +19,7 @@ public class NSqlConnectionRunner {
     private Supplier<NSqlConnectionFactory> connectionFactorySupplier;
     private NScopedValue<NSqlConnection> curr = new NScopedValue<>();
 
-    public static NSqlConnectionRunner byConnexionString(Supplier<NSqlConnectionString> connectionStringSupplier) {
+    public static NSqlConnectionRunner byConnectionString(Supplier<NSqlConnectionString> connectionStringSupplier) {
         NAssert.requireNonNull(connectionStringSupplier, "connectionStringSupplier");
         return new NSqlConnectionRunner(new Supplier<NSqlConnectionFactory>() {
             @Override
@@ -29,7 +29,7 @@ public class NSqlConnectionRunner {
         });
     }
 
-    public static NSqlConnectionRunner byConnexionFactory(Supplier<NSqlConnectionFactory> connectionFactorySupplier) {
+    public static NSqlConnectionRunner byConnectionFactory(Supplier<NSqlConnectionFactory> connectionFactorySupplier) {
         NAssert.requireNonNull(connectionFactorySupplier, "connectionStringSupplier");
         return new NSqlConnectionRunner(connectionFactorySupplier);
     }

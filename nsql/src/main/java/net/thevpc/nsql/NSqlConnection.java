@@ -185,18 +185,18 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public void insertSafe(NSqlTable table, Object value, NSqlObjectExtractor valueResolver) {
-        boolean refreshConnexion = false;
+        boolean refreshConnection = false;
         if (this.ensureConnectionReady(true)) {
             try {
                 this.insert(table, value, valueResolver);
             } catch (UncheckedSqlException e) {
                 LOG.log(Level.SEVERE, e, () -> "Error inserting " + table.getTableName());
                 if (e.toString().contains("closed")) {
-                    refreshConnexion = true;
+                    refreshConnection = true;
                 }
             }
         }
-        if (refreshConnexion) {
+        if (refreshConnection) {
             this.refresh();
             this.insert(table, value, valueResolver);
         }

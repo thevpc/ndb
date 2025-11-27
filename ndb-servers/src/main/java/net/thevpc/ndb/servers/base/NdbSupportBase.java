@@ -9,9 +9,9 @@ import net.thevpc.nuts.core.NWorkspace;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.io.NOut;
+import net.thevpc.nuts.net.NConnectionString;
 import net.thevpc.nuts.platform.NStoreType;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.net.NConnexionString;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.cmd.*;
@@ -208,7 +208,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             return true;
         } else if ((a = cmdLine.nextEntry("--ssh").orNull()) != null) {
             String ssh = a.getStringValue().get();
-            NConnexionString dbUrlString = NConnexionString.of("ssh://" + ssh);
+            NConnectionString dbUrlString = NConnectionString.of("ssh://" + ssh);
             options.setRemoteUser(dbUrlString.getUserName());
             options.setRemotePassword(dbUrlString.getPassword());
             options.setRemoteServer(dbUrlString.getHost());

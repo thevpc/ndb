@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.sql.util;
 
 import net.thevpc.nuts.artifact.NDependencyFilters;
-import net.thevpc.nuts.command.NSearchCmd;
+import net.thevpc.nuts.command.NSearch;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.text.NContentType;
@@ -269,7 +269,7 @@ public class SqlHelper implements Closeable {
 
     public static ClassLoader createClassLoader(NSession session, String id) {
         String z = session.getWorkspace().getUuid() + "/" + id;
-        return cachedClassLoaders.computeIfAbsent(z, x -> NSearchCmd.of().addId(id)
+        return cachedClassLoaders.computeIfAbsent(z, x -> NSearch.of().addId(id)
                 .setDependencyFilter(NDependencyFilters.of().byRunnable())
                 .getResultClassLoader(SqlHelper.class.getClassLoader()));
     }

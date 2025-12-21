@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.text.NObjectFormat;
 import net.thevpc.nuts.io.NExecInput;
 import net.thevpc.nuts.io.NPath;
@@ -285,7 +285,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             }
         } else {
             CmdRedirect dumpCommand = getSupport().createDumpCommand(plainFolderPath, options);
-            NExecCmd nExecCmd = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
+            NExec nExecCmd = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
             if (dumpCommand.getPath() != null) {
                 nExecCmd.setIn(NExecInput.ofPath(dumpCommand.getPath()));
             }
@@ -294,7 +294,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 if (getSupport().isFolderArchive(options)) {
                     String sf = getSupport().getZipSubFolder(options);
                     if (NBlankable.isBlank(sf)) {
-                        NExecCmd zipExec = sysCmd()
+                        NExec zipExec = sysCmd()
                                 .addCommand("zip")
                                 .addCommand("-q");
                         if (plainFolderPath.isDirectory()) {
@@ -309,7 +309,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                         run(zipExec);
                     } else {
 
-                        NExecCmd zipExec = sysCmd()
+                        NExec zipExec = sysCmd()
                                 .addCommand("zip")
                                 .addCommand("-q");
                         if (plainFolderPath.isDirectory()) {
@@ -324,7 +324,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                         run(zipExec);
                     }
                 } else {
-                    NExecCmd zipExec = sysCmd()
+                    NExec zipExec = sysCmd()
                             .addCommand("zip")
                             .addCommand("-q");
                     if (plainFolderPath.isDirectory()) {

@@ -3,7 +3,7 @@ package net.thevpc.ndb.servers.base;
 import net.thevpc.nuts.app.NApp;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.core.NWorkspace;
 import net.thevpc.nuts.elem.NElementParser;
@@ -281,18 +281,18 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
     }
 
 
-    public NExecCmd sysSsh(C options) {
+    public NExec sysSsh(C options) {
         return sysCmd().addCommand("ssh", options.getRemoteUser() + "@" + options.getRemoteServer());
     }
 
-    public NExecCmd run(NExecCmd cmd) {
+    public NExec run(NExec cmd) {
         NOut.out().println(cmd);
         cmd.run();
         return cmd;
     }
 
-    public NExecCmd sysCmd() {
-        return NExecCmd.of()
+    public NExec sysCmd() {
+        return NExec.of()
                 .failFast()
                 .system()
                 ;

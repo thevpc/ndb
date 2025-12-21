@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.base;
 
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.NdbConfig;
@@ -122,7 +122,7 @@ public abstract class NdbCmd<C extends NdbConfig> {
         return getSupport().isRemoteCommand(options);
     }
 
-    public NExecCmd sysSsh(C options) {
+    public NExec sysSsh(C options) {
         return getSupport().sysSsh(options);
     }
 
@@ -144,11 +144,11 @@ public abstract class NdbCmd<C extends NdbConfig> {
         run(sysSsh(options).addCommand("rm -rf " + upRestorePath.toString()));
     }
 
-    public NExecCmd run(NExecCmd cmd) {
+    public NExec run(NExec cmd) {
         return getSupport().run(cmd);
     }
 
-    public NExecCmd sysCmd() {
+    public NExec sysCmd() {
         return getSupport().sysCmd();
     }
 }

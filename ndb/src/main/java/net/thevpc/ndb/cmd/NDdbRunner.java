@@ -11,7 +11,7 @@ import net.thevpc.nsql.dump.options.DumpToJsonOptions;
 import net.thevpc.nsql.dump.store.NSqlDumpService;
 import net.thevpc.nsql.dump.io.In;
 import net.thevpc.ndb.cmd.options.NDdbOptions;
-import net.thevpc.nuts.command.NSearchCmd;
+import net.thevpc.nuts.command.NSearch;
 import net.thevpc.nuts.core.NSession;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.io.File;
 public class NDdbRunner {
     public static void run(NDdbOptions o) {
         if (NSession.of().isGui()) {
-            ClassLoader cl = NSearchCmd.of("net.thevpc.ndb:ndb-desktop#0.8.5.1")
+            ClassLoader cl = NSearch.of("net.thevpc.ndb:ndb-desktop#0.8.5.1")
                     .getResultClassLoader();
             Class<?> aClass = null;
             try {

@@ -12,14 +12,11 @@ import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.NOut;
-import net.thevpc.nuts.text.NExecCmdFormat;
+import net.thevpc.nuts.text.*;
+import net.thevpc.nuts.text.NExecFormat;
 import net.thevpc.nuts.io.NCp;
 import net.thevpc.nuts.io.NIOException;
 import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.text.NText;
-import net.thevpc.nuts.text.NTextBuilder;
-import net.thevpc.nuts.text.NTextStyle;
-import net.thevpc.nuts.text.NTexts;
 import net.thevpc.ndb.servers.sql.nmysql.NMySqlService;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlDatabaseConfig;
 import net.thevpc.ndb.servers.sql.nmysql.local.LocalMysqlDatabaseConfigService;
@@ -37,7 +34,6 @@ import net.thevpc.ndb.servers.sql.nmysql.util.MysqlUtils;
 import net.thevpc.ndb.servers.util.NdbUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.io.NAsk;
 
 public class RemoteMysqlDatabaseConfigService {
@@ -277,7 +273,7 @@ public class RemoteMysqlDatabaseConfigService {
             b.addCommand(cmd);
         }
         if (session.isPlainTrace()) {
-            NText ff = NExecCmdFormat.of(b)
+            NText ff = NExecFormat.of(b)
                     .setEnvReplacer(envEntry -> {
                         if (envEntry.getName().toLowerCase().contains("password")
                                 || envEntry.getName().toLowerCase().contains("pwd")) {

@@ -3,7 +3,7 @@ package net.thevpc.ndb.servers.sql.nmysql.remote;
 import java.io.File;
 
 import net.thevpc.nuts.app.NApp;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.command.NExecutionType;
 import net.thevpc.nuts.core.NOpenMode;
@@ -145,7 +145,7 @@ public class RemoteMysqlDatabaseConfigService {
                     throw new NIOException(e);
                 }
             }
-            NExecCmd.of().setExecutionType(NExecutionType.EMBEDDED)
+            NExec.of().setExecutionType(NExecutionType.EMBEDDED)
                     .addCommand("nsh",
                             "--bot",
                             "-c",
@@ -216,7 +216,7 @@ public class RemoteMysqlDatabaseConfigService {
                     remoteFullFilePath
             ));
         }
-        NExecCmd.of()
+        NExec.of()
                 .addCommand(
                         "nsh",
                         "--bot",
@@ -256,7 +256,7 @@ public class RemoteMysqlDatabaseConfigService {
     }
 
     public String execRemoteNuts(String... cmd) {
-        NExecCmd b = NExecCmd.of();
+        NExec b = NExec.of();
         if ("localhost".equals(this.config.getServer())) {
             b.addCommand("nuts");
             b.addCommand("-b");

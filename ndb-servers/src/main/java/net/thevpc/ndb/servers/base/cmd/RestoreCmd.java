@@ -1,7 +1,7 @@
 package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.cmdline.NCmdLine;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NExecInput;
 import net.thevpc.nuts.io.NPathExtensionType;
@@ -104,7 +104,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case FOLDER: {
                         if (/*file.get().isFile() && */file.get().getName().toLowerCase().endsWith(".zip")) {
                             NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
-                            NExecCmd zipExec = sysSsh(options)
+                            NExec zipExec = sysSsh(options)
                                     .addCommand("unzip")
                                     .addCommand("-q")
                                     .addCommand("-o")
@@ -162,7 +162,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                             NPath zipPath = file.get();
                             NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
                             NSession session = NSession.of();
-                            NExecCmd zipExec = sysCmd()
+                            NExec zipExec = sysCmd()
                                     .addCommand("unzip")
                                     .addCommand(session.isTrace()?null:"-q")
                                     .addCommand("-o")
@@ -188,7 +188,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
 
     private void sshRestore(NPath upRestorePath, C options) {
         CmdRedirect restoreCommand = getSupport().createRestoreCommand(upRestorePath, options);
-        NExecCmd nExecCmd = sysSsh(options).addCommand(
+        NExec nExecCmd = sysSsh(options).addCommand(
                 restoreCommand.getCmd().toString()
                         + (restoreCommand.getPath() == null ? "" : (" > " + restoreCommand.getPath()))
         );
@@ -200,7 +200,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
             throw new NIllegalArgumentException(NMsg.ofC("does not exist %s", sqlFile));
         }
         CmdRedirect restoreCommand = getSupport().createRestoreCommand(sqlFile, options);
-        NExecCmd nExecCmd = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
+        NExec nExecCmd = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
         if (restoreCommand.getPath() != null) {
             nExecCmd.setIn(NExecInput.ofPath(restoreCommand.getPath()));
         }

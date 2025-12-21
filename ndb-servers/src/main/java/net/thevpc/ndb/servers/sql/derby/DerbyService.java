@@ -27,12 +27,12 @@ package net.thevpc.ndb.servers.sql.derby;
 
 import net.thevpc.nuts.app.NApp;
 import net.thevpc.nuts.artifact.*;
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.command.NExecutionException;
-import net.thevpc.nuts.command.NFetchCmd;
-import net.thevpc.nuts.command.NSearchCmd;
+import net.thevpc.nuts.command.NFetch;
+import net.thevpc.nuts.command.NSearch;
 import net.thevpc.nuts.core.NSession;
-import net.thevpc.nuts.core.NWorkspace;
+import net.thevpc.nuts.platform.NEnv;
 import net.thevpc.nuts.platform.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
@@ -146,7 +146,7 @@ public class DerbyService {
         Path targetFile = folder.resolve(iid.getArtifactId() + ".jar");
         if (!Files.exists(targetFile)) {
             NPath targetPath=NPath.of(targetFile);
-            NPath r = NFetchCmd.of(id).setFailFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
+            NPath r = NFetch.of(id).setFailFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
             if (r != null) {
                 r.copyTo(targetPath);
                 LOG().log(NMsg.ofC("downloading %s to %s", id, targetFile).asFinest().withIntent(NMsgIntent.READ));
@@ -158,8 +158,8 @@ public class DerbyService {
     }
 
     public Set<String> findVersions() {
-        NId java = NWorkspace.of().getPlatform();
-        List<String> all = NSearchCmd.of().addId("org.apache.derby:derbynet").setDistinct(true)
+        NId java = NEnv.of().getJava();
+        List<String> all = NSearch.of().addId("org.apache.derby:derbynet").setDistinct(true)
                 .setDefinitionFilter(
                         (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
@@ -174,13 +174,13 @@ public class DerbyService {
         return lastFirst;
     }
 
-    public NExecCmd command(NDerbyConfig options) {
+    public NExec command(NDerbyConfig options) {
         List<String> command = new ArrayList<>();
         List<String> executorOptions = new ArrayList<>();
         String currentDerbyVersion = options.getDerbyVersion();
         if (currentDerbyVersion == null) {
-            NId java = NWorkspace.of().getPlatform();
-            NId best = NSearchCmd.of().addId("org.apache.derby:derbynet").setDistinct(true).setLatest(true)
+            NId java = NEnv.of().getJava();
+            NId best = NSearch.of().addId("org.apache.derby:derbynet").setDistinct(true).setLatest(true)
                     .setDefinitionFilter(
                             (java.getVersion().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
                                     null)
@@ -249,7 +249,7 @@ public class DerbyService {
         if (options.getExtraArg() != null) {
             command.add(options.getExtraArg());
         }
-        return NExecCmd.of()
+        return NExec.of()
                 .addExecutorOptions(executorOptions)
                 .addCommand(command)
                 .setDirectory(NPath.of(derbyBinHome))
@@ -258,7 +258,7 @@ public class DerbyService {
     }
 
     void exec(NDerbyConfig options) {
-        NExecCmd cmd = command(options);
+        NExec cmd = command(options);
         boolean[] finished = new boolean[1];
         Thread t = new Thread(() -> {
             try {

@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.nmysql.local;
 
-import net.thevpc.nuts.command.NExecCmd;
+import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementWriter;
@@ -88,7 +88,7 @@ public class LocalMysqlDatabaseConfigService {
                 NOut.println(NMsg.ofC("%s create archive %s", getDatabaseName(), path));
             }
 
-            NExecCmd cmd = NExecCmd.of()
+            NExec cmd = NExec.of()
                     .system()
                     .setCommand("sh", "-c",
                             "\"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p\"$CMD_PWD\" --databases \"$CMD_DB\" > \"$CMD_FILE\""
@@ -114,7 +114,7 @@ public class LocalMysqlDatabaseConfigService {
                         NTexts.of()
                         .ofStyled(path, NTextStyle.path())));
             }
-            NExecCmd cmd = NExecCmd.of()
+            NExec cmd = NExec.of()
                     .system()
                     .setCommand("sh", "-c",
                             "set -o pipefail && \"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p" + password + " --databases \"$CMD_DB\" | gzip > \"$CMD_FILE\""
@@ -157,7 +157,7 @@ public class LocalMysqlDatabaseConfigService {
             if (session.isPlainTrace()) {
                 NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
             }
-            int result = NExecCmd.of()
+            int result = NExec.of()
                     .system()
                     .setCommand("sh", "-c",
                             "cat \"$CMD_FILE\" | " + "\"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
@@ -176,7 +176,7 @@ public class LocalMysqlDatabaseConfigService {
                 NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
             }
 
-            int result = NExecCmd.of()
+            int result = NExec.of()
                     .system().setCommand("sh", "-c",
                             "gunzip -c \"$CMD_FILE\" | \"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
                     )

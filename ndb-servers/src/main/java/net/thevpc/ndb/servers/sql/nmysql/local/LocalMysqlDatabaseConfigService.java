@@ -6,14 +6,10 @@ import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.security.NWorkspaceSecurityManager;
-import net.thevpc.nuts.text.NExecCmdFormat;
-import net.thevpc.nuts.text.NText;
-import net.thevpc.nuts.text.NTextBuilder;
-import net.thevpc.nuts.text.NTextStyle;
-import net.thevpc.nuts.text.NTexts;
+import net.thevpc.nuts.text.*;
+import net.thevpc.nuts.text.NExecFormat;
 import net.thevpc.ndb.servers.sql.nmysql.local.config.LocalMysqlDatabaseConfig;
 import net.thevpc.nuts.util.NBlankable;
-import net.thevpc.nuts.text.NMsg;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -127,7 +123,7 @@ public class LocalMysqlDatabaseConfigService {
                     .grabAll();
             if (session.isPlainTrace()) {
                 NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
-                        NExecCmdFormat.of(cmd).setEnvReplacer(envEntry -> {
+                        NExecFormat.of(cmd).setEnvReplacer(envEntry -> {
                             if ("CMD_PWD".equals(envEntry.getName())) {
                                 return "****";
                             }

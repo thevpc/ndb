@@ -285,11 +285,11 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             }
         } else {
             CmdRedirect dumpCommand = getSupport().createDumpCommand(plainFolderPath, options);
-            NExec nExecCmd = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
+            NExec nExec = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
             if (dumpCommand.getPath() != null) {
-                nExecCmd.setIn(NExecInput.ofPath(dumpCommand.getPath()));
+                nExec.setIn(NExecInput.ofPath(dumpCommand.getPath()));
             }
-            run(nExecCmd);
+            run(nExec);
             if (zip) {
                 if (getSupport().isFolderArchive(options)) {
                     String sf = getSupport().getZipSubFolder(options);

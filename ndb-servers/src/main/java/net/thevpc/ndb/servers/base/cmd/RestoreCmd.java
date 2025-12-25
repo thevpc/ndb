@@ -188,11 +188,11 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
 
     private void sshRestore(NPath upRestorePath, C options) {
         CmdRedirect restoreCommand = getSupport().createRestoreCommand(upRestorePath, options);
-        NExec nExecCmd = sysSsh(options).addCommand(
+        NExec nExec = sysSsh(options).addCommand(
                 restoreCommand.getCmd().toString()
                         + (restoreCommand.getPath() == null ? "" : (" > " + restoreCommand.getPath()))
         );
-        run(nExecCmd);
+        run(nExec);
     }
 
     private void restoreFile(NPath sqlFile, C options) {
@@ -200,10 +200,10 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
             throw new NIllegalArgumentException(NMsg.ofC("does not exist %s", sqlFile));
         }
         CmdRedirect restoreCommand = getSupport().createRestoreCommand(sqlFile, options);
-        NExec nExecCmd = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
+        NExec nExec = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
         if (restoreCommand.getPath() != null) {
-            nExecCmd.setIn(NExecInput.ofPath(restoreCommand.getPath()));
+            nExec.setIn(NExecInput.ofPath(restoreCommand.getPath()));
         }
-        run(nExecCmd);
+        run(nExec);
     }
 }

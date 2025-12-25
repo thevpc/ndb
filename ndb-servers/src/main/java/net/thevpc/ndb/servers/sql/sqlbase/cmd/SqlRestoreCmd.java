@@ -69,11 +69,11 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
             if (file.get().getName().toLowerCase().endsWith(".sql")) {
                 sqlFile = file.get();
                 CmdRedirect restoreCommand = getSupport().createRestoreCommand(sqlFile, options);
-                NExec nExecCmd = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
+                NExec nExec = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
                 if (restoreCommand.getPath() != null) {
-                    nExecCmd.setIn(NExecInput.ofPath(restoreCommand.getPath()));
+                    nExec.setIn(NExecInput.ofPath(restoreCommand.getPath()));
                 }
-                run(nExecCmd);
+                run(nExec);
             } else if (file.get().getName().toLowerCase().endsWith(".zip")) {
                 try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
                     //get the zipped file list entry
@@ -96,11 +96,11 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                                 }
 
                                 CmdRedirect restoreCommand = getSupport().createRestoreCommand(newFile, options);
-                                NExec nExecCmd = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
+                                NExec nExec = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
                                 if (restoreCommand.getPath() != null) {
-                                    nExecCmd.setIn(NExecInput.ofPath(restoreCommand.getPath()));
+                                    nExec.setIn(NExecInput.ofPath(restoreCommand.getPath()));
                                 }
-                                run(nExecCmd);
+                                run(nExec);
                                 newFile.delete();
                             }
                         }

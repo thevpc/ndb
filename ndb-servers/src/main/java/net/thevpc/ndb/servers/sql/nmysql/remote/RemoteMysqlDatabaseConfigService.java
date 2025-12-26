@@ -11,12 +11,9 @@ import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementParser;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
-import net.thevpc.nuts.io.NOut;
+import net.thevpc.nuts.io.*;
 import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.text.NExecFormat;
-import net.thevpc.nuts.io.NCp;
-import net.thevpc.nuts.io.NIOException;
-import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.sql.nmysql.NMySqlService;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlDatabaseConfig;
 import net.thevpc.ndb.servers.sql.nmysql.local.LocalMysqlDatabaseConfigService;
@@ -34,7 +31,6 @@ import net.thevpc.ndb.servers.sql.nmysql.util.MysqlUtils;
 import net.thevpc.ndb.servers.util.NdbUtils;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NIllegalArgumentException;
-import net.thevpc.nuts.io.NAsk;
 
 public class RemoteMysqlDatabaseConfigService {
 
@@ -76,7 +72,7 @@ public class RemoteMysqlDatabaseConfigService {
     public String pull(String localPath, boolean restore, boolean deleteRemote) {
         CachedMapFile lastRun = new CachedMapFile(session, "pull-" + getName());
         if (lastRun.exists()) {
-            if (!NAsk.of()
+            if (!NIn.ask()
                     .forBoolean(
                             NMsg.ofPlain("a previous pull has failed. would you like to resume (yes) or ignore and re-run the pull (no).")
                     )

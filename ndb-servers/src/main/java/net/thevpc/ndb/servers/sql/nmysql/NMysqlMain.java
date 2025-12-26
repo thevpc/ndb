@@ -5,10 +5,7 @@ import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
-import net.thevpc.nuts.io.NAsk;
-import net.thevpc.nuts.io.NOut;
-import net.thevpc.nuts.io.NPath;
-import net.thevpc.nuts.io.NPrintStream;
+import net.thevpc.nuts.io.*;
 import net.thevpc.nuts.security.NWorkspaceSecurityManager;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NMaps;
@@ -591,7 +588,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     if (d.name.getDatabaseName().isEmpty()) {
                         if (c.getDatabase(d.name.getDatabaseName(), NOpenMode.OPEN_OR_NULL) != null) {
                             overrideExisting = true;
-                            if (!NAsk.of()
+                            if (!NIn.ask()
                                     .forBoolean(
                                             NMsg.ofC(
                                                     "already exists %s. override?", factory.ofStyled(d.name.toString(),
@@ -605,7 +602,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     } else {
                         if (c.getDatabase(d.name.getDatabaseName(), NOpenMode.OPEN_OR_NULL) != null) {
                             overrideExisting = true;
-                            if (!NAsk.of()
+                            if (!NIn.ask()
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3()
                                             )))
@@ -763,7 +760,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     if (d.name.getDatabaseName().isEmpty()) {
                         if (c.getDatabase(d.name.getDatabaseName(), NOpenMode.OPEN_OR_NULL) != null) {
                             overrideExisting = true;
-                            if (!NAsk.of()
+                            if (!NIn.ask()
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))
@@ -774,7 +771,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     } else {
                         if (c.getDatabase(d.name.getDatabaseName(), NOpenMode.OPEN_OR_NULL) != null) {
                             overrideExisting = true;
-                            if (!NAsk.of()
+                            if (!NIn.ask()
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))

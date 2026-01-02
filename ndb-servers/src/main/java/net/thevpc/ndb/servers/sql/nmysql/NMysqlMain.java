@@ -234,9 +234,9 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
     public SqlConnectionInfo createSqlConnectionInfo(NMySqlConfig options) {
         String url = NMsg.ofV("jdbc:mysql://${server}:${port}/${database}",
                 NMaps.of(
-                        "server", NOptional.of(options.getHost()).ifBlank("localhost").get(),
-                        "port", NOptional.of(options.getPort()).ifBlank(3306).get(),
-                        "database", NOptional.of(options.getDatabaseName()).ifBlank("test").get()
+                        "server", NOptional.of(options.getHost()).onBlank("localhost").get(),
+                        "port", NOptional.of(options.getPort()).onBlank(3306).get(),
+                        "database", NOptional.of(options.getDatabaseName()).onBlank("test").get()
                 )).toString();
         return new SqlConnectionInfo()
                 .setJdbcDriver(dbDriverClass)

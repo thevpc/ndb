@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.base.cmd;
 
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.cmdline.NCmdLine;
@@ -39,7 +39,7 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         NPath file = getSharedConfigFolder().resolve(asFullName(options.getName()) + NdbUtils.SERVER_CONFIG_EXT);
         if (file.exists()) {
             if (update.get()) {
-                C old = NElementParser.ofJson().setNtf(false).parse(file, support.getConfigClass());
+                C old = NElementReader.ofJson().setNtf(false).read(file, support.getConfigClass());
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);

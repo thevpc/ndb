@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.nosql.mongodb.cmd;
 
 import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.ndb.servers.ExtendedQuery;
 import net.thevpc.ndb.servers.base.cmd.ShowDatabasesCmd;
 import net.thevpc.ndb.servers.nosql.mongodb.NMongoConfig;
@@ -26,7 +26,7 @@ public class MongoShowDatabasesCmd extends ShowDatabasesCmd<NMongoConfig> {
         getSupport().doWithMongoClient(options, mongoClient -> {
             List<NElement> databases = mongoClient.listDatabases()
                     .into(new ArrayList<>())
-                    .stream().map(x -> NElementParser.ofJson().parse(x.toJson(), NElement.class))
+                    .stream().map(x -> NElementReader.ofJson().read(x.toJson(), NElement.class))
                     .map(x->{
                         if(eq.isLongMode()){
                             return x;

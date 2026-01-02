@@ -34,8 +34,8 @@ public class NPostgresSupport extends SqlSupport<NPostgresConfig> {
     }
 
     public void revalidateOptions(NPostgresConfig options) {
-        int port = NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).ifBlank(5432).get();
-        String host = NOptional.of(options.getHost()).ifBlank("localhost").get();
+        int port = NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).onBlank(5432).get();
+        String host = NOptional.of(options.getHost()).onBlank("localhost").get();
         String user = options.getUser();
         String password = options.getPassword();
         if (NBlankable.isBlank(user) && NBlankable.isBlank(password)) {
@@ -87,9 +87,9 @@ public class NPostgresSupport extends SqlSupport<NPostgresConfig> {
     public SqlConnectionInfo createSqlConnectionInfo(NPostgresConfig options) {
         String url = NMsg.ofV("jdbc:postgresql://${server}:${port}/${database}",
                 NMaps.of(
-                        "server", NOptional.of(options.getHost()).ifBlank("localhost").get(),
-                        "port", NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).ifBlank(5432).get(),
-                        "database", NOptional.of(options.getDatabaseName()).ifBlank("postgres").get()
+                        "server", NOptional.of(options.getHost()).onBlank("localhost").get(),
+                        "port", NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).onBlank(5432).get(),
+                        "database", NOptional.of(options.getDatabaseName()).onBlank("postgres").get()
                 )).toString();
         return new SqlConnectionInfo()
                 .setJdbcDriver(dbDriverClass)

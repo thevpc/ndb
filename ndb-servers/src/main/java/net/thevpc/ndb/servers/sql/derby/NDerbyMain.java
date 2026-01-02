@@ -169,9 +169,9 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
     public SqlConnectionInfo createSqlConnectionInfo(NDerbyConfig options) {
         String url = NMsg.ofV("jdbc:derby://${server}:${port}/${database};create=true",
                 NMaps.of(
-                        "server", NOptional.of(options.getHost()).ifBlank("localhost").get(),
-                        "port", NOptional.of(options.getPort() <= 0 ? null : options.getPort()).ifBlank(1527).get(),
-                        "database", NOptional.of(options.getDatabaseName()).ifBlank("db").get()
+                        "server", NOptional.of(options.getHost()).onBlank("localhost").get(),
+                        "port", NOptional.of(options.getPort() <= 0 ? null : options.getPort()).onBlank(1527).get(),
+                        "database", NOptional.of(options.getDatabaseName()).onBlank("db").get()
                 )).toString();
         return new SqlConnectionInfo()
                 .setJdbcDriver(dbDriverClass)

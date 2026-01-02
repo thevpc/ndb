@@ -25,7 +25,7 @@ public class CustomFormatter  extends Formatter {
 
     public CustomFormatter(String format,String dateFormat) {
         this.dateFormat = NStringUtils.firstNonBlank(dateFormat,"yyyy-MM-dd HH:mm:ss");
-        this.format = NStringUtils.firstNonBlank(format,
+        this.format = NStringUtils.firstNonBlankTrimmed(format,
                 System.getProperty("java.util.logging.SimpleFormatter.format"),
                 "%1$tb %1$td, %1$tY %1$tl:%1$tM:%1$tS %1$Tp %2$s%n%4$s: %5$s%6$s%n"
                 );

@@ -8,12 +8,12 @@ import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.command.NExecutionType;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.*;
 import net.thevpc.nuts.text.*;
-import net.thevpc.nuts.text.NExecFormat;
+import net.thevpc.nuts.text.NExecWriter;
 import net.thevpc.ndb.servers.sql.nmysql.NMySqlService;
 import net.thevpc.ndb.servers.sql.nmysql.remote.config.RemoteMysqlDatabaseConfig;
 import net.thevpc.ndb.servers.sql.nmysql.local.LocalMysqlDatabaseConfigService;
@@ -108,7 +108,7 @@ public class RemoteMysqlDatabaseConfigService {
             remoteTempPath = remoteTempPath.substring(t);
         }
         NElements elem = NElements.of();
-        Map<String, Object> resMap = NElementParser.ofJson().parse(remoteTempPath.getBytes(), Map.class);
+        Map<String, Object> resMap = NElementReader.ofJson().read(remoteTempPath.getBytes(), Map.class);
         String ppath = (String) resMap.get("path");
 
         if (NBlankable.isBlank(localPath)) {
@@ -193,7 +193,7 @@ public class RemoteMysqlDatabaseConfigService {
         RemoteMysqlDatabaseConfig cconfig = getConfig();
         String remoteTempPath = null;
         final String searchResultString = execRemoteNuts("search --!color --json net.thevpc.nuts.toolbox:nmysql --display temp-folder --installed --first");
-        List<Map> result = NElementParser.ofJson().parse(new StringReader(searchResultString), List.class);
+        List<Map> result = NElementReader.ofJson().read(new StringReader(searchResultString), List.class);
         if (result.isEmpty()) {
             throw new NIllegalArgumentException(NMsg.ofPlain("Mysql is not installed on the remote machine"));
         }
@@ -269,7 +269,7 @@ public class RemoteMysqlDatabaseConfigService {
             b.addCommand(cmd);
         }
         if (session.isPlainTrace()) {
-            NText ff = NExecFormat.of()
+            NText ff = NExecWriter.of()
                     .setEnvReplacer(envEntry -> {
                         if (envEntry.getName().toLowerCase().contains("password")
                                 || envEntry.getName().toLowerCase().contains("pwd")) {

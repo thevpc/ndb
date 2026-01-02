@@ -6,7 +6,7 @@ import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.core.NWorkspace;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.net.NConnectionString;
@@ -139,7 +139,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         if (!file.exists()) {
             return NOptional.ofNamedEmpty("config " + name);
         }
-        return NOptional.ofNamed(NElementParser.ofJson().parse(file, configClass), "config " + name);
+        return NOptional.ofNamed(NElementReader.ofJson().read(file, configClass), "config " + name);
     }
 
 
@@ -267,7 +267,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         NPath file = sharedConfigFolder.resolve(asFullName(options.getName()) + NdbUtils.SERVER_CONFIG_EXT);
         if (file.exists()) {
             if (update.get()) {
-                C old = NElementParser.ofJson().parse(file, configClass);
+                C old = NElementReader.ofJson().read(file, configClass);
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);

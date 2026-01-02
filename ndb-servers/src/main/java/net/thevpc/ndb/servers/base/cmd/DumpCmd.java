@@ -157,9 +157,8 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             if (roll.get() > 0) {
                 zipPath=NPath.of(NObjectFormat.of()
                         .setFormatParam("count",roll.get())
-                        .setValue(NPath.ofUserDirectory().resolve(options.getDatabaseName() + "#.zip"))
                         .setNtf(false)
-                        .format().filteredText());
+                        .format(NPath.ofUserDirectory().resolve(options.getDatabaseName() + "#.zip")).filteredText());
                 simpleName = zipPath.nameParts().getBaseName();
                 plainFolderPath = zipPath.resolve(simpleName + dumpExt);
             } else {
@@ -174,9 +173,8 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             if (roll.get() > 0) {
                 zipPath=NPath.of(NObjectFormat.of()
                         .setFormatParam("count",roll.get())
-                        .setValue(file.get().resolve(options.getDatabaseName() + "#.zip"))
                         .setNtf(false)
-                        .format().filteredText());
+                        .format(file.get().resolve(options.getDatabaseName() + "#.zip")).filteredText());
 
                 simpleName = zipPath.nameParts().getBaseName();
                 plainFolderPath = zipPath.resolve(simpleName + dumpExt);
@@ -195,9 +193,8 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 if (roll.get() > 0) {
                     zipPath=NPath.of(NObjectFormat.of()
                             .setFormatParam("count",roll.get())
-                            .setValue(nFile)
                             .setNtf(false)
-                            .format().filteredText());
+                            .format(nFile).filteredText());
                     plainFolderPath = zipPath.resolveSibling(zipPath.getName() + dumpExt);
                 } else {
                     zipPath = nFile;
@@ -209,9 +206,8 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 if (roll.get() > 0) {
                     plainFolderPath=NPath.of(NObjectFormat.of()
                             .setFormatParam("count",roll.get())
-                            .setValue(nFile)
                             .setNtf(false)
-                            .format().filteredText());
+                            .format(nFile).filteredText());
                     zipPath = plainFolderPath.resolveSibling(plainFolderPath.nameParts().getBaseName() + ".zip");
                 } else {
                     plainFolderPath = nFile;
@@ -223,9 +219,8 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 if (roll.get() > 0) {
                     NPath roll1=NPath.of(NObjectFormat.of()
                             .setFormatParam("count",roll.get())
-                            .setValue(nFile)
                             .setNtf(false)
-                            .format().filteredText());
+                            .format(nFile).filteredText());
                     plainFolderPath = roll1.resolveSibling(roll1.getName() + dumpExt);
                     zipPath = nFile.resolveSibling(roll1.getName() + ".zip");
                 } else {

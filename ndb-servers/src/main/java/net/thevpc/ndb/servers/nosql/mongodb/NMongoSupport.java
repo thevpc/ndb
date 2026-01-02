@@ -103,8 +103,8 @@ public class NMongoSupport extends NdbSupportBase<NMongoConfig> {
     }
 
     public void revalidateOptions(NMongoConfig options) {
-        int port = NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).ifBlank(27017).get();
-        String host = NOptional.of(options.getHost()).ifBlank("localhost").get();
+        int port = NOptional.of(options.getPort()).mapIf(x -> x <= 0, x -> null, x -> x).onBlank(27017).get();
+        String host = NOptional.of(options.getHost()).onBlank("localhost").get();
         String user = options.getUser();
         String password = options.getPassword();
         if (NBlankable.isBlank(user) && NBlankable.isBlank(password)) {

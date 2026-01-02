@@ -123,12 +123,12 @@ public class LocalMysqlDatabaseConfigService {
                     .grabAll();
             if (session.isPlainTrace()) {
                 NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
-                        NExecFormat.of(cmd).setEnvReplacer(envEntry -> {
+                        NExecFormat.of().setEnvReplacer(envEntry -> {
                             if ("CMD_PWD".equals(envEntry.getName())) {
                                 return "****";
                             }
                             return null;
-                        }).format()
+                        }).format(cmd)
                 ));
             }
             int result = cmd.getResultCode();

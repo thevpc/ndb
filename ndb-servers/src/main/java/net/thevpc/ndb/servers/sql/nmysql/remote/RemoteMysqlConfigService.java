@@ -4,7 +4,7 @@ import net.thevpc.nuts.app.NApp;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.platform.NStoreType;
 import net.thevpc.nuts.io.NPath;
@@ -76,7 +76,7 @@ public class RemoteMysqlConfigService {
         }
         NPath f = getConfigPath();
         if (f.exists()) {
-            config = NElementParser.ofJson().parse(f, RemoteMysqlConfig.class);
+            config = NElementReader.ofJson().read(f, RemoteMysqlConfig.class);
             return this;
         }
         throw new NoSuchElementException("config not found : " + name);

@@ -269,7 +269,7 @@ public class RemoteMysqlDatabaseConfigService {
             b.addCommand(cmd);
         }
         if (session.isPlainTrace()) {
-            NText ff = NExecFormat.of(b)
+            NText ff = NExecFormat.of()
                     .setEnvReplacer(envEntry -> {
                         if (envEntry.getName().toLowerCase().contains("password")
                                 || envEntry.getName().toLowerCase().contains("pwd")) {
@@ -277,7 +277,7 @@ public class RemoteMysqlDatabaseConfigService {
                         }
                         return null;
                     })
-                    .format();
+                    .format(b);
             NOut.println(NMsg.ofC("[exec] %s", ff));
         }
         b.grabAll().failFast();

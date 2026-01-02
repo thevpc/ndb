@@ -7,7 +7,7 @@ import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.io.NOut;
 import net.thevpc.nuts.security.NWorkspaceSecurityManager;
 import net.thevpc.nuts.text.*;
-import net.thevpc.nuts.text.NExecFormat;
+import net.thevpc.nuts.text.NExecWriter;
 import net.thevpc.ndb.servers.sql.nmysql.local.config.LocalMysqlDatabaseConfig;
 import net.thevpc.nuts.util.NBlankable;
 
@@ -123,7 +123,7 @@ public class LocalMysqlDatabaseConfigService {
                     .grabAll();
             if (session.isPlainTrace()) {
                 NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
-                        NExecFormat.of().setEnvReplacer(envEntry -> {
+                        NExecWriter.of().setEnvReplacer(envEntry -> {
                             if ("CMD_PWD".equals(envEntry.getName())) {
                                 return "****";
                             }

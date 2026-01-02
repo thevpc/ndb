@@ -4,7 +4,7 @@ import net.thevpc.nuts.app.NApp;
 import net.thevpc.nuts.artifact.NId;
 import net.thevpc.nuts.command.NPrepareCmd;
 import net.thevpc.nuts.core.NSession;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementType;
 import net.thevpc.nuts.elem.NElements;
 import net.thevpc.ndb.servers.NdbConfig;
@@ -86,7 +86,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
             s = s.trim();
             if (s.length() > 0) {
                 if (s.startsWith("{")) {
-                    Map<String, Object> row = NElementParser.ofJson().parse(s, Map.class);
+                    Map<String, Object> row = NElementReader.ofJson().read(s, Map.class);
                     for (Map.Entry<String, Object> e : row.entrySet()) {
                         if (whereSb.length() > 0) {
                             whereSb.append(" and ");

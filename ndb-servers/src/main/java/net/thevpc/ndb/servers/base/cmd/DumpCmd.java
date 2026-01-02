@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.base.cmd;
 
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.command.NExec;
-import net.thevpc.nuts.text.NObjectFormat;
+import net.thevpc.nuts.text.NObjectObjectWriter;
 import net.thevpc.nuts.io.NExecInput;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.ndb.servers.NdbConfig;
@@ -155,7 +155,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
         String dumpExt = NStringUtils.trim(getSupport().getDumpExt(options));
         if (file.get() == null) {
             if (roll.get() > 0) {
-                zipPath=NPath.of(NObjectFormat.of()
+                zipPath=NPath.of(NObjectObjectWriter.of()
                         .setFormatParam("count",roll.get())
                         .setNtf(false)
                         .format(NPath.ofUserDirectory().resolve(options.getDatabaseName() + "#.zip")).filteredText());
@@ -171,7 +171,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
 
         } else if (file.get().isDirectory()) {
             if (roll.get() > 0) {
-                zipPath=NPath.of(NObjectFormat.of()
+                zipPath=NPath.of(NObjectObjectWriter.of()
                         .setFormatParam("count",roll.get())
                         .setNtf(false)
                         .format(file.get().resolve(options.getDatabaseName() + "#.zip")).filteredText());
@@ -191,7 +191,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             simpleName = nFile.nameParts().getBaseName();
             if (nFile.getName().toLowerCase().endsWith(".zip")) {
                 if (roll.get() > 0) {
-                    zipPath=NPath.of(NObjectFormat.of()
+                    zipPath=NPath.of(NObjectObjectWriter.of()
                             .setFormatParam("count",roll.get())
                             .setNtf(false)
                             .format(nFile).filteredText());
@@ -204,7 +204,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 zip = true;
             } else if (dumpExt.length() > 0 && nFile.getName().toLowerCase().endsWith(dumpExt)) {
                 if (roll.get() > 0) {
-                    plainFolderPath=NPath.of(NObjectFormat.of()
+                    plainFolderPath=NPath.of(NObjectObjectWriter.of()
                             .setFormatParam("count",roll.get())
                             .setNtf(false)
                             .format(nFile).filteredText());
@@ -217,7 +217,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                 zip = false;
             } else {
                 if (roll.get() > 0) {
-                    NPath roll1=NPath.of(NObjectFormat.of()
+                    NPath roll1=NPath.of(NObjectObjectWriter.of()
                             .setFormatParam("count",roll.get())
                             .setNtf(false)
                             .format(nFile).filteredText());

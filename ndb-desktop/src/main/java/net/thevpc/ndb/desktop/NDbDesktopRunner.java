@@ -3,7 +3,7 @@ package net.thevpc.ndb.desktop;
 import net.thevpc.ndb.desktop.panels.NDdbPanel;
 import net.thevpc.ndb.desktop.util.UI;
 import net.thevpc.nuts.elem.NElement;
-import net.thevpc.nuts.elem.NElementParser;
+import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NObjectElement;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.util.UncheckedException;
@@ -19,7 +19,7 @@ public class NDbDesktopRunner implements Runnable {
         NElement conf = null;
         NPath confPath = NPath.of("ndb.conf.tson");
         if (!confPath.isRegularFile()) {
-            conf = NElementParser.ofTson().parse(confPath);
+            conf = NElementReader.ofTson().read(confPath);
         }
         if (conf == null) {
             conf = NElement.ofObject();

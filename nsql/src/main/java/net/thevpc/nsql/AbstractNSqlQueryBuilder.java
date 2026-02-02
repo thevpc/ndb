@@ -11,7 +11,7 @@ public class AbstractNSqlQueryBuilder<T extends AbstractNSqlQueryBuilder> {
     private NSqlParam.Mode mode;
 
     public T set(int index, NSqlColumnType type, Object value) {
-        NAssert.requireNonNull(type, "type");
+        NAssert.requireNamedNonNull(type, "type");
         NSqlParam p = NSqlParam.of(index, type, value);
         if (mode == null) {
             mode = p.getMode();

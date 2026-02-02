@@ -6,7 +6,9 @@ import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.*;
-import net.thevpc.nuts.security.NWorkspaceSecurityManager;
+import net.thevpc.nuts.security.NCredentialId;
+import net.thevpc.nuts.security.NSecretRunner;
+import net.thevpc.nuts.security.NSecurityManager;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NMaps;
 import net.thevpc.nuts.util.NRef;
@@ -32,6 +34,7 @@ import net.thevpc.nuts.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
@@ -687,10 +690,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     }
                     if (d.password != null) {
                         someUpdates = true;
-                        r.getConfig().setPassword(
-                                new String(NWorkspaceSecurityManager.of().createCredentials(d.password.toCharArray(), true,
-                                        null))
-                        );
+                        r.getConfig().setPassword(d.password);
                     }
                     if (add && d.dbname == null) {
                         d.dbname = d.name.getDatabaseName();
@@ -700,11 +700,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         r.getConfig().setDatabaseName(d.dbname);
                     }
                     if (d.askPassword || (!add && d.password == null)) {
-                        r.getConfig().setPassword(new String(NWorkspaceSecurityManager.of()
-                                        .createCredentials(session.getTerminal().readPassword(NMsg.ofPlain("Password")), true,
-                                                null)
-                                )
-                        );
+                        r.getConfig().setPassword(d.password);
                     }
                     if (r.getConfig().getUser() == null) {
                         throw new NExecutionException(NMsg.ofPlain("missing --user"), NExecutionException.ERROR_2);

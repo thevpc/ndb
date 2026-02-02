@@ -27,7 +27,7 @@ public class NSqlTable {
     public static NSqlTable of(String tableName, Map<String, NElement> props, String[] defaultFields, Function<String, NSqlColumn> defs) {
         tableName = NStringUtils.firstNonBlank(NSqlTsonUtils.stringOf(props.get("name")), tableName);
         NElement columns = props.get("columns");
-        NAssert.requireNonBlank(tableName, "tableName");
+        NAssert.requireNamedNonBlank(tableName, "tableName");
         NDdlAuto mode= NDdlAuto.parse(NSqlTsonUtils.stringOf(props.get("ddl-auto")));
         NListContainerElement expectedColumns = NSqlTsonUtils.containerOf(columns);
         List<NSqlColumn> columnsList = new ArrayList<>();

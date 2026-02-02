@@ -5,7 +5,10 @@ import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementWriter;
 import net.thevpc.nuts.io.NOut;
-import net.thevpc.nuts.security.NWorkspaceSecurityManager;
+import net.thevpc.nuts.security.NCredentialId;
+import net.thevpc.nuts.security.NSecretCaller;
+import net.thevpc.nuts.security.NSecretRunner;
+import net.thevpc.nuts.security.NSecurityManager;
 import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.text.NExecWriter;
 import net.thevpc.ndb.servers.sql.nmysql.local.config.LocalMysqlDatabaseConfig;
@@ -16,6 +19,7 @@ import java.io.PrintStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Function;
 
 public class LocalMysqlDatabaseConfigService {
     private String name;
@@ -77,116 +81,124 @@ public class LocalMysqlDatabaseConfigService {
         }
         path= Paths.get(path).toAbsolutePath().normalize().toString();
         String password = getConfig().getPassword();
-        char[] credentials = NWorkspaceSecurityManager.of().getCredentials(password.toCharArray());
-        password = new String(credentials);
-        if (path.endsWith(".sql")) {
-            if (session.isPlainTrace()) {
-                NOut.println(NMsg.ofC("%s create archive %s", getDatabaseName(), path));
-            }
+        String finalPath = path;
+        return NSecurityManager.of().callWithSecret(NCredentialId.parse(password), new NSecretCaller<ArchiveResult>() {
+            @Override
+            public ArchiveResult call(NCredentialId id, char[] credentials, Function<String, String> env) {
+                String password = new String(credentials);
+                if (finalPath.endsWith(".sql")) {
+                    if (session.isPlainTrace()) {
+                        NOut.println(NMsg.ofC("%s create archive %s", getDatabaseName(), finalPath));
+                    }
 
-            NExec cmd = NExec.of()
-                    .system()
-                    .setCommand("sh", "-c",
-                            "\"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p\"$CMD_PWD\" --databases \"$CMD_DB\" > \"$CMD_FILE\""
-                    )
-                    .setEnv("CMD_FILE", path)
-                    .setEnv("CMD_USER", getConfig().getUser())
-                    .setEnv("CMD_PWD", password)
-                    .setEnv("CMD_DB", getDatabaseName())
-                    .grabAll();
-            int result = cmd
-                    .getResultCode();
-            if (result == 0) {
-                return new ArchiveResult(path, result, false);
-            } else {
-                if (new File(path).exists()) {
-                    new File(path).delete();
+                    NExec cmd = NExec.of()
+                            .system()
+                            .setCommand("sh", "-c",
+                                    "\"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p\"$CMD_PWD\" --databases \"$CMD_DB\" > \"$CMD_FILE\""
+                            )
+                            .setEnv("CMD_FILE", finalPath)
+                            .setEnv("CMD_USER", getConfig().getUser())
+                            .setEnv("CMD_PWD", password)
+                            .setEnv("CMD_DB", getDatabaseName())
+                            .grabAll();
+                    int result = cmd
+                            .getResultCode();
+                    if (result == 0) {
+                        return new ArchiveResult(finalPath, result, false);
+                    } else {
+                        if (new File(finalPath).exists()) {
+                            new File(finalPath).delete();
+                        }
+                        throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
+                    }
+                } else {
+                    if (session.isPlainTrace()) {
+                        NOut.println(NMsg.ofC("%s create archive %s", getBracketsPrefix(getDatabaseName()),
+                                NTexts.of()
+                                        .ofStyled(finalPath, NTextStyle.path())));
+                    }
+                    NExec cmd = NExec.of()
+                            .system()
+                            .setCommand("sh", "-c",
+                                    "set -o pipefail && \"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p" + password + " --databases \"$CMD_DB\" | gzip > \"$CMD_FILE\""
+                            )
+                            .setEnv("CMD_FILE", finalPath)
+                            .setEnv("CMD_USER", getConfig().getUser())
+                            .setEnv("CMD_PWD", password)
+                            .setEnv("CMD_DB", getDatabaseName())
+                            //                    .inheritIO()
+                            .grabAll();
+                    if (session.isPlainTrace()) {
+                        NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
+                                NExecWriter.of().setEnvReplacer(envEntry -> {
+                                    if ("CMD_PWD".equals(envEntry.getName())) {
+                                        return "****";
+                                    }
+                                    return null;
+                                }).format(cmd)
+                        ));
+                    }
+                    int result = cmd.getResultCode();
+                    if (result == 0) {
+                        return new ArchiveResult(finalPath, result, false);
+                    } else {
+                        if (new File(finalPath).exists()) {
+                            new File(finalPath).delete();
+                        }
+                        throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
+                    }
                 }
-                throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
             }
-        } else {
-            if (session.isPlainTrace()) {
-                NOut.println(NMsg.ofC("%s create archive %s", getBracketsPrefix(getDatabaseName()),
-                        NTexts.of()
-                        .ofStyled(path, NTextStyle.path())));
-            }
-            NExec cmd = NExec.of()
-                    .system()
-                    .setCommand("sh", "-c",
-                            "set -o pipefail && \"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p" + password + " --databases \"$CMD_DB\" | gzip > \"$CMD_FILE\""
-                    )
-                    .setEnv("CMD_FILE", path)
-                    .setEnv("CMD_USER", getConfig().getUser())
-                    .setEnv("CMD_PWD", password)
-                    .setEnv("CMD_DB", getDatabaseName())
-                    //                    .inheritIO()
-                    .grabAll();
-            if (session.isPlainTrace()) {
-                NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
-                        NExecWriter.of().setEnvReplacer(envEntry -> {
-                            if ("CMD_PWD".equals(envEntry.getName())) {
-                                return "****";
-                            }
-                            return null;
-                        }).format(cmd)
-                ));
-            }
-            int result = cmd.getResultCode();
-            if (result == 0) {
-                return new ArchiveResult(path, result, false);
-            } else {
-                if (new File(path).exists()) {
-                    new File(path).delete();
-                }
-                throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
-            }
-        }
+        });
     }
 
     public RestoreResult restore(String path) {
 //        if(!path.endsWith(".sql") && !path.endsWith(".sql.zip") && !path.endsWith(".zip")){
 //            path=path+
 //        }
-        char[] password = NWorkspaceSecurityManager.of().getCredentials(getConfig().getPassword().toCharArray());
-
-        if (path.endsWith(".sql")) {
-            if (session.isPlainTrace()) {
-                NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
-            }
-            int result = NExec.of()
-                    .system()
-                    .setCommand("sh", "-c",
-                            "cat \"$CMD_FILE\" | " + "\"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
-                    )
-                    .setEnv("CMD_FILE", path)
-                    .setEnv("CMD_USER", getConfig().getUser())
-                    .setEnv("CMD_PWD", new String(password))
-                    .setEnv("CMD_DB", getDatabaseName())
-                    .setEnv("CMD_HOST", "localhost")
-                    //.inheritIO()
+        return NSecurityManager.of().callWithSecret(NCredentialId.parse(getConfig().getPassword()), new NSecretCaller<RestoreResult>() {
+            @Override
+            public RestoreResult call(NCredentialId id, char[] password, Function<String, String> env) {
+                if (path.endsWith(".sql")) {
+                    if (session.isPlainTrace()) {
+                        NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
+                    }
+                    int result = NExec.of()
+                            .system()
+                            .setCommand("sh", "-c",
+                                    "cat \"$CMD_FILE\" | " + "\"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
+                            )
+                            .setEnv("CMD_FILE", path)
+                            .setEnv("CMD_USER", getConfig().getUser())
+                            .setEnv("CMD_PWD", new String(password))
+                            .setEnv("CMD_DB", getDatabaseName())
+                            .setEnv("CMD_HOST", "localhost")
+                            //.inheritIO()
 //                        .start().waitFor()
-                    .getResultCode();
-            return new RestoreResult(path, result, false);
-        } else {
-            if (session.isPlainTrace()) {
-                NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
-            }
+                            .getResultCode();
+                    return new RestoreResult(path, result, false);
+                } else {
+                    if (session.isPlainTrace()) {
+                        NOut.println(NMsg.ofC("%s restore archive %s", getBracketsPrefix(getDatabaseName()), path));
+                    }
 
-            int result = NExec.of()
-                    .system().setCommand("sh", "-c",
-                            "gunzip -c \"$CMD_FILE\" | \"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
-                    )
-                    .setEnv("CMD_FILE", path)
-                    .setEnv("CMD_USER", getConfig().getUser())
-                    .setEnv("CMD_PWD", new String(password))
-                    .setEnv("CMD_DB", getDatabaseName())
-                    .setEnv("CMD_HOST", "localhost")
+                    int result = NExec.of()
+                            .system().setCommand("sh", "-c",
+                                    "gunzip -c \"$CMD_FILE\" | \"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
+                            )
+                            .setEnv("CMD_FILE", path)
+                            .setEnv("CMD_USER", getConfig().getUser())
+                            .setEnv("CMD_PWD", new String(password))
+                            .setEnv("CMD_DB", getDatabaseName())
+                            .setEnv("CMD_HOST", "localhost")
 //                        .start()
 //                        .inheritIO()
 //                        .waitFor()
-                    .getResultCode();
-            return new RestoreResult(path, result, true);
-        }
+                            .getResultCode();
+                    return new RestoreResult(path, result, true);
+                }
+            }
+        });
     }
 
     public String getDatabaseName() {

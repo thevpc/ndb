@@ -36,9 +36,9 @@ public class NSimpleSqlConnectionFactory implements NSqlConnectionFactory {
 
     @Override
     public NSqlConnection create() {
-        NAssert.requireNonBlank(params.getUrl(), "url");
-        NAssert.requireNonBlank(params.getDialect(), "dialect");
-        NAssert.requireNonBlank(params.getDriverClass(), "driverClassName");
+        NAssert.requireNamedNonBlank(params.getUrl(), "url");
+        NAssert.requireNamedNonBlank(params.getDialect(), "dialect");
+        NAssert.requireNamedNonBlank(params.getDriverClass(), "driverClassName");
         Connection connection = null;
         LOG.log(Level.FINE, "create connection {0}", params);
         try {

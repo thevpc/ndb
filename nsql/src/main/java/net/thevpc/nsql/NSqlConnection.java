@@ -213,7 +213,7 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public PreparedStatement prepareInsertStatement(NSqlTable table) {
-        NAssert.requireNonBlank(table.getTableName(), "tableName");
+        NAssert.requireNamedNonBlank(table.getTableName(), "tableName");
         PreparedStatement preparedStatement = insertPreparedStatementMap.get(table.getTableName());
         if (preparedStatement != null) {
             return preparedStatement;

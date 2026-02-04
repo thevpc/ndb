@@ -18,7 +18,7 @@ public class NDdbTestExploded {
 //        NDdbRunner.run(NDbOptionsParser.parse(
 //                "json"
 //                , "--debug"
-////                , "--file=/home/vpc/trash/db"
+////                , "--file="+System.getProperty("user.home")+"/trash/db"
 //        ));
 
     }

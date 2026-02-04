@@ -13,12 +13,12 @@ public class NDdbTestExplodedFleetView {
                 , "--debug"
                 , "--tables=QRTZ_*"
                 , "--exploded"
-                , "--file=/home/vpc/trash/db/2023-01-10"
+                , "--file="+System.getProperty("user.home")+"/trash/db/2023-01-10"
                 )));
 //        NDdbRunner.run(NDdbOptionsParser.parse(
 //                "json"
 //                , "--debug"
-////                , "--file=/home/vpc/trash/db"
+////                , "--file="+System.getProperty("user.home")+"/trash/db"
 //        ));
 
     }

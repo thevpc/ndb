@@ -11,7 +11,7 @@ public class NDdbTestExploded2 {
         NSqlDumpService service = new NSqlDumpService();
         service.dumpToJson(
                 new DumpToJsonOptions()
-//                            .setIn(new In("/home/vpc/ttt/dump/"))
+//                            .setIn(new In(System.getProperty("user.home")+"/ttt/dump/"))
                         .setIn(new In("C:\\Users\\vpc\\Documents\\aaa"))
                         .setData(true)
                         .setLobFolder(new File("C:\\Users\\vpc\\Documents\\aaa-imported"))

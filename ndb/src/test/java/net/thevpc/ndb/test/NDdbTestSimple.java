@@ -21,12 +21,12 @@ public class NDdbTestSimple {
 //                , "--max-rows=1"
 //                , "--debug"
 //                , "--table=accident_photo"
-//                , "--file=/home/vpc/trash/test-simple.db"
+//                , "--file="+System.getProperty("user.home")+"/trash/test-simple.db"
 //        ));
 //        NDdbRunner.run(NDdbOptionsParser.parse(
 //                "json"
 //                , "--debug"
-//                , "--file=/home/vpc/trash/test-simple.db"
+//                , "--file="+System.getProperty("user.home")+"/trash/test-simple.db"
 //        ));
 
     }

@@ -13,8 +13,8 @@ public class NDdbTestFleetView {
                 , "--clear-table"
                 , "--data=false"
                 , "--debug"
-//                , "--file=/home/vpc/work/client-projects/icon/icon-veoni-spring-backend/dump/FleetView.dbo.Course.dump"
-                , "--file=/home/vpc/work/client-projects/icon/icon-veoni-spring-backend/dump/*.dump"
+//                , "--file="+System.getProperty("user.home")+"/work/client-projects/icon/icon-veoni-spring-backend/dump/FleetView.dbo.Course.dump"
+                , "--file="+System.getProperty("user.home")+"/work/client-projects/icon/icon-veoni-spring-backend/dump/*.dump"
             )));
 
     }

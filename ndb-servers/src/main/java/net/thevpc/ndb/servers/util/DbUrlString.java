@@ -1,8 +1,7 @@
 package net.thevpc.ndb.servers.util;
 
-import net.thevpc.nuts.net.DefaultNConnectionString;
-import net.thevpc.nuts.net.DefaultNConnectionStringBuilder;
 import net.thevpc.nuts.net.NConnectionString;
+import net.thevpc.nuts.net.NConnectionStringBuilder;
 import net.thevpc.nuts.util.*;
 
 import java.util.Objects;
@@ -63,7 +62,7 @@ public class DbUrlString {
             }
             return NOptional.of(v);
         } else {
-            v.db = new DefaultNConnectionStringBuilder().setPath(dbStr).build();
+            v.db = NConnectionStringBuilder.of().setPath(dbStr).build();
         }
         return NOptional.of(v);
     }
@@ -99,7 +98,7 @@ public class DbUrlString {
         return db;
     }
 
-    public DbUrlString setDb(DefaultNConnectionString db) {
+    public DbUrlString setDb(NConnectionString db) {
         this.db = db;
         return this;
     }

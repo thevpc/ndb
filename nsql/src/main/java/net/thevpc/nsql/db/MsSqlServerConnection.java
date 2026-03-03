@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class MsSqlServerConnection extends NSqlConnection {
     private static Logger LOG = Logger.getLogger(MsSqlServerConnection.class.getName());
 
-    public MsSqlServerConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
-        super(connectionFactory, connection,sharedConnection);
+    public MsSqlServerConnection(NSqlConnectionFactory connectionFactory, Connection connection, boolean sharedConnection) {
+        super(connectionFactory, connection, sharedConnection);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class MsSqlServerConnection extends NSqlConnection {
     @Override
     public long getApproximateTableCount(NSqlTableId table) {
         try (Statement s = getConnection().createStatement()) {
-            String sql = "SELECT SUM(row_count) FROM sys.dm_db_partition_stats WHERE object_id = OBJECT_ID('"+table.getFullName()+"') AND (index_id = 0 OR index_id = 1)";
+            String sql = "SELECT SUM(row_count) FROM sys.dm_db_partition_stats WHERE object_id = OBJECT_ID('" + table.getFullName() + "') AND (index_id = 0 OR index_id = 1)";
             LOG.log(Level.FINEST, "[" + table.getFullName() + "] [SQL] " + sql);
             try (ResultSet rs = s.executeQuery(sql)) {
                 if (rs.next()) {
@@ -194,7 +194,49 @@ public class MsSqlServerConnection extends NSqlConnection {
 
     @Override
     public long reindexTable(NSqlTableId nSqlTableId) {
-        String q = NMsg.ofC("ALTER INDEX ALL ON %s REBUILD",nSqlTableId.toString()).toString();
+        String q = NMsg.ofC("ALTER INDEX ALL ON %s REBUILD", nSqlTableId.toString()).toString();
         return executeUpdate(q);
+    }
+
+    public boolean attachDatabase(AttachDatabaseCommand cmd) {
+        if (cmd.rebuildLog) {
+            return execute("CREATE DATABASE " + cmd.dbName + "\n" +
+                    "ON (FILENAME = N'" + cmd.mdfFilePath + "')\n" +
+                    "FOR ATTACH_REBUILD_LOG");
+        }
+        return execute("CREATE DATABASE " + cmd.dbName + "\n" +
+                "ON (FILENAME = N'" + cmd.mdfFilePath + "'),\n" +
+                "   (FILENAME = N'" + cmd.ldfFilePath + "')\n" +
+                "FOR ATTACH");
+    }
+
+    public static class AttachDatabaseCommand {
+        private String dbName;
+        private String mdfFilePath;
+        private String ldfFilePath;
+        private boolean rebuildLog;
+
+        public static AttachDatabaseCommand ofWithLog(String dbName, String mdfFilePath, String ldfFilePath) {
+            return new AttachDatabaseCommand(dbName, mdfFilePath, ldfFilePath, ldfFilePath == null);
+        }
+
+        public static AttachDatabaseCommand ofRebuildLog(String dbName, String mdfFilePath) {
+            return new AttachDatabaseCommand(dbName, mdfFilePath, null, true);
+        }
+
+        public static AttachDatabaseCommand ofFolderWithLog(String dbName, String folder) {
+            return new AttachDatabaseCommand(dbName, folder + "\\" + dbName + ".mdf", folder + "\\" + dbName + ".ldf", false);
+        }
+
+        public static AttachDatabaseCommand ofFolderRebuildLog(String dbName, String folder) {
+            return new AttachDatabaseCommand(dbName, folder + "\\" + dbName + ".mdf", null, true);
+        }
+
+        public AttachDatabaseCommand(String dbName, String mdfFilePath, String ldfFilePath, boolean rebuildLog) {
+            this.dbName = dbName;
+            this.mdfFilePath = mdfFilePath;
+            this.ldfFilePath = ldfFilePath;
+            this.rebuildLog = rebuildLog;
+        }
     }
 }

@@ -13,14 +13,22 @@ public class NSqlConnectionString {
     private final NSqlDialect dialect;
     private final String driverClass;
 
-    public static NOptional<NSqlConnectionString> of(String url) {
+    public static NSqlConnectionString of(String url) {
+        return get(url).get();
+    }
+
+    public static NSqlConnectionString of(NSqlConnectionStringBuilder info) {
+        return get(info).get();
+    }
+
+    public static NOptional<NSqlConnectionString> get(String url) {
         if (url == null) {
             return NOptional.ofNamedEmpty("url");
         }
         return NSqlConnectionStringBuilder.parse(url).build();
     }
 
-    public static NOptional<NSqlConnectionString> of(NSqlConnectionStringBuilder info) {
+    public static NOptional<NSqlConnectionString> get(NSqlConnectionStringBuilder info) {
         if (info == null) {
             return NOptional.ofNamedEmpty("builder");
         }

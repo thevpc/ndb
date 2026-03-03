@@ -14,7 +14,7 @@ public interface NSqlConnectionFactory {
     }
 
     static NSqlConnectionFactory of(String connectionString) {
-        return of(NSqlConnectionString.of(connectionString).get());
+        return of(NSqlConnectionString.of(connectionString));
     }
 
     static NSqlConnectionFactory ofStringFunction(Function<String, String> connectionString) {

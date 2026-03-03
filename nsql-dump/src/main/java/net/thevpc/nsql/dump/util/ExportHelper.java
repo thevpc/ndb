@@ -11,6 +11,8 @@ import net.thevpc.nuts.util.NCreated;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,10 +39,17 @@ public class ExportHelper {
                     array2.put(k, null);
                 }
             } else {
-                Object u = NLobUtils.toLobFile(object, parentFile==null?null:parentFile.toPath());
+                Object u = NLobUtils.toLobFile(object, parentFile == null ? null : parentFile.toPath());
                 if (NLobUtils.isLobPointer(u)) {
                     array2.put(k, u.toString());
                 } else {
+                    if (u instanceof Timestamp) {
+                        u = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Timestamp) u);
+                    } else if (u instanceof java.sql.Date) {
+                        u = new SimpleDateFormat("yyyy-MM-dd").format((java.sql.Date) u);
+                    } else if (u instanceof java.util.Date) {
+                        u = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((java.util.Date) u);
+                    }
                     array2.put(k, u);
                 }
             }
@@ -63,7 +72,7 @@ public class ExportHelper {
         Object[] array2 = new Object[array.length];
         for (int i = 0; i < array.length; i++) {
             Object object = array[i];
-            Object u = NLobUtils.toLobFile(object,parentFile==null?null: parentFile.toPath());
+            Object u = NLobUtils.toLobFile(object, parentFile == null ? null : parentFile.toPath());
             if (NLobUtils.isLobPointer(u)) {
                 array2[i] = u.toString();
             } else {
@@ -87,7 +96,7 @@ public class ExportHelper {
         String[] array2 = new String[array.length];
         for (int i = 0; i < array.length; i++) {
             Object object = array[i];
-            Object u = NLobUtils.toLobFile(object, parentFile==null?null:parentFile.toPath());
+            Object u = NLobUtils.toLobFile(object, parentFile == null ? null : parentFile.toPath());
             if (NLobUtils.isLobPointer(u)) {
                 array2[i] = escapeCsv(u.toString());
             } else {

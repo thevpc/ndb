@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class NSqlColumnReaders {
     public static final NSqlColumnReaders INSTANCE = new NSqlColumnReaders();
 
-    private NClassMap<NSqlColumnReader> map = new NClassMap<>(NSqlColumnReader.class);
+    private final NClassMap<NSqlColumnReader> map = NClassMap.of(NSqlColumnReader.class);
 
     public static NSqlColumnReader<Boolean> PRIMITIVE_BOOLEAN = new NSqlColumnReader<Boolean>() {
         @Override

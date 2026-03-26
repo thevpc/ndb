@@ -32,8 +32,8 @@ import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.command.NFetch;
 import net.thevpc.nuts.command.NSearch;
 import net.thevpc.nuts.core.NSession;
+import net.thevpc.nuts.core.NStoreKey;
 import net.thevpc.nuts.platform.NEnv;
-import net.thevpc.nuts.platform.NStoreType;
 import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.log.NLog;
 import net.thevpc.nuts.log.NMsgIntent;
@@ -200,7 +200,7 @@ public class DerbyService {
         }
         NPath derbyDataHomeRoot = derbyDataHome.getParent();
         derbyDataHome.mkdirs();
-        Path derbyBinHome = NPath.ofIdStore(NApp.of().getId().get(), NStoreType.BIN).resolve(currentDerbyVersion).toPath().get();
+        Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApp.of().getId().get())).resolve(currentDerbyVersion).toPath().get();
         Path derbyLibHome = derbyBinHome.resolve("lib");
         Path derby = download("org.apache.derby:derby#" + currentDerbyVersion, derbyLibHome, false);
         Path derbynet = download("org.apache.derby:derbynet#" + currentDerbyVersion, derbyLibHome, false);

@@ -1,6 +1,6 @@
 package net.thevpc.nsql;
 
-import net.thevpc.nuts.util.NClassMap;
+import net.thevpc.nuts.reflect.NClassMap;
 import net.thevpc.nuts.util.NOptional;
 
 import java.sql.ResultSet;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class NSqlColumnReaders {
     public static final NSqlColumnReaders INSTANCE = new NSqlColumnReaders();
 
-    private final NClassMap<NSqlColumnReader> map = NClassMap.of(NSqlColumnReader.class);
+    private final NClassMap<Object,NSqlColumnReader> map = NClassMap.of(NSqlColumnReader.class);
 
     public static NSqlColumnReader<Boolean> PRIMITIVE_BOOLEAN = new NSqlColumnReader<Boolean>() {
         @Override

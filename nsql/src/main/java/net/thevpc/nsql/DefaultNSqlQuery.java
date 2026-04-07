@@ -56,7 +56,7 @@ class DefaultNSqlQuery implements NSqlQuery {
         LOG.log(Level.FINEST, "[SQL] " + userSql.toString());
         SqlInfo sqlInfo = toSqlInfo();
         try (PreparedStatement ps = connection.getConnection().prepareStatement(sqlInfo.sql)) {
-            for (NSqlParam param : params) {
+            for (NSqlParam param : sqlInfo.indexedParams) {
                 connection.prepareStatement(ps, param.columnIndex, param.columnType, param.columnName, param.value, prepareStatementContext);
             }
             return ps.executeUpdate();
@@ -73,7 +73,7 @@ class DefaultNSqlQuery implements NSqlQuery {
         PreparedStatement ps = null;
         try {
             ps = connection.getConnection().prepareStatement(sqlInfo.sql);
-            for (NSqlParam param : params) {
+            for (NSqlParam param : sqlInfo.indexedParams) {
                 connection.prepareStatement(ps, param.columnIndex, param.columnType, param.columnName, param.value, prepareStatementContext);
             }
             Statement finalS = ps;

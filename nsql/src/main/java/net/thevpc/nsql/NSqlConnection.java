@@ -34,7 +34,7 @@ public class NSqlConnection implements AutoCloseable {
     private long maxVarcharLength;
     private boolean sharedConnection;
 
-    public NSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection,boolean sharedConnection) {
+    public NSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection, boolean sharedConnection) {
         this.connectionFactory = connectionFactory;
         this.dialect = connectionFactory.dialect();
         this.connection = connection;
@@ -260,7 +260,7 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public void refresh() {
-        if(sharedConnection){
+        if (sharedConnection) {
             return;
         }
         close();
@@ -376,7 +376,7 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public void close() {
-        if(sharedConnection){
+        if (sharedConnection) {
             return;
         }
         for (PreparedStatement value : insertPreparedStatementMap.values()) {
@@ -1128,7 +1128,7 @@ public class NSqlConnection implements AutoCloseable {
                         ps.setNull(index, Types.VARCHAR);
                     } else {
                         String cn = columnName;
-                        Object u = NLobUtils.toLobFile(value, NBlankable.isBlank(cn) ? prepareStatementContext.getExternalLobFolder() : prepareStatementContext.getExternalLobFolder().resolve(cn));
+                        Object u = (prepareStatementContext == null) ? value : NLobUtils.toLobFile(value, NBlankable.isBlank(cn) ? prepareStatementContext.getExternalLobFolder() : prepareStatementContext.getExternalLobFolder().resolve(cn));
                         if (u instanceof File || u instanceof Path) {
                             ps.setString(index, u.toString());
                         } else if (u instanceof String) {

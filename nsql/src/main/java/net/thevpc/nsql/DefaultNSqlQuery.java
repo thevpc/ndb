@@ -106,7 +106,8 @@ class DefaultNSqlQuery implements NSqlQuery {
             }
             case NAME: {
                 NStreamTokenizer st = new NStreamTokenizer(new StringReader(userSql.toString()));
-                st.ordinaryChar(':');
+                st.wordChar(':');
+                st.wordChar('_');
                 List<NSqlParam> params2 = new ArrayList<>();
                 StringBuilder sql2 = new StringBuilder();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
@@ -118,7 +119,7 @@ class DefaultNSqlQuery implements NSqlQuery {
                                     Optional<NSqlParam> p = params.stream().filter(x -> x.columnName.equals(u)).findFirst();
                                     if (p.isPresent()) {
                                         NSqlParam pp = p.get();
-                                        params2.add(NSqlParam.of(params2.size(), pp.columnType, pp.value));
+                                        params2.add(NSqlParam.of(params2.size()+1, pp.columnType, pp.value));
                                     } else {
                                         throw new NIllegalArgumentException(NMsg.ofC("invalid param name %s", u));
                                     }

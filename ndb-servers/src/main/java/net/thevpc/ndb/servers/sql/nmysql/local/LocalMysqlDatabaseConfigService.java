@@ -97,13 +97,13 @@ public class LocalMysqlDatabaseConfigService {
                                 .setCommand("sh", "-c",
                                         "\"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p\"$CMD_PWD\" --databases \"$CMD_DB\" > \"$CMD_FILE\""
                                 )
-                                .setEnv("CMD_FILE", finalPath)
-                                .setEnv("CMD_USER", getConfig().getUser())
-                                .setEnv("CMD_PWD", password)
-                                .setEnv("CMD_DB", getDatabaseName())
+                                .env("CMD_FILE", finalPath)
+                                .env("CMD_USER", getConfig().getUser())
+                                .env("CMD_PWD", password)
+                                .env("CMD_DB", getDatabaseName())
                                 .grabAll();
                         int result = cmd
-                                .getResultCode();
+                                .exitCode();
                         if (result == 0) {
                             return new ArchiveResult(finalPath, result, false);
                         } else {
@@ -123,10 +123,10 @@ public class LocalMysqlDatabaseConfigService {
                                 .setCommand("sh", "-c",
                                         "set -o pipefail && \"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p" + password + " --databases \"$CMD_DB\" | gzip > \"$CMD_FILE\""
                                 )
-                                .setEnv("CMD_FILE", finalPath)
-                                .setEnv("CMD_USER", getConfig().getUser())
-                                .setEnv("CMD_PWD", password)
-                                .setEnv("CMD_DB", getDatabaseName())
+                                .env("CMD_FILE", finalPath)
+                                .env("CMD_USER", getConfig().getUser())
+                                .env("CMD_PWD", password)
+                                .env("CMD_DB", getDatabaseName())
                                 //                    .inheritIO()
                                 .grabAll();
                         if (session.isPlainTrace()) {
@@ -139,7 +139,7 @@ public class LocalMysqlDatabaseConfigService {
                                     }).format(cmd)
                             ));
                         }
-                        int result = cmd.getResultCode();
+                        int result = cmd.exitCode();
                         if (result == 0) {
                             return new ArchiveResult(finalPath, result, false);
                         } else {
@@ -171,14 +171,14 @@ public class LocalMysqlDatabaseConfigService {
                                 .setCommand("sh", "-c",
                                         "cat \"$CMD_FILE\" | " + "\"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
                                 )
-                                .setEnv("CMD_FILE", path)
-                                .setEnv("CMD_USER", getConfig().getUser())
-                                .setEnv("CMD_PWD", new String(cc))
-                                .setEnv("CMD_DB", getDatabaseName())
-                                .setEnv("CMD_HOST", "localhost")
+                                .env("CMD_FILE", path)
+                                .env("CMD_USER", getConfig().getUser())
+                                .env("CMD_PWD", new String(cc))
+                                .env("CMD_DB", getDatabaseName())
+                                .env("CMD_HOST", "localhost")
                                 //.inheritIO()
 //                        .start().waitFor()
-                                .getResultCode();
+                                .exitCode();
                         return new RestoreResult(path, result, false);
                     } else {
                         if (session.isPlainTrace()) {
@@ -189,15 +189,15 @@ public class LocalMysqlDatabaseConfigService {
                                 .system().setCommand("sh", "-c",
                                         "gunzip -c \"$CMD_FILE\" | \"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
                                 )
-                                .setEnv("CMD_FILE", path)
-                                .setEnv("CMD_USER", getConfig().getUser())
-                                .setEnv("CMD_PWD", new String(cc))
-                                .setEnv("CMD_DB", getDatabaseName())
-                                .setEnv("CMD_HOST", "localhost")
+                                .env("CMD_FILE", path)
+                                .env("CMD_USER", getConfig().getUser())
+                                .env("CMD_PWD", new String(cc))
+                                .env("CMD_DB", getDatabaseName())
+                                .env("CMD_HOST", "localhost")
 //                        .start()
 //                        .inheritIO()
 //                        .waitFor()
-                                .getResultCode();
+                                .exitCode();
                         return new RestoreResult(path, result, true);
                     }
                 });

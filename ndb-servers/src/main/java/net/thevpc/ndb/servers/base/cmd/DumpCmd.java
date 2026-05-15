@@ -282,7 +282,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             CmdRedirect dumpCommand = getSupport().createDumpCommand(plainFolderPath, options);
             NExec nExec = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
             if (dumpCommand.getPath() != null) {
-                nExec.setIn(NExecInput.ofPath(dumpCommand.getPath()));
+                nExec.in(NExecInput.ofPath(dumpCommand.getPath()));
             }
             run(nExec);
             if (zip) {
@@ -300,7 +300,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                         }
                         zipExec.addCommand(zipPath.toString());
                         zipExec.addCommand(".");
-                        zipExec.setDirectory(plainFolderPath);
+                        zipExec.directory(plainFolderPath);
                         run(zipExec);
                     } else {
 
@@ -315,7 +315,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                         }
                         zipExec.addCommand(zipPath.toString());
                         zipExec.addCommand(".");
-                        zipExec.setDirectory(plainFolderPath.resolve(sf));
+                        zipExec.directory(plainFolderPath.resolve(sf));
                         run(zipExec);
                     }
                 } else {
@@ -330,7 +330,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                     }
                     zipExec.addCommand(zipPath.toString());
                     zipExec.addCommand(plainFolderPath.toString());
-                    zipExec.setDirectory(plainFolderPath.getParent());
+                    zipExec.directory(plainFolderPath.getParent());
                     run(zipExec);
                 }
 

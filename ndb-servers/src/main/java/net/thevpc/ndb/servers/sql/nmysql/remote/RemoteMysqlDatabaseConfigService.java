@@ -137,7 +137,7 @@ public class RemoteMysqlDatabaseConfigService {
                     throw new NIOException(e);
                 }
             }
-            NExec.of().setExecutionType(NExecutionType.EMBEDDED)
+            NExec.of().executionType(NExecutionType.EMBEDDED)
                     .addCommand("nsh",
                             "--bot",
                             "-c",

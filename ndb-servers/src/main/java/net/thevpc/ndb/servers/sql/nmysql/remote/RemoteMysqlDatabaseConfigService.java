@@ -143,7 +143,7 @@ public class RemoteMysqlDatabaseConfigService {
                             "-c",
                             "cp",
                             remoteFullFilePath.toString(), localPath)
-                    .failFast()
+                    .failFast(true)
                     .run()
                     .getGrabbedAllString();
 
@@ -217,7 +217,7 @@ public class RemoteMysqlDatabaseConfigService {
                         remoteFullFilePath.getLocation()
                 )
                 .grabAll()
-                .failFast()
+                .failFast(true)
                 .run();
         if (session.isPlainTrace()) {
             NOut.println(NMsg.ofC("%s remote restore %s",
@@ -280,7 +280,7 @@ public class RemoteMysqlDatabaseConfigService {
                     .format(b);
             NOut.println(NMsg.ofC("[exec] %s", ff));
         }
-        b.grabAll().failFast();
+        b.grabAll().failFast(true);
         return b.run().getGrabbedOutString();
     }
 

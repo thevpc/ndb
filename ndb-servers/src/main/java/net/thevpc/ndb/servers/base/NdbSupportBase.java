@@ -293,7 +293,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
 
     public NExec sysCmd() {
         return NExec.of()
-                .failFast()
+                .failFast(true)
                 .system()
                 ;
     }

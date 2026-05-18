@@ -198,7 +198,7 @@ public class DerbyService {
                 derbyDataHome = NApp.of().getSharedVarFolder().resolve("derby-db");
             }
         }
-        NPath derbyDataHomeRoot = derbyDataHome.getParent();
+        NPath derbyDataHomeRoot = derbyDataHome.parent();
         derbyDataHome.mkdirs();
         Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApp.of().getId().get())).resolve(currentDerbyVersion).toPath().get();
         Path derbyLibHome = derbyBinHome.resolve("lib");

@@ -32,7 +32,7 @@ public class LocalMysqlConfigService {
 
     public LocalMysqlConfigService(NPath file, NSession session) {
         this(
-                file.getName().toString().substring(0, file.getName().length() - LocalMysqlConfigService.SERVER_CONFIG_EXT.length()),
+                file.name().toString().substring(0, file.name().length() - LocalMysqlConfigService.SERVER_CONFIG_EXT.length()),
                 session
         );
         loadConfig();

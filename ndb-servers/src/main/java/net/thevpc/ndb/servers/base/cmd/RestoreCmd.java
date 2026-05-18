@@ -75,7 +75,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                 );
                 switch (dumpRestoreMode) {
                     case FILE: {
-                        if (file.get().getName().toLowerCase().endsWith(".zip")) {
+                        if (file.get().name().toLowerCase().endsWith(".zip")) {
                             try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
                                 //get the zipped file list entry
                                 ZipEntry ze = zis.getNextEntry();
@@ -102,7 +102,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case FOLDER: {
-                        if (/*file.get().isFile() && */file.get().getName().toLowerCase().endsWith(".zip")) {
+                        if (/*file.get().isFile() && */file.get().name().toLowerCase().endsWith(".zip")) {
                             NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
                             NExec zipExec = sysSsh(options)
                                     .addCommand("unzip")
@@ -129,7 +129,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
             } else {
                 switch (dumpRestoreMode) {
                     case FILE: {
-                        if (file.get().getName().toLowerCase().endsWith(".zip")) {
+                        if (file.get().name().toLowerCase().endsWith(".zip")) {
                             try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
                                 //get the zipped file list entry
                                 ZipEntry ze = zis.getNextEntry();
@@ -140,7 +140,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                                     } else {
                                         if (fileName.endsWith(dumpExt)) {
                                             NPath newFile = file.get().resolve(fileName);
-                                            newFile.getParent().mkdirs();
+                                            newFile.parent().mkdirs();
                                             restoreFile(newFile, options);
                                             newFile.delete();
                                         }
@@ -158,7 +158,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case FOLDER: {
-                        if (/*file.get().isFile() && */file.get().getName().toLowerCase().endsWith(".zip")) {
+                        if (/*file.get().isFile() && */file.get().name().toLowerCase().endsWith(".zip")) {
                             NPath zipPath = file.get();
                             NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
                             NSession session = NSession.of();

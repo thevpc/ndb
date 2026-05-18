@@ -30,7 +30,7 @@ public class NMySqlService {
     public LocalMysqlConfigService[] listLocalConfig() {
         return
                 sharedConfigFolder.stream().filter(
-                                NPredicate.of((NPath pathname) -> pathname.isRegularFile() && pathname.getName().toString().endsWith(LocalMysqlConfigService.SERVER_CONFIG_EXT))
+                                NPredicate.of((NPath pathname) -> pathname.isRegularFile() && pathname.name().toString().endsWith(LocalMysqlConfigService.SERVER_CONFIG_EXT))
                                         .withDescription(NDescribables.ofDesc("isRegularFile() && matches(*" + LocalMysqlConfigService.SERVER_CONFIG_EXT + ")"))
                         )
                         .mapUnsafe(
@@ -114,13 +114,13 @@ public class NMySqlService {
     public RemoteMysqlConfigService[] listRemoteConfig() {
         return
                 sharedConfigFolder.stream().filter(
-                                NPredicate.of((NPath pathname) -> pathname.isRegularFile() && pathname.getName().toString().endsWith(LocalMysqlConfigService.SERVER_CONFIG_EXT))
+                                NPredicate.of((NPath pathname) -> pathname.isRegularFile() && pathname.name().toString().endsWith(LocalMysqlConfigService.SERVER_CONFIG_EXT))
                                         .withDescription(NDescribables.ofDesc("isRegularFile() && matches(*" + LocalMysqlConfigService.SERVER_CONFIG_EXT + ")"))
                         )
                         .mapUnsafe(
                                 NUnsafeFunction.of(
                                         (NPath x) -> {
-                                            String nn = x.getName();
+                                            String nn = x.name();
                                             return loadRemoteMysqlConfig(nn.substring(0, nn.length() - RemoteMysqlConfigService.CLIENT_CONFIG_EXT.length()));
                                         }).withDescription(NDescribables.ofDesc("loadRemoteMysqlConfig"))
                                 , null)

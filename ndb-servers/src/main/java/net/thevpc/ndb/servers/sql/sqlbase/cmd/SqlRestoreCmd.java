@@ -66,7 +66,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
             if (file.get().isDirectory()) {
 
             }
-            if (file.get().getName().toLowerCase().endsWith(".sql")) {
+            if (file.get().name().toLowerCase().endsWith(".sql")) {
                 sqlFile = file.get();
                 CmdRedirect restoreCommand = getSupport().createRestoreCommand(sqlFile, options);
                 NExec nExec = sysCmd().addCommand(restoreCommand.getCmd().toStringArray());
@@ -74,7 +74,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                     nExec.in(NExecInput.ofPath(restoreCommand.getPath()));
                 }
                 run(nExec);
-            } else if (file.get().getName().toLowerCase().endsWith(".zip")) {
+            } else if (file.get().name().toLowerCase().endsWith(".zip")) {
                 try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
                     //get the zipped file list entry
                     ZipEntry ze = zis.getNextEntry();
@@ -84,8 +84,8 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                             file.get().resolveSibling(fileName).mkdirs();
                         } else {
                             if (fileName.endsWith(dumpExt)) {
-                                NPath newFile = file.get().resolveSibling(NPath.of(fileName).getName());
-                                newFile.getParent().mkdirs();
+                                NPath newFile = file.get().resolveSibling(NPath.of(fileName).name());
+                                newFile.parent().mkdirs();
                                 try (OutputStream fos = newFile.getOutputStream()) {
                                     byte[] buffer = new byte[2048];
                                     int count;

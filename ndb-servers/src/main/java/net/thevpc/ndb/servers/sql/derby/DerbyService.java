@@ -143,7 +143,7 @@ public class DerbyService {
     private Path download(String id, Path folder, boolean optional) {
         final NId iid = NId.get(id).get();
 //        Path downloadBaseFolder = folder//.resolve(iid.getVersion().getValue());
-        Path targetFile = folder.resolve(iid.getArtifactId() + ".jar");
+        Path targetFile = folder.resolve(iid.artifactId() + ".jar");
         if (!Files.exists(targetFile)) {
             NPath targetPath=NPath.of(targetFile);
             NPath r = NFetch.of(id).failFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
@@ -161,9 +161,9 @@ public class DerbyService {
         NId java = NEnv.of().getJava();
         List<String> all = NSearch.of().addId("org.apache.derby:derbynet").distinct(true)
                 .setDefinitionFilter(
-                        (java.getVersion().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
+                        (java.version().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
-                .getResultIds().stream().map(x -> x.getVersion().toString()).collect(Collectors.toList());
+                .getResultIds().stream().map(x -> x.version().toString()).collect(Collectors.toList());
         TreeSet<String> lastFirst = new TreeSet<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -182,25 +182,25 @@ public class DerbyService {
             NId java = NEnv.of().getJava();
             NId best = NSearch.of().addId("org.apache.derby:derbynet").distinct(true).latest(true)
                     .setDefinitionFilter(
-                            (java.getVersion().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
+                            (java.version().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
                                     null)
                     .getResultIds().findSingleton().get();
-            currentDerbyVersion = best.getVersion().toString();
+            currentDerbyVersion = best.version().toString();
         }
 
         NPath derbyDataHome = null;
         if (options.getDerbyDataHomeReplace() != null) {
-            derbyDataHome = NApp.of().getSharedVarFolder();
+            derbyDataHome = NApp.of().sharedVarFolder();
         } else {
             if (options.getDerbyDataHomeRoot() != null && options.getDerbyDataHomeRoot().trim().length() > 0) {
-                derbyDataHome = NPath.of(options.getDerbyDataHomeRoot()).toAbsolute(NApp.of().getSharedVarFolder());
+                derbyDataHome = NPath.of(options.getDerbyDataHomeRoot()).toAbsolute(NApp.of().sharedVarFolder());
             } else {
-                derbyDataHome = NApp.of().getSharedVarFolder().resolve("derby-db");
+                derbyDataHome = NApp.of().sharedVarFolder().resolve("derby-db");
             }
         }
         NPath derbyDataHomeRoot = derbyDataHome.parent();
         derbyDataHome.mkdirs();
-        Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApp.of().getId().get())).resolve(currentDerbyVersion).toPath().get();
+        Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApp.of().id().get())).resolve(currentDerbyVersion).toPath().get();
         Path derbyLibHome = derbyBinHome.resolve("lib");
         Path derby = download("org.apache.derby:derby#" + currentDerbyVersion, derbyLibHome, false);
         Path derbynet = download("org.apache.derby:derbynet#" + currentDerbyVersion, derbyLibHome, false);

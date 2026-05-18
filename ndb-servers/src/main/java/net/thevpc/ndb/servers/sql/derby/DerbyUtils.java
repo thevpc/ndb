@@ -30,7 +30,7 @@ public class DerbyUtils {
     public static RunningDerby[] getRunningInstances(NSession session) {
         return NPs.of()
                 .setPlatformFamily(NExecutionEngineFamily.JAVA).getResultList()
-                .stream().filter((p) -> p.getName().equals("org.apache.derby.drda.NetworkServerControl"))
+                .stream().filter((p) -> p.name().equals("org.apache.derby.drda.NetworkServerControl"))
                 .map(x -> new RunningDerby(x, session)).toArray(RunningDerby[]::new);
     }
 

@@ -76,7 +76,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                 switch (dumpRestoreMode) {
                     case FILE: {
                         if (file.get().name().toLowerCase().endsWith(".zip")) {
-                            try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
+                            try (ZipInputStream zis = new ZipInputStream(file.get().inputStream())) {
                                 //get the zipped file list entry
                                 ZipEntry ze = zis.getNextEntry();
                                 while (ze != null) {
@@ -130,7 +130,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                 switch (dumpRestoreMode) {
                     case FILE: {
                         if (file.get().name().toLowerCase().endsWith(".zip")) {
-                            try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
+                            try (ZipInputStream zis = new ZipInputStream(file.get().inputStream())) {
                                 //get the zipped file list entry
                                 ZipEntry ze = zis.getNextEntry();
                                 while (ze != null) {

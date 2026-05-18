@@ -14,6 +14,6 @@ public class NDdbMain  {
 
     @NAppRunner
     public void run() {
-        NDdbRunner.run(NDdbOptionsParser.parse(NApp.of().getCmdLine()));
+        NDdbRunner.run(NDdbOptionsParser.parse(NApp.of().cmdLine()));
     }
 }

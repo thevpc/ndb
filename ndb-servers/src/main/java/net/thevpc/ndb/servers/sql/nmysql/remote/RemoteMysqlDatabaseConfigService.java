@@ -76,7 +76,7 @@ public class RemoteMysqlDatabaseConfigService {
                     .forBoolean(
                             NMsg.ofPlain("a previous pull has failed. would you like to resume (yes) or ignore and re-run the pull (no).")
                     )
-                    .getBooleanValue()
+                    .booleanValue()
             ) {
                 lastRun.reset();
             }
@@ -112,7 +112,7 @@ public class RemoteMysqlDatabaseConfigService {
         String ppath = (String) resMap.get("path");
 
         if (NBlankable.isBlank(localPath)) {
-            localPath = NApp.of().getVarFolder()
+            localPath = NApp.of().varFolder()
                     .resolve("pull-backups")
                     .resolve(client.getName() + "-" + getName())
                     .resolve(/*MysqlUtils.newDateString()+"-"+*/Paths.get(ppath).getFileName().toString())

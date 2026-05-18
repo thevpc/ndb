@@ -594,7 +594,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                                                             NTextStyle.primary3()
                                                     ))
                                     )
-                                    .setDefaultValue(false).getBooleanValue()) {
+                                    .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
                             }
                         }
@@ -605,7 +605,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3()
                                             )))
-                                    .setDefaultValue(false).getBooleanValue()) {
+                                    .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
                             }
                         }
@@ -756,7 +756,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))
-                                    .setDefaultValue(false).getBooleanValue()) {
+                                    .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
                             }
                         }
@@ -767,7 +767,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                                     .forBoolean(
                                             NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))
-                                    .setDefaultValue(false).getBooleanValue()) {
+                                    .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
                             }
                         }

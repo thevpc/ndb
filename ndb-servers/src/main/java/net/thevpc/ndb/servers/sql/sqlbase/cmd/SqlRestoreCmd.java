@@ -75,7 +75,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                 }
                 run(nExec);
             } else if (file.get().name().toLowerCase().endsWith(".zip")) {
-                try (ZipInputStream zis = new ZipInputStream(file.get().getInputStream())) {
+                try (ZipInputStream zis = new ZipInputStream(file.get().inputStream())) {
                     //get the zipped file list entry
                     ZipEntry ze = zis.getNextEntry();
                     while (ze != null) {
@@ -86,7 +86,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                             if (fileName.endsWith(dumpExt)) {
                                 NPath newFile = file.get().resolveSibling(NPath.of(fileName).name());
                                 newFile.parent().mkdirs();
-                                try (OutputStream fos = newFile.getOutputStream()) {
+                                try (OutputStream fos = newFile.outputStream()) {
                                     byte[] buffer = new byte[2048];
                                     int count;
                                     while ((count = zis.read(buffer)) > 0) {

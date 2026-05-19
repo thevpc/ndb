@@ -71,12 +71,12 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
     @Override
     public void run(NCmdLine cmdLine) {
         NArg a;
-        cmdLine.setCommandName("ndb " + dbType);
+        cmdLine.commandName("ndb " + dbType);
         while (cmdLine.hasNext()) {
             boolean ok = false;
             for (NdbCmd<C> cc : commands.values()) {
                 if (cmdLine.matcher().with(cc.getNames()).matchFlag((value) -> {
-                    cmdLine.setCommandName(getDbType() + " " + value.key());
+                    cmdLine.commandName(getDbType() + " " + value.key());
                     cc.run(cmdLine);
                 }).anyMatch()) {
                     ok = true;

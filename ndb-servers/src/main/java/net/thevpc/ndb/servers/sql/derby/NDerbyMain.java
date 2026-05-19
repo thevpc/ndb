@@ -41,7 +41,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
     public void run(NCmdLine cmdLine) {
         NArg a;
         NDerbyConfig options = new NDerbyConfig();
-        cmdLine.setCommandName("derby");
+        cmdLine.commandName("derby");
         while (cmdLine.hasNext()) {
             if ((a = cmdLine.next("start").orNull()) != null) {
                 options.setCmd(Command.start);
@@ -83,7 +83,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             } else if (_opt(cmdLine, options)) {
                 //
             } else {
-                cmdLine.setCommandName("derby").throwUnexpectedArgument();
+                cmdLine.commandName("derby").throwUnexpectedArgument();
             }
         }
         if (cmdLine.isExecMode()) {
@@ -118,7 +118,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
     }
 
     private void runSQL(NCmdLine commandLine, NDerbyConfig options, NSession session) {
-        commandLine.setCommandName("derby run-sql");
+        commandLine.commandName("derby run-sql");
         NRef<AtName> name = NRef.ofNull(AtName.class);
         List<String> sql = new ArrayList<>();
         NRef<Boolean> forceShowSQL = NRef.ofNull(Boolean.class);
@@ -184,7 +184,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
     }
 
     public void status(NCmdLine cmdLine, NDerbyConfig options) {
-        cmdLine.setCommandName("tomcat --local status");
+        cmdLine.commandName("tomcat --local status");
         NArg a;
         while (cmdLine.hasNext()) {
             if (_opt(cmdLine, options)) {
@@ -240,7 +240,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
 
     public void ps(NCmdLine args, NDerbyConfig options) {
         String format = "default";
-        args.setCommandName("tomcat --local ps");
+        args.commandName("tomcat --local ps");
         NArg a;
         while (args.hasNext()) {
             if ((a = args.nextFlag("-l", "--long").orNull()) != null) {
@@ -291,7 +291,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
     }
 
     public void versions(NCmdLine args, NDerbyConfig options) {
-        args.setCommandName("tomcat --local versions");
+        args.commandName("tomcat --local versions");
         while (args.hasNext()) {
             if (_opt(args, options)) {
                 //

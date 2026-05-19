@@ -146,7 +146,7 @@ public class DerbyService {
         Path targetFile = folder.resolve(iid.artifactId() + ".jar");
         if (!Files.exists(targetFile)) {
             NPath targetPath=NPath.of(targetFile);
-            NPath r = NFetch.of(id).failFast(!optional).setDependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
+            NPath r = NFetch.of(id).failFast(!optional).dependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
             if (r != null) {
                 r.copyTo(targetPath);
                 LOG().log(NMsg.ofC("downloading %s to %s", id, targetFile).asFinest().withIntent(NMsgIntent.READ));
@@ -160,7 +160,7 @@ public class DerbyService {
     public Set<String> findVersions() {
         NId java = NEnv.of().getJava();
         List<String> all = NSearch.of().addId("org.apache.derby:derbynet").distinct(true)
-                .setDefinitionFilter(
+                .definitionFilter(
                         (java.version().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
                 .getResultIds().stream().map(x -> x.version().toString()).collect(Collectors.toList());
@@ -181,7 +181,7 @@ public class DerbyService {
         if (currentDerbyVersion == null) {
             NId java = NEnv.of().getJava();
             NId best = NSearch.of().addId("org.apache.derby:derbynet").distinct(true).latest(true)
-                    .setDefinitionFilter(
+                    .definitionFilter(
                             (java.version().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
                                     null)
                     .getResultIds().findSingleton().get();

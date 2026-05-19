@@ -94,7 +94,7 @@ public class LocalMysqlDatabaseConfigService {
 
                         NExec cmd = NExec.of()
                                 .system()
-                                .setCommand("sh", "-c",
+                                .command("sh", "-c",
                                         "\"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p\"$CMD_PWD\" --databases \"$CMD_DB\" > \"$CMD_FILE\""
                                 )
                                 .env("CMD_FILE", finalPath)
@@ -120,7 +120,7 @@ public class LocalMysqlDatabaseConfigService {
                         }
                         NExec cmd = NExec.of()
                                 .system()
-                                .setCommand("sh", "-c",
+                                .command("sh", "-c",
                                         "set -o pipefail && \"" + mysql.getMysqldumpCommand() + "\" -u \"$CMD_USER\" -p" + password + " --databases \"$CMD_DB\" | gzip > \"$CMD_FILE\""
                                 )
                                 .env("CMD_FILE", finalPath)
@@ -168,7 +168,7 @@ public class LocalMysqlDatabaseConfigService {
                         }
                         int result = NExec.of()
                                 .system()
-                                .setCommand("sh", "-c",
+                                .command("sh", "-c",
                                         "cat \"$CMD_FILE\" | " + "\"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
                                 )
                                 .env("CMD_FILE", path)
@@ -186,7 +186,7 @@ public class LocalMysqlDatabaseConfigService {
                         }
 
                         int result = NExec.of()
-                                .system().setCommand("sh", "-c",
+                                .system().command("sh", "-c",
                                         "gunzip -c \"$CMD_FILE\" | \"" + mysql.getMysqlCommand() + "\" -h \"$CMD_HOST\" -u \"$CMD_USER\" \"-p$CMD_PWD\" \"$CMD_DB\""
                                 )
                                 .env("CMD_FILE", path)

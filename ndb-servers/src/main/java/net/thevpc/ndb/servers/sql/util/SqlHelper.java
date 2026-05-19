@@ -270,7 +270,7 @@ public class SqlHelper implements Closeable {
     public static ClassLoader createClassLoader(NSession session, String id) {
         String z = session.getWorkspace().getUuid() + "/" + id;
         return cachedClassLoaders.computeIfAbsent(z, x -> NSearch.of().addId(id)
-                .setDependencyFilter(NDependencyFilters.of().byRunnable())
+                .dependencyFilter(NDependencyFilters.of().byRunnable())
                 .getResultClassLoader(SqlHelper.class.getClassLoader()));
     }
 

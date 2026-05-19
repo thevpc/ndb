@@ -15,7 +15,7 @@ public class RunningDerby {
     public RunningDerby(NPsInfo r, NSession session) {
         pid =r.pid();
         argsLine=r.cmdLine();
-        NCmdLine cmdline = NCmdLine.parse(r.cmdLine()).get().setExpandSimpleOptions(false);
+        NCmdLine cmdline = NCmdLine.parse(r.cmdLine()).get().expandSimpleOptions(false);
         NArg a=null;
         while(cmdline.hasNext()){
             if((a=cmdline.nextEntry("-Dderby.system.home").orNull())!=null) {

@@ -119,7 +119,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     private void runPushOrPull(NCmdLine cmdLine, boolean pull, NMySqlService service) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql --remote " + (pull ? "pull" : "push"));
+        cmdLine.commandName("mysql --remote " + (pull ? "pull" : "push"));
         class Data {
             AtName name = null;
             String path = null;
@@ -176,7 +176,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     private void runSQL(NCmdLine cmdLine, NMySqlService service) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql run-sql");
+        cmdLine.commandName("mysql run-sql");
         NRef<AtName> name = NRef.ofNull(AtName.class);
         List<String> sql = new ArrayList<>();
         NRef<Boolean> forceShowSQL = NRef.ofNull(Boolean.class);
@@ -249,7 +249,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     private void runBackupOrRestore(NCmdLine cmdLine, boolean backup, NMySqlService service) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql " + (backup ? "backup" : "restore"));
+        cmdLine.commandName("mysql " + (backup ? "backup" : "restore"));
         NRef<AtName> name = NRef.ofNull(AtName.class);
         NRef<String> path = NRef.ofNull(String.class);
         while (cmdLine.hasNext()) {
@@ -313,7 +313,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     private void createOrUpdate(NCmdLine cmdLine, boolean add, NMySqlService service) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql " + (add ? "add" : "set"));
+        cmdLine.commandName("mysql " + (add ? "add" : "set"));
         class Data {
             AtName name = null;
 
@@ -854,7 +854,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     public void runRemove(NCmdLine cmdLine, NMySqlService service) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql remove");
+        cmdLine.commandName("mysql remove");
         List<AtName> localNames = new ArrayList<>();
         List<AtName> remoteNames = new ArrayList<>();
         boolean currentLocal = true;
@@ -981,7 +981,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
     public void runList(NCmdLine cmdLine, NMySqlService service, boolean describe) {
         NSession session = service.getSession();
-        cmdLine.setCommandName("mysql list");
+        cmdLine.commandName("mysql list");
         List<AtName> localNames = new ArrayList<>();
         List<AtName> remoteNames = new ArrayList<>();
         Boolean expectedLocal = null;

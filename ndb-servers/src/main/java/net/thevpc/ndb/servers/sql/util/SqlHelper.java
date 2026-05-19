@@ -268,7 +268,7 @@ public class SqlHelper implements Closeable {
     }
 
     public static ClassLoader createClassLoader(NSession session, String id) {
-        String z = session.getWorkspace().getUuid() + "/" + id;
+        String z = session.workspace().uuid() + "/" + id;
         return cachedClassLoaders.computeIfAbsent(z, x -> NSearch.of().addId(id)
                 .dependencyFilter(NDependencyFilters.of().byRunnable())
                 .getResultClassLoader(SqlHelper.class.getClassLoader()));
@@ -377,8 +377,8 @@ public class SqlHelper implements Closeable {
                 if (session.isPlainOut()) {
                     if (a.size() > 0) {
                         if (a.get(0) instanceof List) {
-                            session.copy().setOutputFormat(NContentType.TABLE)
-                                    .setOutputFormatOptions("--border=spaces")
+                            session.copy().outputFormat(NContentType.TABLE)
+                                    .outputFormatOptions("--border=spaces")
                                     .out().println(a);
                         } else {
                             for (Object o : a) {

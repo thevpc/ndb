@@ -65,7 +65,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
     }
 
     NWorkspace getWorkspace() {
-        return session.getWorkspace();
+        return session.workspace();
     }
 
     @Override

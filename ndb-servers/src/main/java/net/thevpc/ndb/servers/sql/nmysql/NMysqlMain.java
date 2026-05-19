@@ -1039,23 +1039,23 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
         if (session.isIterableOut()) {
             long index = 0;
             try {
-                session.getIterableOutput().start();
+                session.iterableOutput().start();
                 for (LocaleOrRemote cnf : result) {
                     if (cnf.local != null) {
                         for (Map.Entry<String, LocalMysqlDatabaseConfig> db : cnf.local.getDatabases().entrySet()) {
-                            session.getIterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
+                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
                         }
                     } else {
                         for (Map.Entry<String, RemoteMysqlDatabaseConfig> db : cnf.remote.getDatabases().entrySet()) {
-                            session.getIterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
+                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
                         }
                     }
                 }
             } finally {
-                session.getIterableOutput().complete(index);
+                session.iterableOutput().complete(index);
             }
         } else {
-            switch (session.getOutputFormat().orDefault()) {
+            switch (session.outputFormat().orDefault()) {
                 case PLAIN: {
                     for (LocaleOrRemote cnf : result) {
                         if (cnf.local != null) {

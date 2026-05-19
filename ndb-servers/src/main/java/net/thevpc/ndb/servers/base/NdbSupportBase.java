@@ -173,10 +173,10 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             String db = a.getStringValue().get();
             DbUrlString dbUrlString = DbUrlString.parse(db).get();
             if (dbUrlString.getSsh() != null) {
-                options.setRemoteUser(dbUrlString.getSsh().getUserName());
-                options.setRemotePassword(dbUrlString.getSsh().getPassword());
-                options.setRemoteServer(dbUrlString.getSsh().getHost());
-                options.setRemotePort(NLiteral.of(dbUrlString.getSsh().getPort()).asInt().orNull());
+                options.setRemoteUser(dbUrlString.getSsh().userName());
+                options.setRemotePassword(dbUrlString.getSsh().password());
+                options.setRemoteServer(dbUrlString.getSsh().host());
+                options.setRemotePort(NLiteral.of(dbUrlString.getSsh().port()).asInt().orNull());
             } else {
                 options.setRemoteUser(null);
                 options.setRemotePassword(null);
@@ -184,11 +184,11 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 options.setRemotePort(null);
             }
             if (dbUrlString.getDb() != null) {
-                options.setUser(dbUrlString.getDb().getUserName());
-                options.setPassword(dbUrlString.getDb().getPassword());
-                options.setHost(dbUrlString.getDb().getHost());
-                options.setPort(NLiteral.of(dbUrlString.getDb().getPort()).asInt().orNull());
-                options.setDatabaseName(dbUrlString.getDb().getPath());
+                options.setUser(dbUrlString.getDb().userName());
+                options.setPassword(dbUrlString.getDb().password());
+                options.setHost(dbUrlString.getDb().host());
+                options.setPort(NLiteral.of(dbUrlString.getDb().port()).asInt().orNull());
+                options.setDatabaseName(dbUrlString.getDb().path());
             } else {
                 options.setUser(null);
                 options.setPassword(null);
@@ -209,10 +209,10 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         } else if ((a = cmdLine.nextEntry("--ssh").orNull()) != null) {
             String ssh = a.getStringValue().get();
             NConnectionString dbUrlString = NConnectionString.of("ssh://" + ssh);
-            options.setRemoteUser(dbUrlString.getUserName());
-            options.setRemotePassword(dbUrlString.getPassword());
-            options.setRemoteServer(dbUrlString.getHost());
-            options.setRemotePort(NLiteral.of(dbUrlString.getPort()).asInt().orNull());
+            options.setRemoteUser(dbUrlString.userName());
+            options.setRemotePassword(dbUrlString.password());
+            options.setRemoteServer(dbUrlString.host());
+            options.setRemotePort(NLiteral.of(dbUrlString.port()).asInt().orNull());
             return true;
         } else if (fillExtraOption(cmdLine, options)) {
             return true;

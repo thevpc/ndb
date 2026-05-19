@@ -103,7 +103,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                     }
                     case FOLDER: {
                         if (/*file.get().isFile() && */file.get().name().toLowerCase().endsWith(".zip")) {
-                            NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
+                            NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).baseName());
                             NExec zipExec = sysSsh(options)
                                     .addCommand("unzip")
                                     .addCommand("-q")
@@ -160,7 +160,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
                     case FOLDER: {
                         if (/*file.get().isFile() && */file.get().name().toLowerCase().endsWith(".zip")) {
                             NPath zipPath = file.get();
-                            NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).getBaseName());
+                            NPath unzippedFolder = file.get().resolveSibling(file.get().nameParts(NPathExtensionType.SHORT).baseName());
                             NSession session = NSession.of();
                             NExec zipExec = sysCmd()
                                     .addCommand("unzip")

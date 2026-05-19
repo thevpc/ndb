@@ -35,12 +35,12 @@ public class DbUrlString {
             NOptional<NConnectionString> ssh = NConnectionString.get(value);
             if (ssh.isPresent()) {
                 v.ssh = ssh.get();
-                dbStr = v.ssh.getPath();
+                dbStr = v.ssh.path();
                 if (dbStr != null && dbStr.startsWith("/")) {
                     dbStr = dbStr.substring(1);
                 }
-                dbStrQ = v.ssh.getQueryString();
-                v.ssh = v.ssh.builder().setPath(null).setQueryString(null).build();
+                dbStrQ = v.ssh.queryString();
+                v.ssh = v.ssh.builder().path(null).queryString(null).build();
             } else {
                 dbStr = value;
             }
@@ -55,14 +55,14 @@ public class DbUrlString {
         NOptional<NConnectionString> db = NConnectionString.get(dbStr);
         if (db.isPresent()) {
             v.db = db.get();
-            String path = v.db.getPath();
+            String path = v.db.path();
             if (path != null && path.startsWith("/")) {
                 path = path.substring(1);
-                v.db = v.db.builder().setPath(path).build();
+                v.db = v.db.builder().path(path).build();
             }
             return NOptional.of(v);
         } else {
-            v.db = NConnectionStringBuilder.of().setPath(dbStr).build();
+            v.db = NConnectionStringBuilder.of().path(dbStr).build();
         }
         return NOptional.of(v);
     }
@@ -74,10 +74,10 @@ public class DbUrlString {
 
     public String toUrl() {
         if (ssh != null && db != null) {
-            return ssh.builder().setPath(db.toString()).toString();
+            return ssh.builder().path(db.toString()).toString();
         }
         if (ssh != null) {
-            return ssh.builder().setPath("/").build().toString();
+            return ssh.builder().path("/").build().toString();
         }
         if (db != null) {
             return db.toString();

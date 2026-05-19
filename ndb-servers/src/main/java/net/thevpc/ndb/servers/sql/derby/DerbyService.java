@@ -158,7 +158,7 @@ public class DerbyService {
     }
 
     public Set<String> findVersions() {
-        NId java = NEnv.of().getJava();
+        NId java = NEnv.of().java();
         List<String> all = NSearch.of().addId("org.apache.derby:derbynet").distinct(true)
                 .definitionFilter(
                         (java.version().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
@@ -179,7 +179,7 @@ public class DerbyService {
         List<String> executorOptions = new ArrayList<>();
         String currentDerbyVersion = options.getDerbyVersion();
         if (currentDerbyVersion == null) {
-            NId java = NEnv.of().getJava();
+            NId java = NEnv.of().java();
             NId best = NSearch.of().addId("org.apache.derby:derbynet").distinct(true).latest(true)
                     .definitionFilter(
                             (java.version().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :

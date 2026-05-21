@@ -72,7 +72,7 @@ public abstract class NdbCmd<C extends NdbConfig> {
     }
 
     protected void readConfigNameOption(NCmdLine commandLine, NRef<AtName> name) {
-        commandLine.matcher().matchEntry((v) -> {
+        commandLine.matcher().withAny().matchEntry((v) -> {
             if (name.isNull()) {
                 String name2 = NdbUtils.checkName(v.stringValue());
                 name.set(new AtName(name2));

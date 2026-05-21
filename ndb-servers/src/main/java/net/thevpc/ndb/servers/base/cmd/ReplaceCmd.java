@@ -37,22 +37,22 @@ public class ReplaceCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--one": {
-                            cmdLine.matcher().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -66,7 +66,7 @@ public class ReplaceCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -80,7 +80,7 @@ public class ReplaceCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }

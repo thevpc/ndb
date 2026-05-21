@@ -158,7 +158,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
             options.setHost(a.getStringValue().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-p", "--port").orNull()) != null) {
-            options.setPort(a.toLiteral().asInt().get());
+            options.setPort(a.literalValue().asInt().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-n", "--dbname").orNull()) != null) {
             options.setDatabaseName(a.getStringValue().get());

@@ -33,34 +33,34 @@ public class QueryCmd<C extends NdbConfig> extends NdbCmd<C> {
                             break;
                         }
                         case "--command": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setCommand(v.stringValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setCommand(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--one": {
-                            cmdLine.matcher().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchFlag((v) -> eq.setOne(v.booleanValue())).anyMatch();
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -74,13 +74,13 @@ public class QueryCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -94,13 +94,13 @@ public class QueryCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -114,13 +114,13 @@ public class QueryCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }

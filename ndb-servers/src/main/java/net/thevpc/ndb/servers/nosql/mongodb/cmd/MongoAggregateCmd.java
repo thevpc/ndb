@@ -44,26 +44,26 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--limit": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setLimit(v.intValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setLimit(v.intValue())).anyMatch();
                             break;
                         }
                         case "--skip": {
-                            cmdLine.matcher().matchEntry((v) -> eq.setSkip(v.intValue())).anyMatch();
+                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setSkip(v.intValue())).anyMatch();
                             break;
                         }
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -77,7 +77,7 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                     switch (cmdLine.peek().get().key()) {
                         case "--sort": {
                             status = "--sort";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -91,7 +91,7 @@ public class MongoAggregateCmd extends NdbCmd<NMongoConfig> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().matchFlag((v) -> {
+                            cmdLine.matcher().withAny().matchFlag((v) -> {
                             }).anyMatch();
                             break;
                         }

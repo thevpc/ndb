@@ -118,7 +118,6 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
 
 
     private void runPushOrPull(NCmdLine cmdLine, boolean pull, NMySqlService service) {
-        NSession session = service.getSession();
         cmdLine.commandName("mysql --remote " + (pull ? "pull" : "push"));
         class Data {
             AtName name = null;
@@ -129,7 +128,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
@@ -139,7 +138,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--path": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.path == null) {
                                 d.path = v.stringValue();
                             } else {
@@ -184,7 +183,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
@@ -194,7 +193,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--show-sql": {
-                        cmdLine.matcher().matchFlag((v) -> {
+                        cmdLine.matcher().withAny().matchFlag((v) -> {
                             forceShowSQL.set(v.booleanValue());
                         }).anyMatch();
                         break;
@@ -256,7 +255,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
@@ -266,7 +265,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--path": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (path.isNull()) {
                                 path.set(v.stringValue());
                             } else {
@@ -340,7 +339,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             if (cmdLine.isNextOption()) {
                 switch (cmdLine.peek().get().key()) {
                     case "--name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
@@ -350,7 +349,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--shutdown-wait-time": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -362,7 +361,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--startup-wait-time": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -373,7 +372,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--backup-folder": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -384,7 +383,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--running-folder": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -395,7 +394,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--log-file": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -406,7 +405,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--mysql-command": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -417,7 +416,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--mysqldump-command": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -428,7 +427,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--kill": {
-                        cmdLine.matcher().matchFlag((v) -> {
+                        cmdLine.matcher().withAny().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -439,7 +438,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--user": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -450,7 +449,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--password": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -461,7 +460,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--ask-password": {
-                        cmdLine.matcher().matchFlag((v) -> {
+                        cmdLine.matcher().withAny().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -472,7 +471,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--db": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = false;
                             } else if (d.expectedRemote) {
@@ -483,7 +482,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--local-name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -498,7 +497,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--remote-name": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -513,7 +512,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--server": {
-                        cmdLine.matcher().matchEntry((v) -> {
+                        cmdLine.matcher().withAny().matchEntry((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = true;
                             } else if (!d.expectedRemote) {
@@ -528,7 +527,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--local": {
-                        cmdLine.matcher().matchFlag((v) -> {
+                        cmdLine.matcher().withAny().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = !v.booleanValue();
                             } else if (d.expectedRemote) {
@@ -538,7 +537,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         break;
                     }
                     case "--remote": {
-                        cmdLine.matcher().matchFlag((v) -> {
+                        cmdLine.matcher().withAny().matchFlag((v) -> {
                             if (d.expectedRemote == null) {
                                 d.expectedRemote = v.booleanValue();
                             } else if (!d.expectedRemote) {

@@ -126,7 +126,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             if (commandLine.isNextOption()) {
                 switch (commandLine.peek().get().key()) {
                     case "--name": {
-                        commandLine.matcher().matchEntry((v) -> {
+                        commandLine.matcher().withAny().matchEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.stringValue()));
                             } else {
@@ -136,7 +136,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                         break;
                     }
                     case "--show-sql": {
-                        commandLine.matcher().matchFlag((v) -> {
+                        commandLine.matcher().withAny().matchFlag((v) -> {
                             forceShowSQL.set(v.booleanValue());
                         }).anyMatch();
                         break;
@@ -222,7 +222,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             options.setHost(a.getStringValue().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-p", "--port").orNull()) != null) {
-            options.setPort(a.toLiteral().asInt().get());
+            options.setPort(a.literalValue().asInt().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-ssl", "--ssl").orNull()) != null) {
             options.setSslmode(SSLMode.valueOf(a.getStringValue().get()));

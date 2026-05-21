@@ -222,7 +222,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             options.setHost(a.getStringValue().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-p", "--port").orNull()) != null) {
-            options.setPort(a.getValue().asInt().get());
+            options.setPort(a.toLiteral().asInt().get());
             return true;
         } else if ((a = cmdLine.nextEntry("-ssl", "--ssl").orNull()) != null) {
             options.setSslmode(SSLMode.valueOf(a.getStringValue().get()));

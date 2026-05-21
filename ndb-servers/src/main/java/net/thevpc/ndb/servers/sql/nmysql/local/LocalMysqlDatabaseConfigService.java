@@ -110,7 +110,7 @@ public class LocalMysqlDatabaseConfigService {
                             if (new File(finalPath).exists()) {
                                 new File(finalPath).delete();
                             }
-                            throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
+                            throw new NExecutionException(NMsg.ofNtf(cmd.grabbedOut()), NExecutionException.ERROR_2);
                         }
                     } else {
                         if (session.isPlainTrace()) {
@@ -131,8 +131,8 @@ public class LocalMysqlDatabaseConfigService {
                                 .grabAll();
                         if (session.isPlainTrace()) {
                             NOut.println(NMsg.ofC("%s    [exec] %s", getBracketsPrefix(getDatabaseName()),
-                                    NExecWriter.of().setEnvReplacer(envEntry -> {
-                                        if ("CMD_PWD".equals(envEntry.getName())) {
+                                    NExecWriter.of().envReplacer(envEntry -> {
+                                        if ("CMD_PWD".equals(envEntry.name())) {
                                             return "****";
                                         }
                                         return null;
@@ -146,7 +146,7 @@ public class LocalMysqlDatabaseConfigService {
                             if (new File(finalPath).exists()) {
                                 new File(finalPath).delete();
                             }
-                            throw new NExecutionException(NMsg.ofNtf(cmd.getGrabbedOutString()), NExecutionException.ERROR_2);
+                            throw new NExecutionException(NMsg.ofNtf(cmd.grabbedOut()), NExecutionException.ERROR_2);
                         }
                     }
                 });

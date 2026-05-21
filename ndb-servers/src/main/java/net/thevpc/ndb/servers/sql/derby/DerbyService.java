@@ -62,7 +62,7 @@ public class DerbyService {
         NDerbyConfig options=new NDerbyConfig();
         options.setCmd(Command.ping);
         try {
-            String s= command(options).failFast(true).getGrabbedOutString();
+            String s= command(options).failFast(true).grabbedOut();
             if(s!=null){
                 return true;
             }

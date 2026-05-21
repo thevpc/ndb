@@ -39,7 +39,7 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         NPath file = getSharedConfigFolder().resolve(asFullName(options.getName()) + NdbUtils.SERVER_CONFIG_EXT);
         if (file.exists()) {
             if (update.get()) {
-                C old = NElementReader.ofJson().setNtf(false).read(file, support.getConfigClass());
+                C old = NElementReader.ofJson().ntf(false).read(file, support.getConfigClass());
                 String oldName = old.getName();
                 old.setNonNull(options);
                 old.setName(oldName);

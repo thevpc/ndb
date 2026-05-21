@@ -145,7 +145,7 @@ public class RemoteMysqlDatabaseConfigService {
                             remoteFullFilePath.toString(), localPath)
                     .failFast(true)
                     .run()
-                    .getGrabbedAllString();
+                    .grabbedAll();
 
             lastRun.put("localPath", localPath);
         }
@@ -270,9 +270,9 @@ public class RemoteMysqlDatabaseConfigService {
         }
         if (session.isPlainTrace()) {
             NText ff = NExecWriter.of()
-                    .setEnvReplacer(envEntry -> {
-                        if (envEntry.getName().toLowerCase().contains("password")
-                                || envEntry.getName().toLowerCase().contains("pwd")) {
+                    .envReplacer(envEntry -> {
+                        if (envEntry.name().toLowerCase().contains("password")
+                                || envEntry.name().toLowerCase().contains("pwd")) {
                             return "****";
                         }
                         return null;
@@ -281,7 +281,7 @@ public class RemoteMysqlDatabaseConfigService {
             NOut.println(NMsg.ofC("[exec] %s", ff));
         }
         b.grabAll().failFast(true);
-        return b.run().getGrabbedOutString();
+        return b.run().grabbedOut();
     }
 
     private String prepareSshServer(String server) {

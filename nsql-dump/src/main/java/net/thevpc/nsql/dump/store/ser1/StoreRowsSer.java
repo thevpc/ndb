@@ -48,7 +48,7 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
     }
 
     protected void doLog(NMsg msg) {
-        Level level = msg.getLevel();
+        Level level = msg.level();
         if (level == null) {
             level = Level.FINE;
         }

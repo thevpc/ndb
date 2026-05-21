@@ -67,7 +67,7 @@ public class SqlShowSchemaCmd<C extends NdbConfig> extends NdbCmd<C> {
         if (path == null) {
             NOut.println(sqlDB);
         } else {
-            NElementWriter.of().setContentType(session.outputFormat().orDefault()).write(sqlDB,path);
+            NElementWriter.of().contentType(session.outputFormat().orDefault()).write(sqlDB,path);
         }
     }
 

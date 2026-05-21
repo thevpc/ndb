@@ -77,7 +77,7 @@ public class NDdbOptionsParser {
             switch (p.key()) {
                 case "--@include": {
                     p = cmdLine.nextEntry().get();
-                    File file = new File(cwd, p.getValue().asString().get());
+                    File file = new File(cwd, p.toLiteral().asString().get());
                     fillFile(file, o);
                     return true;
                 }
@@ -114,7 +114,7 @@ public class NDdbOptionsParser {
                 }
                 case "--max-rows": {
                     p = cmdLine.nextEntry().get();
-                    o.maxRows = p.getValue().asLong().get();
+                    o.maxRows = p.toLiteral().asLong().get();
                     return true;
                 }
                 case "--file": {
@@ -304,35 +304,35 @@ public class NDdbOptionsParser {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--db-user": {
-                    o.cnx.setUsername(p.getValue().asString().get());
+                    o.cnx.setUsername(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-password": {
-                    o.cnx.setPassword(p.getValue().asString().get());
+                    o.cnx.setPassword(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-url": {
-                    o.cnx.setUrl(p.getValue().asString().get());
+                    o.cnx.setUrl(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-name": {
-                    o.cnx.setDbName(p.getValue().asString().get());
+                    o.cnx.setDbName(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-host": {
-                    o.cnx.setHost(p.getValue().asString().get());
+                    o.cnx.setHost(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-port": {
-                    o.cnx.setPort(p.getValue().asString().get());
+                    o.cnx.setPort(p.toLiteral().asString().get());
                     return true;
                 }
                 case "--db-type": {
-                    o.cnx.setDialect(NSqlDialect.parse(p.getValue().asString().get()).get());
+                    o.cnx.setDialect(NSqlDialect.parse(p.toLiteral().asString().get()).get());
                     return true;
                 }
                 case "--db": {
-                    o.cnx = NSqlConnectionStringBuilder.parse(p.getValue().asString().get());
+                    o.cnx = NSqlConnectionStringBuilder.parse(p.toLiteral().asString().get());
                     return true;
                 }
             }

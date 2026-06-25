@@ -19,8 +19,8 @@ import java.io.File;
 public class NDdbRunner {
     public static void run(NDdbOptions o) {
         if (NSession.of().isGui()) {
-            ClassLoader cl = NSearch.of("net.thevpc.ndb:ndb-desktop#0.8.5.1")
-                    .getResultClassLoader();
+            ClassLoader cl = NSearch.of("net.thevpc.ndb:ndb-desktop#1.0.0.0")
+                    .getResultClassLoader().asClassLoader();
             Class<?> aClass = null;
             try {
                 aClass = Class.forName("net.thevpc.ndb.desktop.NDbDesktopRunner", true, cl);
@@ -29,6 +29,7 @@ public class NDdbRunner {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+            return;
         }
         if (o.action == null) {
             throw new IllegalArgumentException("missing action");

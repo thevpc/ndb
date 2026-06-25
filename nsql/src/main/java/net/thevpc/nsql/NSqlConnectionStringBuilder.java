@@ -400,4 +400,24 @@ public class NSqlConnectionStringBuilder implements Cloneable {
         return defaultValue;
     }
 
+    @Override
+    public String toString() {
+        return "NSqlConnectionStringBuilder{" +
+                "host='" + host + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                ", port='" + port + '\'' +
+                ", dbName='" + dbName + '\'' +
+                ", dialect=" + dialect +
+                ", url='" + url + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", variant='" + variant + '\'' +
+                ", instanceName='" + instanceName + '\'' +
+                ", driverClass='" + driverClass + '\'' +
+                ", properties=" + properties +
+                ", integratedSecurity=" + integratedSecurity +
+                ", forceSecure=" + forceSecure +
+                ", forceUnsecure=" + forceUnsecure +
+                '}';
+    }
 }

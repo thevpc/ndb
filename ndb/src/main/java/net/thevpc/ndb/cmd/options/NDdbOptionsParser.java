@@ -304,34 +304,42 @@ public class NDdbOptionsParser {
         if (p.isOption()) {
             switch (p.key()) {
                 case "--db-user": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setUsername(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-password": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setPassword(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-url": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setUrl(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-name": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setDbName(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-host": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setHost(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-port": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setPort(p.literalValue().asString().get());
                     return true;
                 }
                 case "--db-type": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx.setDialect(NSqlDialect.parse(p.literalValue().asString().get()).get());
                     return true;
                 }
                 case "--db": {
+                    p = cmdLine.nextEntry().get();
                     o.cnx = NSqlConnectionStringBuilder.parse(p.literalValue().asString().get());
                     return true;
                 }

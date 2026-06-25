@@ -26,7 +26,7 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
         StoreStructDefinition md = rs.getDefinition();
         long startTime = System.currentTimeMillis();
 
-        doLog(NMsg.ofC("[%s] start writing... ", md.toStoreStructId().getFullName()));
+        doLog(NMsg.ofC("[%s] start writing... ", md.toStoreStructId().getFullName()).asInfo());
         dos.writeNonNullableStruct(StoreStructDefinition.class, md);
         IoRow r;
         List<NSqlColumn> columns = (List) md.getColumns();
@@ -34,7 +34,7 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
         long rowCount = 0;
         while ((r = rs.nextRow()) != null) {
             rowCount++;
-            doLog(NMsg.ofC("[%s] writing row %s... ", md.toStoreStructId().getFullName(), rowCount));
+            doLog(NMsg.ofC("[%s] writing row %s... ", md.toStoreStructId().getFullName(), rowCount).asFine());
             dos.writeNonNullPrefix();
             for (IoCell c : r.getColumns()) {
                 dos.writeStoreValue(DefaultStoreValue.ofAny(c.getDefinition().getStoreType(), c.getObject()));
@@ -42,8 +42,8 @@ public class StoreRowsSer implements ObjectSerializer<StoreRows> {
         }
         dos.writeNullPrefix();
         long endTime = System.currentTimeMillis();
-        doLog(NMsg.ofC("[%s] written %s rows, %s columns (%S ms)",
-                md.toStoreStructId().getFullName(), rowCount, columns.size(), (endTime - startTime))
+        doLog(NMsg.ofC("[%s] written %s rows, %s columns (%s ms)",
+                md.toStoreStructId().getFullName(), rowCount, columns.size(), (endTime - startTime)).asInfo()
         );
     }
 

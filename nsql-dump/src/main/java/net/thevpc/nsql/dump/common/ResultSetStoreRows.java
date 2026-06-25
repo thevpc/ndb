@@ -71,11 +71,16 @@ public class ResultSetStoreRows extends AbstractStoreRows {
 
     @Override
     public void close() {
-        super.close();
+//        super.close();
+        try {
+            rs.getStatement().cancel();
+        } catch (SQLException e) {
+            //throw new UncheckedIOException(new IOException(e));
+        }
         try {
             rs.close();
         } catch (SQLException e) {
-            throw new UncheckedIOException(new IOException(e));
+            //throw new UncheckedIOException(new IOException(e));
         }
     }
 }

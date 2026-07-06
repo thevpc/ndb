@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.thevpc.nsql.NSqlDialect;
+import net.thevpc.nuts.util.NStringUtils;
 
 public class NDdbOptionsParser {
     public static NDdbOptions parse(NCmdLine cmdLine) {
@@ -35,7 +36,7 @@ public class NDdbOptionsParser {
         try (BufferedReader br = new BufferedReader(new FileReader(p))) {
             String line;
             while ((line = br.readLine()) != null) {
-                line = line.trim();
+                line = NStringUtils.strip(line);
                 if (line.startsWith("#")) {
                     //just ignore
                 } else {

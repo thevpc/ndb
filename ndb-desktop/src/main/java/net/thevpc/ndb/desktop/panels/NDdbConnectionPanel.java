@@ -226,7 +226,7 @@ public class NDdbConnectionPanel extends JPanel {
                 .setHost(hostField.getText())
                 .setPort(value == null ? null : value.toString())
                 .setIntegratedSecurity(integratedSecurity.isSelected())
-                .setInstanceName(NStringUtils.trimToNull(instanceField.getName()))
+                .setInstanceName(NStringUtils.stripToNull(instanceField.getName()))
                 ;
 
         if (c.getDbName() == null) {

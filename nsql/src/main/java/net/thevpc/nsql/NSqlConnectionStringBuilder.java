@@ -41,10 +41,10 @@ public class NSqlConnectionStringBuilder implements Cloneable {
             cnx.setHost(m.group("host"));
             cnx.setPort(m.group("port"));
             cnx.setDbName(m.group("db"));
-            if(m.group("params")!=null && !m.group("params").isEmpty()) {
+            if (m.group("params") != null && !m.group("params").isEmpty()) {
                 NOptional<Map<String, String>> params = NStringMapFormat.URL_FORMAT.parse(m.group("params"));
                 cnx.setProperties(new LinkedHashMap<>(params.orElse(new HashMap<>())));
-            }else{
+            } else {
                 cnx.setProperties(new LinkedHashMap<>());
             }
             cnx.prepareProps();
@@ -54,29 +54,29 @@ public class NSqlConnectionStringBuilder implements Cloneable {
         }
     }
 
-    private void prepareProps(){
+    private void prepareProps() {
         for (Iterator<Map.Entry<String, String>> iterator = this.properties.entrySet().iterator(); iterator.hasNext(); ) {
             Map.Entry<String, String> e = iterator.next();
-            switch (e.getKey()){
-                case "integrationSecurity":{
+            switch (e.getKey()) {
+                case "integrationSecurity": {
                     String v = e.getValue();
-                    if(isValidBooleanString(v)){
+                    if (isValidBooleanString(v)) {
                         this.setIntegratedSecurity(Boolean.parseBoolean(v));
                         iterator.remove();
                     }
                     break;
                 }
-                case "forceSecure":{
+                case "forceSecure": {
                     String v = e.getValue();
-                    if(isValidBooleanString(v)){
+                    if (isValidBooleanString(v)) {
                         this.setForceSecure(Boolean.parseBoolean(v));
                         iterator.remove();
                     }
                     break;
                 }
-                case "forceUnsecure":{
+                case "forceUnsecure": {
                     String v = e.getValue();
-                    if(isValidBooleanString(v)){
+                    if (isValidBooleanString(v)) {
                         this.setForceUnsecure(Boolean.parseBoolean(v));
                         iterator.remove();
                     }
@@ -239,8 +239,8 @@ public class NSqlConnectionStringBuilder implements Cloneable {
     public NSqlConnectionStringBuilder copy() {
         try {
             NSqlConnectionStringBuilder c = (NSqlConnectionStringBuilder) clone();
-            if(c.properties!=null){
-                c.properties=new LinkedHashMap<>(c.properties);
+            if (c.properties != null) {
+                c.properties = new LinkedHashMap<>(c.properties);
             }
             return c;
         } catch (CloneNotSupportedException e) {
@@ -275,8 +275,8 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         p.put("db", NStringUtils.firstNonBlank(info.getDbName(), "postgres"));
                         return NOptional.of(
                                 new NSqlConnectionString(
-                                        NMsg.ofV(NStringUtils.firstNonBlank("jdbc:postgresql://$host$port/$db",url), p).toString()
-                                        , info.getUsername(), info.getPassword(), NSqlDialect.POSTGRESQL, NStringUtils.firstNonBlank(driverClass,"org.postgresql.Driver"))
+                                        prepareUrl("jdbc:postgresql://$host$port/$db", p)
+                                        , info.getUsername(), info.getPassword(), NSqlDialect.POSTGRESQL, NStringUtils.firstNonBlank(driverClass, "org.postgresql.Driver"))
                         );
                     }
                     case MSSQLSERVER: {
@@ -307,11 +307,11 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         if (!NBlankable.isBlank(info.getApplicationName())) {
                             params.append(";applicationName=").append(info.getApplicationName());
                         }
-                        if(info.isForceSecure()){
+                        if (info.isForceSecure()) {
                             params.append(";encrypt=true").append(";trustServerCertificate=false");
-                        }else if(info.isForceUnsecure()){
+                        } else if (info.isForceUnsecure()) {
                             params.append(";encrypt=false").append(";trustServerCertificate=true");
-                        }else{
+                        } else {
                             //dev mode!
                             params.append(";encrypt=false").append(";trustServerCertificate=true");
                         }
@@ -319,8 +319,8 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         p.put("params", params.toString());
                         return NOptional.of(
                                 new NSqlConnectionString(
-                                        NMsg.ofV(NStringUtils.firstNonBlank("jdbc:sqlserver://$host$port$params",url), p).toString()
-                                        , info.getUsername(), info.getPassword(), NSqlDialect.MSSQLSERVER, NStringUtils.firstNonBlank(driverClass,"com.microsoft.sqlserver.jdbc.SQLServerDriver"))
+                                        prepareUrl("jdbc:sqlserver://$host$port$params", p)
+                                        , info.getUsername(), info.getPassword(), NSqlDialect.MSSQLSERVER, NStringUtils.firstNonBlank(driverClass, "com.microsoft.sqlserver.jdbc.SQLServerDriver"))
                         );
                     }
                     case MSSQLSERVER_JTDS: {
@@ -340,8 +340,8 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         p.put("params", params.toString());
                         return NOptional.of(
                                 new NSqlConnectionString(
-                                        NMsg.ofV(NStringUtils.firstNonBlank("jdbc:jtds:sqlserver://$host$port/$db$params",url), p).toString()
-                                        , info.getUsername(), info.getPassword(), NSqlDialect.MSSQLSERVER_JTDS, NStringUtils.firstNonBlank(driverClass,"net.sourceforge.jtds.jdbc.Driver"))
+                                        prepareUrl("jdbc:jtds:sqlserver://$host$port/$db$params", p)
+                                        , info.getUsername(), info.getPassword(), NSqlDialect.MSSQLSERVER_JTDS, NStringUtils.firstNonBlank(driverClass, "net.sourceforge.jtds.jdbc.Driver"))
                         );
                     }
                     case SYBASE: {
@@ -361,12 +361,12 @@ public class NSqlConnectionStringBuilder implements Cloneable {
                         p.put("params", params.toString());
                         return NOptional.of(
                                 new NSqlConnectionString(
-                                        NMsg.ofV(NStringUtils.firstNonBlank("jdbc:sybase://$host$port/$db$params",url), p).toString()
-                                        , info.getUsername(), info.getPassword(), NSqlDialect.SYBASE, NStringUtils.firstNonBlank(driverClass,"net.sourceforge.jtds.jdbc.Driver"))
+                                        prepareUrl("jdbc:sybase://$host$port/$db$params", p)
+                                        , info.getUsername(), info.getPassword(), NSqlDialect.SYBASE, NStringUtils.firstNonBlank(driverClass, "net.sourceforge.jtds.jdbc.Driver"))
                         );
                     }
-                    default:{
-                        if(!NBlankable.isBlank(url) && !NBlankable.isBlank(driverClass)) {
+                    default: {
+                        if (!NBlankable.isBlank(url) && !NBlankable.isBlank(driverClass)) {
                             return NOptional.of(new NSqlConnectionString(url, info.getUsername(), info.getPassword(), dialect, driverClass));
                         }
                     }
@@ -374,6 +374,13 @@ public class NSqlConnectionStringBuilder implements Cloneable {
             }
         }
         return NOptional.ofNamedEmpty("common params " + info);
+    }
+
+    private String prepareUrl(String pattern, Map<String, String> p) {
+        if (!NBlankable.isBlank(url)) {
+            return url;
+        }
+        return NMsg.ofV(pattern, p).toString();
     }
 
     private static NSqlConnectionStringBuilder prepareLoginPassword(NSqlConnectionStringBuilder ii, String defaultLogin, String defaultPassword) {

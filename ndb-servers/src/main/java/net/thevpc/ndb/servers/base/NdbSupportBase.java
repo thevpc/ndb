@@ -259,7 +259,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                         .requireDefaults();
             }
         }
-        options.setName(NStringUtils.trimToNull(options.getName()));
+        options.setName(NStringUtils.stripToNull(options.getName()));
         if (NBlankable.isBlank(options.getName())) {
             options.setName("default");
         }

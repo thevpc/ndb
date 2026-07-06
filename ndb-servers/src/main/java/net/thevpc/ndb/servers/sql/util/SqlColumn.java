@@ -38,7 +38,7 @@ public class SqlColumn {
     }
 
     public SqlColumn sort() {
-        foreignKeys.sort(Comparator.comparing(a -> NStringUtils.trim(a.fkName)));
+        foreignKeys.sort(Comparator.comparing(a -> NStringUtils.strip(a.fkName)));
 //            Map<String, SqlColumn> newMap = new LinkedHashMap<>(columns);
 //            columns.clear();
 //            String[] names = newMap.keySet().toArray(new String[0]);

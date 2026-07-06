@@ -26,9 +26,9 @@ public class SqlTable {
     }
 
     public SqlTable sort() {
-        columns.sort(Comparator.comparing(a -> NStringUtils.trim(a.columnName)));
-        primaryKeys.sort(Comparator.comparing(a -> NStringUtils.trim(a.columnName)));
-        indexes.sort(Comparator.comparing(a -> NStringUtils.trim(a.indexName)));
+        columns.sort(Comparator.comparing(a -> NStringUtils.strip(a.columnName)));
+        primaryKeys.sort(Comparator.comparing(a -> NStringUtils.strip(a.columnName)));
+        indexes.sort(Comparator.comparing(a -> NStringUtils.strip(a.indexName)));
         return this;
     }
 }

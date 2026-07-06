@@ -18,7 +18,7 @@ public class SqlIndex {
     }
 
     public SqlIndex sort() {
-        columns.sort(Comparator.comparing(a -> NStringUtils.trim(a.columnName)));
+        columns.sort(Comparator.comparing(a -> NStringUtils.strip(a.columnName)));
         return this;
     }
 }

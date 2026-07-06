@@ -2,6 +2,7 @@ package net.thevpc.nsql;
 
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NStringUtils;
 
 public enum NDdlAuto {
     CREATE, UPDATE, DROP_CREATE, NONE;
@@ -10,7 +11,7 @@ public enum NDdlAuto {
         if (NBlankable.isBlank(any)) {
             return null;
         }
-        switch (NNameFormat.LOWER_KEBAB_CASE.format(any.trim())) {
+        switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.strip(any))) {
             case "create":
                 return CREATE;
             case "update":

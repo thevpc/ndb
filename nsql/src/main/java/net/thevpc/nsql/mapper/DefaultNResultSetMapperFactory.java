@@ -72,7 +72,7 @@ public class DefaultNResultSetMapperFactory implements ResultSetMapperFactory {
     private String findColumnName(Field field) {
         NColumn c = field.getAnnotation(NColumn.class);
         if (c != null) {
-            String n = NStringUtils.trimToNull(c.name());
+            String n = NStringUtils.stripToNull(c.name());
             if (n != null) {
                 return n;
             }

@@ -17,6 +17,10 @@ public class NSqlConnectionString {
         return get(url).get();
     }
 
+    public static NSqlConnectionString of(String url, String username, String password) {
+        return get(url, username, password).get();
+    }
+
     public static NSqlConnectionString of(NSqlConnectionStringBuilder info) {
         return get(info).get();
     }
@@ -26,6 +30,20 @@ public class NSqlConnectionString {
             return NOptional.ofNamedEmpty("url");
         }
         return NSqlConnectionStringBuilder.parse(url).build();
+    }
+
+    public static NOptional<NSqlConnectionString> get(String url, String username, String password) {
+        if (url == null) {
+            return NOptional.ofNamedEmpty("url");
+        }
+        NSqlConnectionStringBuilder b = NSqlConnectionStringBuilder.parse(url);
+        if (username != null) {
+            b.setUsername(username);
+        }
+        if (password != null) {
+            b.setPassword(password);
+        }
+        return b.build();
     }
 
     public static NOptional<NSqlConnectionString> get(NSqlConnectionStringBuilder info) {

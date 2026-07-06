@@ -31,7 +31,7 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
                 }).requireDefaults();
             }
         }
-        options.setName(NStringUtils.trimToNull(options.getName()));
+        options.setName(NStringUtils.stripToNull(options.getName()));
         if (NBlankable.isBlank(options.getName())) {
             options.setName("default");
         }

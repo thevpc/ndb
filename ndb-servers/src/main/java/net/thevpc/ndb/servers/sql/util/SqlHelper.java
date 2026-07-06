@@ -64,7 +64,7 @@ public class SqlHelper implements Closeable {
     }
 
     public static String getColumnYesNoEmptyName(String columnNull) {
-        switch (NStringUtils.trim(columnNull).toUpperCase()) {
+        switch (NStringUtils.strip(columnNull).toUpperCase()) {
             case "YES":
                 return "YES";
             case "NO":
@@ -558,11 +558,11 @@ public class SqlHelper implements Closeable {
 
                                     SqlTable t = d.getOrCreateTable(tabCat, tabSchema, r.getString("TABLE_NAME"), tableType);
                                     t.remarks = r.getString("REMARKS");
-                                    t.typesCatalog = NStringUtils.trimToNull(r.getString("TYPE_CAT"));
-                                    t.typesSchema = NStringUtils.trimToNull(r.getString("TYPE_SCHEM"));
-                                    t.typeName = NStringUtils.trimToNull(r.getString("TYPE_NAME"));
-                                    t.selfReferencingColName = NStringUtils.trimToNull(r.getString("SELF_REFERENCING_COL_NAME"));
-                                    t.refGeneration = NStringUtils.trimToNull(r.getString("REF_GENERATION"));
+                                    t.typesCatalog = NStringUtils.stripToNull(r.getString("TYPE_CAT"));
+                                    t.typesSchema = NStringUtils.stripToNull(r.getString("TYPE_SCHEM"));
+                                    t.typeName = NStringUtils.stripToNull(r.getString("TYPE_NAME"));
+                                    t.selfReferencingColName = NStringUtils.stripToNull(r.getString("SELF_REFERENCING_COL_NAME"));
+                                    t.refGeneration = NStringUtils.stripToNull(r.getString("REF_GENERATION"));
                                 }
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);
@@ -624,7 +624,7 @@ public class SqlHelper implements Closeable {
                             c.type = SqlHelper.getIndexTypeName(r.getShort("TYPE"));
                             c.ordinalPosition = r.getShort("ORDINAL_POSITION");
                             c.columnName = r.getString("COLUMN_NAME");
-                            String ascOrDesc = NStringUtils.trim(r.getString("ASC_OR_DESC")).toLowerCase();
+                            String ascOrDesc = NStringUtils.strip(r.getString("ASC_OR_DESC")).toLowerCase();
                             c.asc = ascOrDesc.isEmpty() ? null : ascOrDesc.equals("a");
                             c.pages = r.getLong("PAGES");
                             c.filterCondition = r.getString("FILTER_CONDITION");

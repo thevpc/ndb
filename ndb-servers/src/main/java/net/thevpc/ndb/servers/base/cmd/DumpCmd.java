@@ -152,7 +152,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
         NPath zipPath;
         boolean plainFolder = false;
         boolean zip = false;
-        String dumpExt = NStringUtils.trim(getSupport().getDumpExt(options));
+        String dumpExt = NStringUtils.strip(getSupport().getDumpExt(options));
         if (file.get() == null) {
             if (roll.get() > 0) {
                 zipPath=NPath.of(NObjectObjectWriter.of()

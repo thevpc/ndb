@@ -25,7 +25,7 @@ public class NSqlTsonUtils {
                         case PAIR: {
                             NPairElement p = (NPairElement) e;
                             String k = stringOf(p.key());
-                            m.put(NStringUtils.trim(k), stringOf(p.value()));
+                            m.put(NStringUtils.strip(k), stringOf(p.value()));
                             break;
                         }
                     }
@@ -49,7 +49,7 @@ public class NSqlTsonUtils {
                         case PAIR: {
                             NPairElement p = (NPairElement) e;
                             String k = stringOf(p.key());
-                            m.put(NStringUtils.trim(k), p.value());
+                            m.put(NStringUtils.strip(k), p.value());
                             break;
                         }
                     }

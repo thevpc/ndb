@@ -576,8 +576,8 @@ public class NSqlConnection implements AutoCloseable {
                         tmd.setSchemaName(tableSchem);
                         tmd.setCatalogName(tableCat);
                         tmd.setTableType(_getRsStringByName(rs, "TABLE_TYPE"));
-                        tmd.setSelfReferencingColName(NStringUtils.trimToNull(_getRsStringByName(rs, "SELF_REFERENCING_COL_NAME")));
-                        tmd.setRefGeneration(NStringUtils.trimToNull(_getRsStringByName(rs, "REF_GENERATION")));
+                        tmd.setSelfReferencingColName(NStringUtils.stripToNull(_getRsStringByName(rs, "SELF_REFERENCING_COL_NAME")));
+                        tmd.setRefGeneration(NStringUtils.stripToNull(_getRsStringByName(rs, "REF_GENERATION")));
                         break;
                     }
                 }

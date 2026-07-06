@@ -2,6 +2,7 @@ package net.thevpc.nsql;
 
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
+import net.thevpc.nuts.util.NStringUtils;
 
 public enum NSqlColumnType {
     STRING,
@@ -70,7 +71,7 @@ public enum NSqlColumnType {
 
     public static NSqlColumnType parse(String any) {
         if (!NBlankable.isBlank(any)) {
-            switch (NNameFormat.LOWER_KEBAB_CASE.format(any.trim())) {
+            switch (NNameFormat.LOWER_KEBAB_CASE.format(NStringUtils.strip(any))) {
                 case "string":
                 case "varchar":
                     return STRING;

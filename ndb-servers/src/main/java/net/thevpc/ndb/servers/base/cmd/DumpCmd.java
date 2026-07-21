@@ -238,21 +238,21 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             NPath remoteZip = remoteTempFolder.resolve(simpleName0 + ".zip");
             CmdRedirect dumpCommand = getSupport().createDumpCommand(remotePlainFolder, options);
             run(getSupport().sysSsh(options)
-                    .addCommand(dumpCommand.toString())
+                    .command(dumpCommand.toString())
             );
             if (zip) {
                 if (getSupport().isFolderArchive(options)) {
                     String sf = getSupport().getZipSubFolder(options);
                     if (NBlankable.isBlank(sf)) {
                         run(sysSsh(options)
-                                .addCommand("cd " + remotePlainFolder.toString() + " ; zip -q -r "
+                                .command("cd " + remotePlainFolder.toString() + " ; zip -q -r "
                                         + remoteZip.toString()
                                         + " ."
                                 )
                         );
                     } else {
                         run(sysSsh(options)
-                                .addCommand("cd " + remotePlainFolder.resolve(sf).toString() + " ; zip -q -r "
+                                .command("cd " + remotePlainFolder.resolve(sf).toString() + " ; zip -q -r "
                                         + remoteZip.toString()
                                         + " ."
                                 )
@@ -260,7 +260,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                     }
                 } else {
                     run(sysSsh(options)
-                            .addCommand("zip -q -r "
+                            .command("zip -q -r "
                                     + remoteZip.toString()
                                     + " "
                                     + remotePlainFolder.toString()
@@ -280,7 +280,7 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
             }
         } else {
             CmdRedirect dumpCommand = getSupport().createDumpCommand(plainFolderPath, options);
-            NExec nExec = sysCmd().addCommand(dumpCommand.getCmd().toStringArray());
+            NExec nExec = sysCmd().command(dumpCommand.getCmd().toStringArray());
             if (dumpCommand.getPath() != null) {
                 nExec.in(NExecInput.ofPath(dumpCommand.getPath()));
             }
@@ -290,46 +290,46 @@ public class DumpCmd<C extends NdbConfig> extends NdbCmd<C> {
                     String sf = getSupport().getZipSubFolder(options);
                     if (NBlankable.isBlank(sf)) {
                         NExec zipExec = sysCmd()
-                                .addCommand("zip")
-                                .addCommand("-q");
+                                .command("zip")
+                                .command("-q");
                         if (plainFolderPath.isDirectory()) {
-                            zipExec.addCommand("-r");
+                            zipExec.command("-r");
                             if (true) {
-                                zipExec.addCommand("-j");
+                                zipExec.command("-j");
                             }
                         }
-                        zipExec.addCommand(zipPath.toString());
-                        zipExec.addCommand(".");
+                        zipExec.command(zipPath.toString());
+                        zipExec.command(".");
                         zipExec.directory(plainFolderPath);
                         run(zipExec);
                     } else {
 
                         NExec zipExec = sysCmd()
-                                .addCommand("zip")
-                                .addCommand("-q");
+                                .command("zip")
+                                .command("-q");
                         if (plainFolderPath.isDirectory()) {
-                            zipExec.addCommand("-r");
+                            zipExec.command("-r");
                             if (true) {
-                                zipExec.addCommand("-j");
+                                zipExec.command("-j");
                             }
                         }
-                        zipExec.addCommand(zipPath.toString());
-                        zipExec.addCommand(".");
+                        zipExec.command(zipPath.toString());
+                        zipExec.command(".");
                         zipExec.directory(plainFolderPath.resolve(sf));
                         run(zipExec);
                     }
                 } else {
                     NExec zipExec = sysCmd()
-                            .addCommand("zip")
-                            .addCommand("-q");
+                            .command("zip")
+                            .command("-q");
                     if (plainFolderPath.isDirectory()) {
-                        zipExec.addCommand("-r");
+                        zipExec.command("-r");
                         if (true) {
-                            zipExec.addCommand("-j");
+                            zipExec.command("-j");
                         }
                     }
-                    zipExec.addCommand(zipPath.toString());
-                    zipExec.addCommand(plainFolderPath.toString());
+                    zipExec.command(zipPath.toString());
+                    zipExec.command(plainFolderPath.toString());
                     zipExec.directory(plainFolderPath.parent());
                     run(zipExec);
                 }

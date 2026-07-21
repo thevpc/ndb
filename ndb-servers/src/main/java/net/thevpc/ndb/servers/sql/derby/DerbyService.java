@@ -250,8 +250,8 @@ public class DerbyService {
             command.add(options.getExtraArg());
         }
         return NExec.of()
-                .addExecutorOptions(executorOptions)
-                .addCommand(command)
+                .executorOptions(executorOptions)
+                .command(command)
                 .directory(NPath.of(derbyBinHome))
                 .failFast(true)
                 ;

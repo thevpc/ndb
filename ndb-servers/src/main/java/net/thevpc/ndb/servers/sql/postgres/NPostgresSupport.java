@@ -75,7 +75,7 @@ public class NPostgresSupport extends SqlSupport<NPostgresConfig> {
                     }
                     pgpass.writeString(u + ":" + options.getPassword() + "\n", NPathOption.APPEND);
                     run(sysCmd()
-                            .addCommand("chmod", "0600", pgpass.toString())
+                            .command("chmod", "0600", pgpass.toString())
                     );
                 }
             } else {

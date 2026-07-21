@@ -68,7 +68,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
         if (isRemoteCommand(options)) {
             //call self remotely
             NPrepareCmd.of().userName(options.getRemoteUser()).targetServer(options.getRemoteServer()).addIds(Arrays.asList(NId.get(dbDriverPackage).get())).run();
-            run(sysSsh(options).addCommand("nuts").addCommand(NApp.of().id().get().toString()).addCommand(dbType).addCommand("run-sql").addCommand("--host=" + options.getHost()).addCommand("--port=" + options.getPort()).addCommand("--dbname=" + options.getDatabaseName()).addCommand("--user=" + options.getUser()).addCommand("--password=" + options.getPassword()));
+            run(sysSsh(options).command("nuts").command(NApp.of().id().get().toString()).command(dbType).command("run-sql").command("--host=" + options.getHost()).command("--port=" + options.getPort()).command("--dbname=" + options.getDatabaseName()).command("--user=" + options.getUser()).command("--password=" + options.getPassword()));
             return;
         }
         SqlHelper.runAndWaitFor(sql, createSqlConnectionInfo(options), forceShowSQL, session);

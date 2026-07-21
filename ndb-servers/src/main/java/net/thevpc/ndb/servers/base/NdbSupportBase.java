@@ -282,7 +282,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
 
 
     public NExec sysSsh(C options) {
-        return sysCmd().addCommand("ssh", options.getRemoteUser() + "@" + options.getRemoteServer());
+        return sysCmd().command("ssh", options.getRemoteUser() + "@" + options.getRemoteServer());
     }
 
     public NExec run(NExec cmd) {

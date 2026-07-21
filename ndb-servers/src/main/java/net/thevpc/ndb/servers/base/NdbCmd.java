@@ -128,20 +128,20 @@ public abstract class NdbCmd<C extends NdbConfig> {
 
     protected void sshPull(NPath remote, NPath local, C options) {
         run(sysCmd()
-                .addCommand("scp", options.getRemoteUser() + "@" + options.getRemoteServer() + ":" + remote)
-                .addCommand(local.toString())
+                .command("scp", options.getRemoteUser() + "@" + options.getRemoteServer() + ":" + remote)
+                .command(local.toString())
         );
     }
 
     protected void sshPush(NPath local, NPath remote, C options) {
         run(sysCmd()
-                .addCommand("scp", local.toString())
-                .addCommand(options.getRemoteUser() + "@" + options.getRemoteServer() + ":" + remote.toString())
+                .command("scp", local.toString())
+                .command(options.getRemoteUser() + "@" + options.getRemoteServer() + ":" + remote.toString())
         );
     }
 
     protected void sshRm(NPath upRestorePath, C options) {
-        run(sysSsh(options).addCommand("rm -rf " + upRestorePath.toString()));
+        run(sysSsh(options).command("rm -rf " + upRestorePath.toString()));
     }
 
     public NExec run(NExec cmd) {

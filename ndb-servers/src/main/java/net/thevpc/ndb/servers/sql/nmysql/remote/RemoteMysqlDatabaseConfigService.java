@@ -138,7 +138,7 @@ public class RemoteMysqlDatabaseConfigService {
                 }
             }
             NExec.of().executionType(NExecutionType.EMBEDDED)
-                    .addCommand("nsh",
+                    .command("nsh",
                             "--bot",
                             "-c",
                             "cp",
@@ -209,7 +209,7 @@ public class RemoteMysqlDatabaseConfigService {
             ));
         }
         NExec.of()
-                .addCommand(
+                .command(
                         "nsh",
                         "--bot",
                         "cp",
@@ -250,23 +250,23 @@ public class RemoteMysqlDatabaseConfigService {
     public String execRemoteNuts(String... cmd) {
         NExec b = NExec.of();
         if ("localhost".equals(this.config.getServer())) {
-            b.addCommand("nuts");
-            b.addCommand("-b");
-            b.addCommand("-y");
-            b.addCommand("--bot");
-            b.addCommand("--trace=false");
-            b.addCommand("--json");
-            b.addCommand(cmd);
+            b.command("nuts");
+            b.command("-b");
+            b.command("-y");
+            b.command("--bot");
+            b.command("--trace=false");
+            b.command("--json");
+            b.command(cmd);
         } else {
-            b.addCommand("nsh", "-c", "ssh");
-            b.addCommand(this.config.getServer());
-            b.addCommand(NdbUtils.getDefaultUserHome(System.getProperty("user.name")) + "/bin/nuts");
-            b.addCommand("-b");
-            b.addCommand("-y");
-            b.addCommand("--trace=false");
-            b.addCommand("--bot");
-            b.addCommand("--json");
-            b.addCommand(cmd);
+            b.command("nsh", "-c", "ssh");
+            b.command(this.config.getServer());
+            b.command(NdbUtils.getDefaultUserHome(System.getProperty("user.name")) + "/bin/nuts");
+            b.command("-b");
+            b.command("-y");
+            b.command("--trace=false");
+            b.command("--bot");
+            b.command("--json");
+            b.command(cmd);
         }
         if (session.isPlainTrace()) {
             NText ff = NExecWriter.of()

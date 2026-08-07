@@ -3,7 +3,7 @@ package net.thevpc.nsql;
 import net.thevpc.nsql.impl.ResultSetQueryResult;
 import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.text.NMsg;
-import net.thevpc.nuts.util.NStreamTokenizer;
+import net.thevpc.nuts.io.NStreamTokenizer;
 
 import java.io.StreamTokenizer;
 import java.io.StringReader;

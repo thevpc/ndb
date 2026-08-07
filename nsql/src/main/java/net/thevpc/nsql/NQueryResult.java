@@ -1,12 +1,10 @@
 package net.thevpc.nsql;
 
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStream;
+import net.thevpc.nuts.pipeline.NStream;
 
 import java.io.Closeable;
 import java.sql.ResultSet;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public interface NQueryResult extends Closeable {
     NOptional<NSqlRow> first();

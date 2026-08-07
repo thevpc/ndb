@@ -4,7 +4,7 @@ import net.thevpc.nsql.NQueryResult;
 import net.thevpc.nsql.NSqlRow;
 import net.thevpc.nsql.UncheckedSqlException;
 import net.thevpc.nuts.util.NOptional;
-import net.thevpc.nuts.util.NStream;
+import net.thevpc.nuts.pipeline.NStream;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

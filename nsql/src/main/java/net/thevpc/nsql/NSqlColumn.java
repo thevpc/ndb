@@ -7,7 +7,6 @@ import net.thevpc.nsql.util.WithFullName;
 import net.thevpc.nuts.util.NBlankable;
 import net.thevpc.nuts.util.NNameFormat;
 import net.thevpc.nuts.elem.*;
-import net.thevpc.nuts.util.NUplet;
 
 import java.sql.PreparedStatement;
 import java.util.Objects;

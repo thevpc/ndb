@@ -10,7 +10,6 @@ import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementWriter;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.nuts.io.*;
 import net.thevpc.nuts.text.*;
 import net.thevpc.nuts.text.NExecWriter;
@@ -107,7 +106,6 @@ public class RemoteMysqlDatabaseConfigService {
         if (t > 0) {
             remoteTempPath = remoteTempPath.substring(t);
         }
-        NElements elem = NElements.of();
         Map<String, Object> resMap = NElementReader.ofJson().read(remoteTempPath.getBytes(), Map.class);
         String ppath = (String) resMap.get("path");
 
@@ -119,11 +117,10 @@ public class RemoteMysqlDatabaseConfigService {
                     .toString();
         }
         NPath remoteFullFilePath = NPath.of(prepareSshServer(cconfig.getServer()) + "/" + ppath);
-        NTexts text = NTexts.of();
         if (session.isPlainTrace()) {
             NOut.println(NMsg.ofC("%s copy '%s' to '%s'", getBracketsPrefix(name),
-                    text.ofStyled(remoteFullFilePath.toString(), NTextStyle.path()),
-                    text.ofStyled(localPath, NTextStyle.path())
+                    NText.ofStyled(remoteFullFilePath.toString(), NTextStyle.path()),
+                    NText.ofStyled(localPath, NTextStyle.path())
             ));
         }
         if (lastRun.get("localPath") != null) {
@@ -201,10 +198,9 @@ public class RemoteMysqlDatabaseConfigService {
 
         String remoteFilePath = "/" + remoteTempPath + "-" + MysqlUtils.newDateString() + "-" + MysqlUtils.getFileName(localPath);
         NPath remoteFullFilePath = NPath.of(prepareSshServer(cconfig.getServer()) + "/" + remoteFilePath);
-        NTexts text = NTexts.of();
         if (session.isPlainTrace()) {
             NOut.println(NMsg.ofC("%s copy %s to %s", getBracketsPrefix(name),
-                    text.ofStyled(localPath, NTextStyle.path()),
+                    NText.ofStyled(localPath, NTextStyle.path()),
                     remoteFullFilePath
             ));
         }

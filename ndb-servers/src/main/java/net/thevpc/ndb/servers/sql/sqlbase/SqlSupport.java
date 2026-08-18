@@ -6,7 +6,6 @@ import net.thevpc.nuts.command.NPrepareCmd;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementType;
-import net.thevpc.nuts.elem.NElements;
 import net.thevpc.ndb.servers.NdbConfig;
 import net.thevpc.ndb.servers.base.NdbSupportBase;
 import net.thevpc.ndb.servers.base.cmd.CopyDBCmd;
@@ -80,7 +79,6 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
 
 
     public String createWhere(List<String> where) {
-        NElements elements = NElements.of();
         StringBuilder whereSb = new StringBuilder();
         for (String s : where) {
             s = s.trim();

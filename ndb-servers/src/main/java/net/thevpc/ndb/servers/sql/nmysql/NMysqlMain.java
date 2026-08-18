@@ -8,9 +8,10 @@ import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.*;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.collections.NMaps;
+import net.thevpc.nuts.text.NText;
+import net.thevpc.nuts.text.NTextBuilder;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.nuts.text.NTextStyle;
-import net.thevpc.nuts.text.NTexts;
 import net.thevpc.ndb.servers.base.CmdRedirect;
 import net.thevpc.ndb.servers.sql.sqlbase.SqlSupport;
 import net.thevpc.ndb.servers.sql.nmysql.local.LocalMysqlConfigService;
@@ -576,7 +577,6 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
         if (d.expectedRemote && d.forRemote_server == null) {
             cmdLine.throwMissingArgument("--server");
         }
-        NTexts factory = NTexts.of();
         if (cmdLine.isExecMode()) {
             NPrintStream out = session.out();
             if (!d.expectedRemote) {
@@ -589,7 +589,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (!NIn.ask()
                                     .forBoolean(
                                             NMsg.ofC(
-                                                    "already exists %s. override?", factory.ofStyled(d.name.toString(),
+                                                    "already exists %s. override?", NText.ofStyled(d.name.toString(),
                                                             NTextStyle.primary3()
                                                     ))
                                     )
@@ -602,7 +602,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             overrideExisting = true;
                             if (!NIn.ask()
                                     .forBoolean(
-                                            NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3()
+                                            NMsg.ofC("already exists %s. override?", NText.ofStyled(d.name.toString(), NTextStyle.primary3()
                                             )))
                                     .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
@@ -658,21 +658,21 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         if (add) {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("adding local config (with override) %s",
-                                        factory.ofStyled(
+                                        NText.ofStyled(
                                                 NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())
                                 ));
                             } else {
                                 out.println(NMsg.ofC("adding local config %s",
-                                        factory.ofStyled(
+                                        NText.ofStyled(
                                                 NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             }
                         } else {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("updating local config (with override) %s",
-                                        factory.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
+                                        NText.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             } else {
                                 out.println(NMsg.ofC("updating local config %s",
-                                        factory.ofStyled(
+                                        NText.ofStyled(
                                                 NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             }
                         }
@@ -710,19 +710,19 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         if (add) {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("adding local instance (with override) %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())));
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())));
                             } else {
                                 out.println(NMsg.ofC("adding local instance %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())));
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())));
                             }
                         } else {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("updating local instance (with override) %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())
                                 ));
                             } else {
                                 out.println(NMsg.ofC("updating local instance %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())
                                 ));
                             }
                         }
@@ -753,7 +753,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             overrideExisting = true;
                             if (!NIn.ask()
                                     .forBoolean(
-                                            NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
+                                            NMsg.ofC("already exists %s. override?", NText.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))
                                     .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
@@ -764,7 +764,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             overrideExisting = true;
                             if (!NIn.ask()
                                     .forBoolean(
-                                            NMsg.ofC("already exists %s. override?", factory.ofStyled(d.name.toString(), NTextStyle.primary3())
+                                            NMsg.ofC("already exists %s. override?", NText.ofStyled(d.name.toString(), NTextStyle.primary3())
                                             ))
                                     .defaultValue(false).booleanValue()) {
                                 throw new NExecutionException(NMsg.ofC("already exists %s", d.name), NExecutionException.ERROR_2);
@@ -792,18 +792,18 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         if (add) {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("adding remote config (with override) %s",
-                                        factory.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
+                                        NText.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             } else {
                                 out.println(NMsg.ofC("adding remote config %s",
-                                        factory.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
+                                        NText.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             }
                         } else {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("updating remote config (with override) %s",
-                                        factory.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
+                                        NText.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             } else {
                                 out.println(NMsg.ofC("updating remote config %s",
-                                        factory.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
+                                        NText.ofStyled(NdbUtils.coalesce(d.name.getConfigName(), "default"), NTextStyle.primary3())));
                             }
                         }
                     }
@@ -825,19 +825,19 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         if (add) {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("adding remote instance (with override) %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())));
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())));
                             } else {
                                 out.println(NMsg.ofC("adding remote instance %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())));
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())));
                             }
                         } else {
                             if (overrideExisting) {
                                 out.println(NMsg.ofC("updating remote instance (with override) %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3()))
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3()))
                                 );
                             } else {
                                 out.println(NMsg.ofC("updating remote instance %s",
-                                        factory.ofStyled(r.getFullName(), NTextStyle.primary3())));
+                                        NText.ofStyled(r.getFullName(), NTextStyle.primary3())));
                             }
                         }
                     }
@@ -928,11 +928,10 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
         }
     }
 
-    public Object toObject(String dbName, String confName, LocalMysqlDatabaseConfig config, boolean describe, boolean plain, NSession session) {
-        NTexts text = NTexts.of();
+    public Object toObject(String dbName, String confName, LocalMysqlDatabaseConfig config, boolean describe, boolean plain) {
         if (!describe) {
             if (plain) {
-                return text.ofBuilder()
+                return NTextBuilder.of()
                         .append(" [local ] ", NTextStyle.primary4())
                         .append(dbName).append("@").append(confName, NTextStyle.primary4())
                         ;
@@ -941,7 +940,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             }
         } else {
             if (plain) {
-                return text.ofBuilder()
+                return NTextBuilder.of()
                         .append(" [local ] ", NTextStyle.primary4())
                         .append(dbName).append("@").append(confName, NTextStyle.primary4())
                         .append(" db=").append(config.getDatabaseName())
@@ -952,11 +951,10 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
         }
     }
 
-    public Object toObject(String dbName, String confName, RemoteMysqlDatabaseConfig config, boolean describe, boolean plain, NSession session) {
-        NTexts text = NTexts.of();
+    public Object toObject(String dbName, String confName, RemoteMysqlDatabaseConfig config, boolean describe, boolean plain) {
         if (!describe) {
             if (plain) {
-                return text.ofBuilder()
+                return NTextBuilder.of()
                         .append(" [remote] ", NTextStyle.primary4())
                         .append(dbName).append("@").append(confName, NTextStyle.primary4())
                         ;
@@ -965,7 +963,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
             }
         } else {
             if (plain) {
-                return text.ofBuilder()
+                return NTextBuilder.of()
                         .append(" [remote] ", NTextStyle.primary4())
                         .append(dbName).append("@").append(confName, NTextStyle.primary4())
                         .append(" local=").append(config.getLocalName())
@@ -1042,11 +1040,11 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                 for (LocaleOrRemote cnf : result) {
                     if (cnf.local != null) {
                         for (Map.Entry<String, LocalMysqlDatabaseConfig> db : cnf.local.getDatabases().entrySet()) {
-                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
+                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false), index++);
                         }
                     } else {
                         for (Map.Entry<String, RemoteMysqlDatabaseConfig> db : cnf.remote.getDatabases().entrySet()) {
-                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false, service.getSession()), index++);
+                            session.iterableOutput().next(toObject(db.getKey(), cnf.name, db.getValue(), describe, false), index++);
                         }
                     }
                 }
@@ -1060,13 +1058,13 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         if (cnf.local != null) {
                             for (Map.Entry<String, LocalMysqlDatabaseConfig> db : cnf.local.getDatabases().entrySet()) {
                                 NOut.println(NMsg.ofC("%s",
-                                        toObject(db.getKey(), cnf.name, db.getValue(), describe, true, service.getSession())
+                                        toObject(db.getKey(), cnf.name, db.getValue(), describe, true)
                                 ));
                             }
                         } else {
                             for (Map.Entry<String, RemoteMysqlDatabaseConfig> db : cnf.remote.getDatabases().entrySet()) {
                                 session.out().println(NMsg.ofC("%s",
-                                        toObject(db.getKey(), cnf.name, db.getValue(), describe, true, service.getSession())
+                                        toObject(db.getKey(), cnf.name, db.getValue(), describe, true)
                                 ));
                             }
                         }

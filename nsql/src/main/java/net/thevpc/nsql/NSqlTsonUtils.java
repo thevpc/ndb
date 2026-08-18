@@ -62,8 +62,8 @@ public class NSqlTsonUtils {
     public static String nameOf(NElement e) {
         if (e.isPair() && e.asPair().get().key().isAnyString()) {
             return e.asPair().get().key().asStringValue().get();
-        } else if (e.isNamedUplet()) {
-            return e.asUplet().get().name().orNull();
+        } else if (e.isNamedTuple()) {
+            return e.asTuple().get().name().orNull();
         } else if (e.isNamedArray()) {
             return e.asArray().get().name().orNull();
         } else if (e.isNamedObject()) {
@@ -81,7 +81,7 @@ public class NSqlTsonUtils {
                         && NNameFormat.equalsIgnoreFormat(name, e.asPair().get().key().asStringValue().get())
                 ) {
                     return e.toNamedPair().get().value();
-                } else if (e.isNamedUplet() && NNameFormat.equalsIgnoreFormat(name, e.asUplet().get().name().orNull())) {
+                } else if (e.isNamedTuple() && NNameFormat.equalsIgnoreFormat(name, e.asTuple().get().name().orNull())) {
                     return e;
                 } else if (e.isNamedArray() && NNameFormat.equalsIgnoreFormat(name, e.asArray().get().name().orNull())) {
                     return e;

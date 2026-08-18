@@ -14,9 +14,9 @@ import net.thevpc.nuts.io.NPath;
 import net.thevpc.nuts.io.NPrintStream;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.collections.NMaps;
+import net.thevpc.nuts.text.NText;
 import net.thevpc.nuts.util.NRef;
 import net.thevpc.nuts.text.NTextStyle;
-import net.thevpc.nuts.text.NTexts;
 import net.thevpc.ndb.servers.base.CmdRedirect;
 import net.thevpc.ndb.servers.sql.sqlbase.SqlSupport;
 import net.thevpc.ndb.servers.sql.nmysql.util.AtName;
@@ -90,25 +90,23 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             DerbyService srv = new DerbyService(session);
             int effectivePort = options.getPort() < 0 ? 1527 : options.getPort();
             if (options.getCmd() == Command.start) {
-                NTexts factory = NTexts.of();
                 if (cmdLine.isExecMode()) {
                     if (new DerbyService(session).isRunning()) {
                         NOut.println(NMsg.ofC("derby is %s on port %s",
-                                factory.ofStyled("already running", NTextStyle.warn()),
-                                factory.ofStyled("" + effectivePort, NTextStyle.number())
+                                NText.ofStyled("already running", NTextStyle.warn()),
+                                NText.ofStyled("" + effectivePort, NTextStyle.number())
                         ));
                         throw new NExecutionException(NMsg.ofC("derby is already running on port %d", effectivePort), NExecutionException.ERROR_3);
                     }
                 }
             } else if (options.getCmd() == Command.shutdown) {
-                NTexts factory = NTexts.of();
                 if (cmdLine.isExecMode()) {
                     if (!new DerbyService(session).isRunning()) {
                         NOut.println(NMsg.ofC("derby is %s on port %s",
-                                factory.ofStyled("already stopped", NTextStyle.warn()),
-                                factory.ofStyled("" + effectivePort, NTextStyle.number())
+                                NText.ofStyled("already stopped", NTextStyle.warn()),
+                                NText.ofStyled("" + effectivePort, NTextStyle.number())
                         ));
-                        NOut.println(NMsg.ofC("derby is %s", factory.ofStyled("already stopped", NTextStyle.warn())));
+                        NOut.println(NMsg.ofC("derby is %s", NText.ofStyled("already stopped", NTextStyle.warn())));
                         throw new NExecutionException(NMsg.ofC("derby is already stopped on port %d", effectivePort), NExecutionException.ERROR_3);
                     }
                 }
@@ -194,12 +192,11 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             }
         }
         options.setCmd(Command.ping);
-        NTexts factory = NTexts.of();
         if (cmdLine.isExecMode()) {
             if (new DerbyService(session).isRunning()) {
-                NOut.println(NMsg.ofC("derby is %s", factory.ofStyled("running", NTextStyle.primary1())));
+                NOut.println(NMsg.ofC("derby is %s", NText.ofStyled("running", NTextStyle.primary1())));
             } else {
-                NOut.println(NMsg.ofC("derby is %s", factory.ofStyled("stopped", NTextStyle.error())));
+                NOut.println(NMsg.ofC("derby is %s", NText.ofStyled("stopped", NTextStyle.error())));
             }
         }
     }
@@ -253,7 +250,6 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                 args.throwUnexpectedArgument();
             }
         }
-        NTexts factory = NTexts.of();
         if (args.isExecMode()) {
             if (session.isPlainOut()) {
                 NPrintStream out = session.out();
@@ -261,23 +257,23 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                     switch (format) {
                         case "short": {
                             out.println(NMsg.ofC("%s",
-                                    factory.ofStyled(jpsResult.getPid(), NTextStyle.primary1())
+                                    NText.ofStyled(jpsResult.getPid(), NTextStyle.primary1())
                             ));
                             break;
                         }
                         case "long": {
                             out.println(NMsg.ofC("%s %s %s %s %s",
-                                    factory.ofStyled(jpsResult.getPid(), NTextStyle.primary1()),
-                                    factory.ofPlain("HOME:"),
-                                    factory.ofStyled(jpsResult.getHome(), NTextStyle.path()),
-                                    factory.ofPlain("CMD:"),
+                                    NText.ofStyled(jpsResult.getPid(), NTextStyle.primary1()),
+                                    NText.ofPlain("HOME:"),
+                                    NText.ofStyled(jpsResult.getHome(), NTextStyle.path()),
+                                    NText.ofPlain("CMD:"),
                                     NCmdLine.parse(jpsResult.getArgsLine()))
                             );
                             break;
                         }
                         default: {
                             out.println(NMsg.ofC("%s %s",
-                                    factory.ofStyled(jpsResult.getPid(), NTextStyle.primary1()),
+                                    NText.ofStyled(jpsResult.getPid(), NTextStyle.primary1()),
                                     jpsResult.getHome())
                             );
                             break;

@@ -181,8 +181,8 @@ public class NSqlColumn implements Cloneable, WithFullName {
             NElement type = NSqlTsonUtils.fieldByNameOf("type", columnDefinition);
             if (type.isPair() && type.asPair().get().key().isAnyString()) {
                 columnType = NSqlColumnType.parse(type.asPair().get().key().asStringValue().get());
-            } else if (type.isNamedUplet()) {
-                NUpletElement f = type.asUplet().get();
+            } else if (type.isNamedTuple()) {
+                NTupleElement f = type.asTuple().get();
                 columnType = NSqlColumnType.parse(f.name().orNull());
                 if (columnType != null) {
                     switch (columnType) {

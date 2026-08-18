@@ -115,8 +115,7 @@ public class LocalMysqlDatabaseConfigService {
                     } else {
                         if (session.isPlainTrace()) {
                             NOut.println(NMsg.ofC("%s create archive %s", getBracketsPrefix(getDatabaseName()),
-                                    NTexts.of()
-                                            .ofStyled(finalPath, NTextStyle.path())));
+                                    NText.ofStyled(finalPath, NTextStyle.path())));
                         }
                         NExec cmd = NExec.of()
                                 .system()

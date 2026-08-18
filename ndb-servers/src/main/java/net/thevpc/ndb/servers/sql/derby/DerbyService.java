@@ -146,7 +146,7 @@ public class DerbyService {
         Path targetFile = folder.resolve(iid.artifactId() + ".jar");
         if (!Files.exists(targetFile)) {
             NPath targetPath=NPath.of(targetFile);
-            NPath r = NFetch.of(id).failFast(!optional).dependencyFilter(NDependencyFilters.of().byRunnable()).getResultPath();
+            NPath r = NFetch.of(id).failFast(!optional).dependencyFilter(NDependencyFilter.ofRunnable()).getResultPath();
             if (r != null) {
                 r.copyTo(targetPath);
                 LOG().log(NMsg.ofC("downloading %s to %s", id, targetFile).asFinest().withIntent(NMsgIntent.READ));
@@ -161,7 +161,7 @@ public class DerbyService {
         NId java = NEnv.of().java();
         List<String> all = NSearch.of().addId("org.apache.derby:derbynet").distinct(true)
                 .definitionFilter(
-                        (java.version().compareTo("1.9") < 0) ? NVersionFilters.of().byValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
+                        (java.version().compareTo("1.9") < 0) ? NVersionFilter.ofValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
                 .getResultIds().stream().map(x -> x.version().toString()).collect(Collectors.toList());
         TreeSet<String> lastFirst = new TreeSet<>(new Comparator<String>() {
@@ -182,7 +182,7 @@ public class DerbyService {
             NId java = NEnv.of().java();
             NId best = NSearch.of().addId("org.apache.derby:derbynet").distinct(true).latest(true)
                     .definitionFilter(
-                            (java.version().compareTo("1.9") < 0) ? NDefinitionFilters.of().byVersion("[,10.15.1.3[") :
+                            (java.version().compareTo("1.9") < 0) ? NDefinitionFilter.ofVersion("[,10.15.1.3[") :
                                     null)
                     .getResultIds().findSingleton().get();
             currentDerbyVersion = best.version().toString();

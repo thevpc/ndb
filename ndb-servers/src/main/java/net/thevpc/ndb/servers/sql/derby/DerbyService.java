@@ -163,7 +163,7 @@ public class DerbyService {
                 .definitionFilter(
                         (java.version().compareTo("1.9") < 0) ? NVersionFilter.ofValue("[,10.15.1.3[",NVersionComparator.ofMaven()).get().to(NDefinitionFilter.class) :
                                 null)
-                .getResultIds().stream().map(x -> x.version().toString()).collect(Collectors.toList());
+                .getResultIds().map(x -> x.version().toString()).collect(Collectors.toList());
         TreeSet<String> lastFirst = new TreeSet<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {

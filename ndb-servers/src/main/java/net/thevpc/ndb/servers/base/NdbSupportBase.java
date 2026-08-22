@@ -75,7 +75,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         while (cmdLine.hasNext()) {
             boolean ok = false;
             for (NdbCmd<C> cc : commands.values()) {
-                if (cmdLine.matcher().with(cc.getNames()).matchFlag((value) -> {
+                if (cmdLine.matcher().when(cc.getNames()).asFlag((value) -> {
                     cmdLine.commandName(getDbType() + " " + value.key());
                     cc.run(cmdLine);
                 }).anyMatch()) {
@@ -252,11 +252,13 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
                 //
             } else {
                 commandLine.matcher()
-                        .with("--update").matchFlag((v) -> {
+                        .when("--update").asFlag((v) -> {
                             update.set(v.booleanValue());
                         })
-                        .matchAll((c) -> fillAddConfigOption(c))
-                        .requireDefaults();
+                        .with((c) -> fillAddConfigOption(c))
+                        .withDefaults()
+                        .require()
+                ;
             }
         }
         options.setName(NStringUtils.stripToNull(options.getName()));

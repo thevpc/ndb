@@ -37,11 +37,11 @@ public class SqlShowSchemaCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--long": {
-                        cmdLine.matcher().withAny().matchFlag((v) -> eq.setLongMode(v.booleanValue())).anyMatch();
+                        cmdLine.matcher().whenAny().asFlag((v) -> eq.setLongMode(v.booleanValue())).anyMatch();
                         break;
                     }
                     case "--file": {
-                        cmdLine.matcher().withAny().matchEntry((v) -> file.set(NPath.of(v.toString()))).anyMatch();
+                        cmdLine.matcher().whenAny().asEntry((v) -> file.set(NPath.of(v.toString()))).anyMatch();
                         break;
                     }
                     default: {

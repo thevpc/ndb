@@ -26,9 +26,12 @@ public class AddConfigCmd<C extends NdbConfig> extends NdbCmd<C> {
         NRef<Boolean> update = NRef.of(false);
         while (cmdLine.hasNext()) {
             if (!fillOption(cmdLine, options)) {
-                cmdLine.matcher().with("--update").matchFlag((v) -> {
+                cmdLine.matcher().when("--update").asFlag((v) -> {
                     update.set(v.booleanValue());
-                }).requireDefaults();
+                })
+                .withDefaults()
+                .require()
+                ;
             }
         }
         options.setName(NStringUtils.stripToNull(options.getName()));

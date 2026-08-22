@@ -37,18 +37,18 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                         case "--entity":
                         case "--table":
                         case "--collection": {
-                            cmdLine.matcher().withAny().matchEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
+                            cmdLine.matcher().whenAny().asEntry((v) -> eq.setTable(v.stringValue())).anyMatch();
                             break;
                         }
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().withAny().matchFlag((v) -> {
+                            cmdLine.matcher().whenAny().asFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().withAny().matchFlag((v) -> {
+                            cmdLine.matcher().whenAny().asFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -62,7 +62,7 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--set": {
                             status = "--set";
-                            cmdLine.matcher().withAny().matchFlag((v) -> {
+                            cmdLine.matcher().whenAny().asFlag((v) -> {
                             }).anyMatch();
                             break;
                         }
@@ -76,7 +76,7 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
                     switch (cmdLine.peek().get().key()) {
                         case "--where": {
                             status = "--where";
-                            cmdLine.matcher().withAny().matchFlag((v) -> {
+                            cmdLine.matcher().whenAny().asFlag((v) -> {
                             }).anyMatch();
                             break;
                         }

@@ -31,7 +31,7 @@ public class ShowDatabasesCmd<C extends NdbConfig> extends NdbCmd<C> {
                         break;
                     }
                     case "--long": {
-                        cmdLine.matcher().withAny().matchFlag((v)-> eq.setLongMode(v.booleanValue())).anyMatch();
+                        cmdLine.matcher().whenAny().asFlag((v)-> eq.setLongMode(v.booleanValue())).anyMatch();
                         break;
                     }
                     default: {

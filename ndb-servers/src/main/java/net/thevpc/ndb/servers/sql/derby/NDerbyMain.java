@@ -124,7 +124,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             if (commandLine.isNextOption()) {
                 switch (commandLine.peek().get().key()) {
                     case "--name": {
-                        commandLine.matcher().withAny().matchEntry((v) -> {
+                        commandLine.matcher().whenAny().asEntry((v) -> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.stringValue()));
                             } else {
@@ -134,7 +134,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                         break;
                     }
                     case "--show-sql": {
-                        commandLine.matcher().withAny().matchFlag((v) -> {
+                        commandLine.matcher().whenAny().asFlag((v) -> {
                             forceShowSQL.set(v.booleanValue());
                         }).anyMatch();
                         break;

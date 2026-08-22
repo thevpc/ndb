@@ -41,7 +41,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                         break;
                     }
                     case "--file": {
-                        cmdLine.matcher().withAny().matchEntry((v) -> {
+                        cmdLine.matcher().whenAny().asEntry((v) -> {
                             file.set(NPath.of(v.stringValue()));
                         }).anyMatch();
                         break;

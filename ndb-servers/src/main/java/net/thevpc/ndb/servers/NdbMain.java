@@ -18,7 +18,7 @@
 //
 //    @Override
 //    public void run() {
-//        run(NApp.of().getCmdLine());
+//        run(NApp.of().cmdLine());
 //    }
 //
 //    public void run(NCmdLine cmdLine) {

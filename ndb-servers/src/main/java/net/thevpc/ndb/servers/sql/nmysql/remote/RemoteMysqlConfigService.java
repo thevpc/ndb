@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.nmysql.remote;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
@@ -31,7 +31,7 @@ public class RemoteMysqlConfigService {
     public RemoteMysqlConfigService(String name, NSession session) {
         setName(name);
         this.session = session;
-        sharedConfigFolder = NApp.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT);
+        sharedConfigFolder = NApplication.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT);
     }
 
     public String getName() {

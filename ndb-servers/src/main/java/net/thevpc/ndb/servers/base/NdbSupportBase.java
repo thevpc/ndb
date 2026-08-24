@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.base;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.cmdline.NArg;
 import net.thevpc.nuts.cmdline.NCmdLine;
 import net.thevpc.nuts.command.NExec;
@@ -36,7 +36,7 @@ public abstract class NdbSupportBase<C extends NdbConfig> implements NdbSupport 
         this.dbType = dbType;
         this.configClass = configClass;
         this.session = session;
-        this.sharedConfigFolder = NApp.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT)
+        this.sharedConfigFolder = NApplication.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT)
                 .resolve(dbType);
         declareNdbCmd(new AddConfigCmd<>(this));
         declareNdbCmd(new CountCmd<>(this));

@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.sqlbase;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.artifact.NId;
 import net.thevpc.nuts.command.NPrepareCmd;
 import net.thevpc.nuts.core.NSession;
@@ -67,7 +67,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
         if (isRemoteCommand(options)) {
             //call self remotely
             NPrepareCmd.of().userName(options.getRemoteUser()).targetServer(options.getRemoteServer()).addIds(Arrays.asList(NId.get(dbDriverPackage).get())).run();
-            run(sysSsh(options).command("nuts").command(NApp.of().id().get().toString()).command(dbType).command("run-sql").command("--host=" + options.getHost()).command("--port=" + options.getPort()).command("--dbname=" + options.getDatabaseName()).command("--user=" + options.getUser()).command("--password=" + options.getPassword()));
+            run(sysSsh(options).command("nuts").command(NApplication.of().id().get().toString()).command(dbType).command("run-sql").command("--host=" + options.getHost()).command("--port=" + options.getPort()).command("--dbname=" + options.getDatabaseName()).command("--user=" + options.getUser()).command("--password=" + options.getPassword()));
             return;
         }
         SqlHelper.runAndWaitFor(sql, createSqlConnectionInfo(options), forceShowSQL, session);

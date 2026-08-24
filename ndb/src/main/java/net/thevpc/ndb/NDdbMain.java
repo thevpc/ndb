@@ -2,11 +2,11 @@ package net.thevpc.ndb;
 
 import net.thevpc.ndb.cmd.options.NDdbOptionsParser;
 import net.thevpc.ndb.cmd.NDdbRunner;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.app.NApp;
-import net.thevpc.nuts.app.NAppDefinition;
-import net.thevpc.nuts.app.NAppRunner;
+import net.thevpc.nuts.app.NAppRun;
 
-@NAppDefinition
+@NApp
 public class NDdbMain  {
     public static void main(String[] args) {
         if(System.getProperty("java.util.logging.SimpleFormatter.format")==null) {
@@ -15,11 +15,11 @@ public class NDdbMain  {
                     "[%1$tF %1$tT] [%4$s] %2$s - %5$s%6$s%n"
             );
         }
-        NApp.builder(args).run();
+        NApplication.builder(args).run();
     }
 
-    @NAppRunner
+    @NAppRun
     public void run() {
-        NDdbRunner.run(NDdbOptionsParser.parse(NApp.of().cmdLine()));
+        NDdbRunner.run(NDdbOptionsParser.parse(NApplication.of().cmdLine()));
     }
 }

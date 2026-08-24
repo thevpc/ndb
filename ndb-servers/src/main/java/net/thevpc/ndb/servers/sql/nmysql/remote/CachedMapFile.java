@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.nmysql.remote;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.artifact.NId;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementReader;
@@ -24,8 +24,8 @@ public class CachedMapFile {
     public CachedMapFile(NSession session, String name, boolean enabled) {
         this.session = session;
         this.enabled = enabled;
-        NId appId = NApp.of().id().get();
-        path = NApp.of().tempFolder()
+        NId appId = NApplication.of().id().get();
+        path = NApplication.of().tempFolder()
                 .resolve(appId.groupId() + "-" + appId.artifactId() + "-" + appId.version())
                 .resolve(name + ".json");
         if (enabled) {

@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.sql.nmysql.remote;
 
 import java.io.File;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.command.NExecutionException;
 import net.thevpc.nuts.command.NExecutionType;
@@ -110,7 +110,7 @@ public class RemoteMysqlDatabaseConfigService {
         String ppath = (String) resMap.get("path");
 
         if (NBlankable.isBlank(localPath)) {
-            localPath = NApp.of().varFolder()
+            localPath = NApplication.of().varFolder()
                     .resolve("pull-backups")
                     .resolve(client.getName() + "-" + getName())
                     .resolve(/*MysqlUtils.newDateString()+"-"+*/Paths.get(ppath).getFileName().toString())

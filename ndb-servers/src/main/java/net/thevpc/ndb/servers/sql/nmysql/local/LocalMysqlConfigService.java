@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.nmysql.local;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.artifact.NDefinition;
 import net.thevpc.nuts.core.NOpenMode;
 import net.thevpc.nuts.core.NSession;
@@ -41,7 +41,7 @@ public class LocalMysqlConfigService {
     public LocalMysqlConfigService(String name, NSession session) {
         setName(name);
         this.session = session;
-        sharedConfigFolder = NApp.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT);
+        sharedConfigFolder = NApplication.of().getVersionFolder(NStoreType.CONF, NMySqlConfigVersions.CURRENT);
     }
 
     public LocalMysqlConfigService setName(String name) {

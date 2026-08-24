@@ -25,7 +25,7 @@
 */
 package net.thevpc.ndb.servers.sql.derby;
 
-import net.thevpc.nuts.app.NApp;
+import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.artifact.*;
 import net.thevpc.nuts.command.NExec;
 import net.thevpc.nuts.command.NExecutionException;
@@ -190,17 +190,17 @@ public class DerbyService {
 
         NPath derbyDataHome = null;
         if (options.getDerbyDataHomeReplace() != null) {
-            derbyDataHome = NApp.of().sharedVarFolder();
+            derbyDataHome = NApplication.of().sharedVarFolder();
         } else {
             if (options.getDerbyDataHomeRoot() != null && options.getDerbyDataHomeRoot().trim().length() > 0) {
-                derbyDataHome = NPath.of(options.getDerbyDataHomeRoot()).toAbsolute(NApp.of().sharedVarFolder());
+                derbyDataHome = NPath.of(options.getDerbyDataHomeRoot()).toAbsolute(NApplication.of().sharedVarFolder());
             } else {
-                derbyDataHome = NApp.of().sharedVarFolder().resolve("derby-db");
+                derbyDataHome = NApplication.of().sharedVarFolder().resolve("derby-db");
             }
         }
         NPath derbyDataHomeRoot = derbyDataHome.parent();
         derbyDataHome.mkdirs();
-        Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApp.of().id().get())).resolve(currentDerbyVersion).toPath().get();
+        Path derbyBinHome = NPath.of(NStoreKey.ofBin(NApplication.of().id().get())).resolve(currentDerbyVersion).toPath().get();
         Path derbyLibHome = derbyBinHome.resolve("lib");
         Path derby = download("org.apache.derby:derby#" + currentDerbyVersion, derbyLibHome, false);
         Path derbynet = download("org.apache.derby:derbynet#" + currentDerbyVersion, derbyLibHome, false);

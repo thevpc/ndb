@@ -80,7 +80,7 @@ public class CountCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runCount(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 }

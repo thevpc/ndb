@@ -133,7 +133,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -143,7 +143,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.path == null) {
                                 d.path = v.stringValue();
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -188,7 +188,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -217,7 +217,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
         LocalMysqlConfigService c = service.loadLocalMysqlConfig(name.get().getConfigName(), NOpenMode.OPEN_OR_ERROR);
         LocalMysqlDatabaseConfigService d = c.getDatabase(name.get().getDatabaseName(), NOpenMode.OPEN_OR_ERROR);
         if (sql.isEmpty()) {
-            cmdLine.throwMissingArgument(NMsg.ofPlain("sql"));
+            cmdLine.throwMissingArgument(NMsg.ofP("sql"));
         }
         SqlConnectionInfo jdbcUrl = createSqlConnectionInfo(
                 (NMySqlConfig)
@@ -260,7 +260,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.getStringValue().get()));
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -270,7 +270,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (path.isNull()) {
                                 path.set(v.stringValue());
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -344,7 +344,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.name == null) {
                                 d.name = new AtName(v.stringValue());
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -492,7 +492,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.forRemote_localName == null) {
                                 d.forRemote_localName = new AtName(v.stringValue());
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -507,7 +507,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.forRemote_remoteName == null) {
                                 d.forRemote_remoteName = new AtName(v.stringValue());
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -522,7 +522,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.forRemote_server == null) {
                                 d.forRemote_server = v.stringValue();
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -552,7 +552,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                             if (d.name == null) {
                                 d.name = AtName.nextAppOption(cmdLine, session);
                             } else {
-                                cmdLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                cmdLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         } else {
                             service.getSession().configureLast(cmdLine);
@@ -698,13 +698,13 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         r.getConfig().setPassword(d.password);
                     }
                     if (r.getConfig().getUser() == null) {
-                        throw new NExecutionException(NMsg.ofPlain("missing --user"), NExecutionException.ERROR_2);
+                        throw new NExecutionException(NMsg.ofP("missing --user"), NExecutionException.ERROR_2);
                     }
                     if (r.getConfig().getPassword() == null) {
-                        throw new NExecutionException(NMsg.ofPlain("missing --password"), NExecutionException.ERROR_2);
+                        throw new NExecutionException(NMsg.ofP("missing --password"), NExecutionException.ERROR_2);
                     }
                     if (r.getConfig().getDatabaseName() == null) {
-                        throw new NExecutionException(NMsg.ofPlain("missing --name"), NExecutionException.ERROR_2);
+                        throw new NExecutionException(NMsg.ofP("missing --name"), NExecutionException.ERROR_2);
                     }
                     if (someUpdates && session.isPlainTrace()) {
                         if (add) {
@@ -729,7 +729,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     }
                 }
                 if (!someUpdates) {
-                    throw new NExecutionException(NMsg.ofPlain("nothing to save"), NExecutionException.ERROR_2);
+                    throw new NExecutionException(NMsg.ofP("nothing to save"), NExecutionException.ERROR_2);
                 }
 
                 c.saveConfig();
@@ -778,7 +778,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                         }
                     } else {
                         if (c.getDatabase(d.name.getDatabaseName(), NOpenMode.OPEN_OR_NULL) == null) {
-                            throw new NExecutionException(NMsg.ofPlain("not found  %s" + d.name), NExecutionException.ERROR_2);
+                            throw new NExecutionException(NMsg.ofP("not found  %s" + d.name), NExecutionException.ERROR_2);
                         }
                     }
                 }
@@ -843,7 +843,7 @@ public class NMysqlMain extends SqlSupport<NMySqlConfig> {
                     }
                 }
                 if (!someUpdates) {
-                    throw new NExecutionException(NMsg.ofPlain("nothing to save"), NExecutionException.ERROR_2);
+                    throw new NExecutionException(NMsg.ofP("nothing to save"), NExecutionException.ERROR_2);
                 }
 
                 c.saveConfig();

@@ -67,11 +67,11 @@ public class NPostgresSupport extends SqlSupport<NPostgresConfig> {
                 if (q != null) {
                     String storedPassword = q.substring(u.length() + 1);
                     if (!NBlankable.isBlank(options.getPassword()) && !Objects.equals(options.getPassword(), storedPassword)) {
-                        throw new NIllegalArgumentException(NMsg.ofPlain("stored password does not match"));
+                        throw new NIllegalArgumentException(NMsg.ofP("stored password does not match"));
                     }
                 } else {
                     if (NBlankable.isBlank(options.getPassword())) {
-                        throw new NIllegalArgumentException(NMsg.ofPlain("missing password"));
+                        throw new NIllegalArgumentException(NMsg.ofP("missing password"));
                     }
                     pgpass.writeString(u + ":" + options.getPassword() + "\n", NPathOption.APPEND);
                     run(sysCmd()

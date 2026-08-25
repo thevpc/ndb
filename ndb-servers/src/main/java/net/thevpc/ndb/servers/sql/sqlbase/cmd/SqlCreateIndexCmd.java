@@ -53,7 +53,7 @@ public class SqlCreateIndexCmd<C extends NdbConfig> extends CreateIndexCmd<C> {
             }
         }
         if (setKeys.length() == 0) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing set"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing set"));
         }
 
 

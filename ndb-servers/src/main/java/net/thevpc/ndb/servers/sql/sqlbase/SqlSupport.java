@@ -60,7 +60,7 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
 
     public void runSQL(List<String> sql, C options) {
         if (options == null) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing config"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing config"));
         }
         boolean forceShowSQL = session.isTrace();
         revalidateOptions(options);

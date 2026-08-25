@@ -62,7 +62,7 @@ public class RestoreCmd<C extends NdbConfig> extends NdbCmd<C> {
         getSupport().prepareDump(options);
         NdbSupportBase.DumpRestoreMode dumpRestoreMode = getSupport().getDumpRestoreMode(options);
         if (file.get() == null) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing file"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing file"));
         } else {
             if (isRemoteCommand(options)) {
                 NPath remoteTempFolder = getSupport().getRemoteTempFolder(options);

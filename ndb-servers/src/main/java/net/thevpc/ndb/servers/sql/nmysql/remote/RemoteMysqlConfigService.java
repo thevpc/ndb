@@ -72,7 +72,7 @@ public class RemoteMysqlConfigService {
 
     public RemoteMysqlConfigService loadConfig() {
         if (name == null) {
-            throw new NExecutionException(NMsg.ofPlain("missing config name"), NExecutionException.ERROR_2);
+            throw new NExecutionException(NMsg.ofP("missing config name"), NExecutionException.ERROR_2);
         }
         NPath f = getConfigPath();
         if (f.exists()) {
@@ -119,7 +119,7 @@ public class RemoteMysqlConfigService {
                     return new RemoteMysqlDatabaseConfigService(dbName, a, this);
                 }
                 default: {
-                    throw new NIllegalArgumentException(NMsg.ofPlain("unexpected error"));
+                    throw new NIllegalArgumentException(NMsg.ofP("unexpected error"));
                 }
             }
         }
@@ -133,7 +133,7 @@ public class RemoteMysqlConfigService {
                 return new RemoteMysqlDatabaseConfigService(dbName, a, this);
             }
             default: {
-                throw new NIllegalArgumentException(NMsg.ofPlain("unexpected error"));
+                throw new NIllegalArgumentException(NMsg.ofP("unexpected error"));
             }
         }
     }

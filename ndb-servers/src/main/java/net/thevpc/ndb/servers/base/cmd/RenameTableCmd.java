@@ -66,7 +66,7 @@ public class RenameTableCmd<C extends NdbConfig> extends NdbCmd<C> {
 
 
     protected void runRenameTable(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 }

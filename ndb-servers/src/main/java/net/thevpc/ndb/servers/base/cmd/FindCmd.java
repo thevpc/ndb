@@ -108,7 +108,7 @@ public class FindCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void run(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 

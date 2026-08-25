@@ -61,7 +61,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
         revalidateOptions(options);
         getSupport().prepareDump(options);
         if (file.get() == null) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing file"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing file"));
         } else {
             if (file.get().isDirectory()) {
 
@@ -111,7 +111,7 @@ public class SqlRestoreCmd<C extends NdbConfig> extends RestoreCmd<C> {
                     throw new NIOException(ex);
                 }
             } else {
-                throw new NIllegalArgumentException(NMsg.ofPlain("missing file"));
+                throw new NIllegalArgumentException(NMsg.ofP("missing file"));
             }
         }
     }

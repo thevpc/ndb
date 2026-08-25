@@ -80,7 +80,7 @@ public class DeleteCmd<C extends NdbConfig> extends NdbCmd<C> {
 
 
     protected void runDelete(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 }

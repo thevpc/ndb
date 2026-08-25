@@ -105,7 +105,7 @@ public class ReplaceCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runReplace(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 

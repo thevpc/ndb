@@ -24,6 +24,6 @@ public class SqlShowTablesCmd<C extends NdbConfig> extends ShowTablesCmd<C> {
     }
 
     protected String createShowTablesSQL(C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("unsupported createShowTablesSQL"));
+        throw new NIllegalArgumentException(NMsg.ofP("unsupported createShowTablesSQL"));
     }
 }

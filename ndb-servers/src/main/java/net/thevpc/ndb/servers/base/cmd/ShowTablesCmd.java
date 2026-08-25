@@ -52,7 +52,7 @@ public class ShowTablesCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runShowTables(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 

@@ -137,7 +137,7 @@ public class LocalMysqlConfigService {
                     return new LocalMysqlDatabaseConfigService(dbName, a, this);
                 }
                 default: {
-                    throw new NIllegalArgumentException(NMsg.ofPlain("unexpected error"));
+                    throw new NIllegalArgumentException(NMsg.ofP("unexpected error"));
                 }
             }
         }
@@ -151,7 +151,7 @@ public class LocalMysqlConfigService {
                 return new LocalMysqlDatabaseConfigService(dbName, a, this);
             }
             default: {
-                throw new NIllegalArgumentException(NMsg.ofPlain("unexpected error"));
+                throw new NIllegalArgumentException(NMsg.ofP("unexpected error"));
             }
         }
     }

@@ -101,7 +101,7 @@ public class InsertCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runInsert(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 

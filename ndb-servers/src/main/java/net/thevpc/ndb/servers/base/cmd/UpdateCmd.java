@@ -105,7 +105,7 @@ public class UpdateCmd<C extends NdbConfig> extends NdbCmd<C> {
 
 
     protected void runUpdate(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 }

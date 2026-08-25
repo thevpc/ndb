@@ -128,7 +128,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
                             if (name.isNull()) {
                                 name.set(new AtName(v.stringValue()));
                             } else {
-                                commandLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                                commandLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
                             }
                         }).anyMatch();
                         break;
@@ -155,7 +155,7 @@ public class NDerbyMain extends SqlSupport<NDerbyConfig> {
             name.set(new AtName(""));
         }
         if (sql.isEmpty()) {
-            commandLine.throwMissingArgument(NMsg.ofPlain("sql"));
+            commandLine.throwMissingArgument(NMsg.ofP("sql"));
         }
 
         SqlHelper.runAndWaitFor(sql, createSqlConnectionInfo(options),

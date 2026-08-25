@@ -77,7 +77,7 @@ public abstract class NdbCmd<C extends NdbConfig> {
                 String name2 = NdbUtils.checkName(v.stringValue());
                 name.set(new AtName(name2));
             } else {
-                commandLine.throwUnexpectedArgument(NMsg.ofPlain("already defined"));
+                commandLine.throwUnexpectedArgument(NMsg.ofP("already defined"));
             }
         }).anyMatch();
     }

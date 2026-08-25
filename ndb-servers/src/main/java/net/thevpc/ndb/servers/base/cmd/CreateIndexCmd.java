@@ -81,7 +81,7 @@ public class CreateIndexCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runCreateIndex(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 }

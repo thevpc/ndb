@@ -24,6 +24,6 @@ public class SqlShowDatabasesCmd<C extends NdbConfig> extends ShowDatabasesCmd<C
     }
 
     protected String createShowDatabasesSQL(C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("unsupported createShowDatabasesSQL"));
+        throw new NIllegalArgumentException(NMsg.ofP("unsupported createShowDatabasesSQL"));
     }
 }

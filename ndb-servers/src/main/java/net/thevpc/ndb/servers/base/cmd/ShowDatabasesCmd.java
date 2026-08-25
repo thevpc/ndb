@@ -49,7 +49,7 @@ public class ShowDatabasesCmd<C extends NdbConfig> extends NdbCmd<C> {
     }
 
     protected void runShowDatabases(ExtendedQuery eq, C options) {
-        throw new NIllegalArgumentException(NMsg.ofPlain("invalid"));
+        throw new NIllegalArgumentException(NMsg.ofP("invalid"));
     }
 
 

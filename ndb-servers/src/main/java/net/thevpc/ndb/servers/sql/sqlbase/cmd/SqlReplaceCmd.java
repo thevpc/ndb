@@ -48,7 +48,7 @@ public class SqlReplaceCmd<C extends NdbConfig> extends ReplaceCmd<C> {
             }
         }
         if (setSb.length() == 0) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing set"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing set"));
         }
         String whereSQL = getSupport().createWhere(eq.getWhere());
         if (!whereSQL.isEmpty()) {

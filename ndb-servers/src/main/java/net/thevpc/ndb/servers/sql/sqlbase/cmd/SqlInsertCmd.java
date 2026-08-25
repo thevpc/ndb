@@ -53,7 +53,7 @@ public class SqlInsertCmd<C extends NdbConfig> extends InsertCmd<C> {
             }
         }
         if (setKeys.length() == 0) {
-            throw new NIllegalArgumentException(NMsg.ofPlain("missing set"));
+            throw new NIllegalArgumentException(NMsg.ofP("missing set"));
         }
 
 

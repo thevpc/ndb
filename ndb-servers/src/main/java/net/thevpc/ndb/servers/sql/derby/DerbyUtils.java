@@ -1,6 +1,6 @@
 package net.thevpc.ndb.servers.sql.derby;
 
-import net.thevpc.nuts.platform.NExecutionEngineFamily;
+import net.thevpc.nuts.platform.NRuntimeDistributionFamily;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.io.NPs;
 
@@ -29,7 +29,7 @@ public class DerbyUtils {
 
     public static RunningDerby[] getRunningInstances(NSession session) {
         return NPs.of()
-                .platformFamily(NExecutionEngineFamily.JAVA).getResultList()
+                .platformFamily(NRuntimeDistributionFamily.JAVA).getResultList()
                 .filter((p) -> p.name().equals("org.apache.derby.drda.NetworkServerControl"))
                 .map(x -> new RunningDerby(x, session)).toArray(RunningDerby[]::new);
     }

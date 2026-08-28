@@ -2,6 +2,7 @@
 //
 //import net.thevpc.nuts.app.NApp;
 //import net.thevpc.nuts.app.NApplication;
+//import net.thevpc.nuts.app.NApplicationHandler;
 //import net.thevpc.nuts.app.NMainArgs;
 //import net.thevpc.nuts.core.NSession;
 //import net.thevpc.nuts.cmdline.NCmdLine;
@@ -10,7 +11,7 @@
 //import net.thevpc.ndb.servers.sql.nmysql.NMysqlMain;
 //import net.thevpc.ndb.servers.sql.postgres.NPostgresSupport;
 //
-//public class NdbMain implements NApplication {
+//public class NdbMain implements NApplicationHandler {
 //
 //    public static void main(String[] args) {
 //        new NdbMain().main(NMainArgs.ofExit(args));
@@ -18,7 +19,7 @@
 //
 //    @Override
 //    public void run() {
-//        run(NApp.of().cmdLine());
+//        run(NApplication.of().cmdLine());
 //    }
 //
 //    public void run(NCmdLine cmdLine) {
@@ -40,6 +41,6 @@
 //                session.configureLast(cmdLine);
 //            }
 //        }
-//        NApp.of().printHelp();
+//        NApplication.of().printHelp();
 //    }
 //}

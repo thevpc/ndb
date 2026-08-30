@@ -465,7 +465,7 @@ public class NSqlSchemaDiff {
         }
 
         public String diffStats() {
-            NStringBuilder sb = new NStringBuilder();
+            NStringBuilder sb = NStringBuilder.of();
             sb.println("Parsed old tables: " + oldTables.size());
             sb.println("Parsed new tables: " + newTables.size());
             sb.println("Renamed tables (explicit): " + this.renamedTables());

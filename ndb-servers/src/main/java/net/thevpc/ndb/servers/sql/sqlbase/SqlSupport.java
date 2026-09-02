@@ -2,7 +2,7 @@ package net.thevpc.ndb.servers.sql.sqlbase;
 
 import net.thevpc.nuts.app.NApplication;
 import net.thevpc.nuts.artifact.NId;
-import net.thevpc.nuts.command.NPrepareCmd;
+import net.thevpc.nuts.command.NPrepare;
 import net.thevpc.nuts.core.NSession;
 import net.thevpc.nuts.elem.NElementReader;
 import net.thevpc.nuts.elem.NElementType;
@@ -15,6 +15,8 @@ import net.thevpc.ndb.servers.sql.util.SqlCallable;
 import net.thevpc.ndb.servers.sql.util.SqlConnectionInfo;
 import net.thevpc.ndb.servers.sql.util.SqlHelper;
 import net.thevpc.ndb.servers.sql.util.SqlRunnable;
+import net.thevpc.nuts.net.NConnectionString;
+import net.thevpc.nuts.net.NConnectionStringBuilder;
 import net.thevpc.nuts.util.NIllegalArgumentException;
 import net.thevpc.nuts.text.NMsg;
 import net.thevpc.nuts.util.NStringUtils;
@@ -66,7 +68,12 @@ public abstract class SqlSupport<C extends NdbConfig> extends NdbSupportBase<C> 
         revalidateOptions(options);
         if (isRemoteCommand(options)) {
             //call self remotely
-            NPrepareCmd.of().userName(options.getRemoteUser()).targetServer(options.getRemoteServer()).addIds(Arrays.asList(NId.get(dbDriverPackage).get())).run();
+            NPrepare.of().at(
+                    NConnectionStringBuilder.of()
+                            .userName(options.getRemoteUser())
+                            .host(options.getRemoteServer())
+                            .build()
+            ).ids(Arrays.asList(NId.get(dbDriverPackage).get())).run();
             run(sysSsh(options).command("nuts").command(NApplication.of().id().get().toString()).command(dbType).command("run-sql").command("--host=" + options.getHost()).command("--port=" + options.getPort()).command("--dbname=" + options.getDatabaseName()).command("--user=" + options.getUser()).command("--password=" + options.getPassword()));
             return;
         }

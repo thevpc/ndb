@@ -24,15 +24,15 @@ public class NSqlConnection implements AutoCloseable {
         return NSqlConnectionFactory.of(params).create();
     }
 
-    private static Logger LOG = Logger.getLogger(NSqlConnection.class.getName());
-    private NSqlDialect dialect;
-    private NSqlConnectionFactory connectionFactory;
+    private static final Logger LOG = Logger.getLogger(NSqlConnection.class.getName());
+    private final NSqlDialect dialect;
+    private final NSqlConnectionFactory connectionFactory;
     private Connection connection;
     private boolean connectionReady;
-    private Map<String, PreparedStatement> insertPreparedStatementMap = new LinkedHashMap<>();
-    private Map<String, NSqlTable> tables = new LinkedHashMap<>();
+    private final Map<String, PreparedStatement> insertPreparedStatementMap = new LinkedHashMap<>();
+    private final Map<String, NSqlTable> tables = new LinkedHashMap<>();
     private long maxVarcharLength;
-    private boolean sharedConnection;
+    private final boolean sharedConnection;
 
     public NSqlConnection(NSqlConnectionFactory connectionFactory, Connection connection, boolean sharedConnection) {
         this.connectionFactory = connectionFactory;
@@ -421,7 +421,7 @@ public class NSqlConnection implements AutoCloseable {
         return c;
     }
 
-    public NSqlColumn getSqlColumn(NSqlColumnId name) {
+    public NOptional<NSqlColumn> getSqlColumn(NSqlColumnId name) {
         LOG.log(Level.FINEST, "[" + name.getFullName() + "] load column metadata");
         List<NSqlColumn> a = loadColumDefinitions(
                 name.getCatalogName(),
@@ -430,7 +430,7 @@ public class NSqlConnection implements AutoCloseable {
                 name.getColumnName()
         );
         if (!a.isEmpty()) {
-            return a.get(0);
+            return NOptional.of(a.get(0));
         }
         a = loadColumDefinitions(
                 name.getCatalogName(),
@@ -439,9 +439,9 @@ public class NSqlConnection implements AutoCloseable {
                 null
         ).stream().filter(x -> Objects.equals(x.getColumnName(), name.getColumnName())).collect(Collectors.toList());
         if (!a.isEmpty()) {
-            return a.get(0);
+            return NOptional.of(a.get(0));
         }
-        return null;
+        return NOptional.ofNamedEmpty(NMsg.ofC("column %s", name));
     }
 
     private List<NSqlColumn> loadColumDefinitions(String catalog, String schemaPattern,
@@ -570,7 +570,7 @@ public class NSqlConnection implements AutoCloseable {
                     }
                     String tableName = _getRsStringByName(rs, "TABLE_NAME");
                     NSqlTableId table = new NSqlTableId(tableCat, tableSchem, tableName);
-                    if (table.equals(name)) {
+                    if (name.matches(table)) {
                         tmd = new NSqlTableDefinition();
                         tmd.setTableName(tableName);
                         tmd.setSchemaName(tableSchem);
@@ -617,13 +617,13 @@ public class NSqlConnection implements AutoCloseable {
                         short DELETE_RULE = _getRsShortByName(rs, "UPDATE_RULE");
                         NSqlTableId tid1 = new NSqlTableId(PKTABLE_CAT, PKTABLE_SCHEM, PKTABLE_NAME);
                         NSqlTableId tid2 = new NSqlTableId(FKTABLE_CAT, FKTABLE_SCHEM, FKTABLE_NAME);
-                        if (tid1.equals(name)) {
+                        if (name.matches(tid1)) {
                             NSqlColumn c = tmd.getColumns().stream()
                                     .filter(x -> x.getColumnName().equals(PKCOLUMN_NAME))
                                     .findAny().get();
                             c.setPk(true);
                             c.setPkIndex(KEY_SEQ);
-                        } else if (tid2.equals(name)) {
+                        } else if (name.matches(tid2)) {
                             NSqlColumn c = tmd.getColumns().stream()
                                     .filter(x -> x.getColumnName().equals(FKCOLUMN_NAME))
                                     .findAny().get();
@@ -1021,7 +1021,7 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public boolean columnExists(NSqlColumnId c) {
-        return getSqlColumn(c) != null;
+        return getSqlColumn(c).isPresent();
     }
 
     public void prepareStatement(PreparedStatement ps, int index, NSqlColumn column, Object value, NPrepareStatementContext prepareStatementContext) {
@@ -1244,7 +1244,7 @@ public class NSqlConnection implements AutoCloseable {
 
     public boolean patchColumn(NSqlColumn col) {
         if (columnExists(col.getColumnId())) {
-            NSqlColumn old = getSqlColumn(col.getColumnId());
+            NSqlColumn old = getSqlColumn(col.getColumnId()).orNull();
             if (old == null) {
                 createColumn(col);
                 return true;
@@ -1270,7 +1270,30 @@ public class NSqlConnection implements AutoCloseable {
     }
 
     public boolean tableExists(NSqlTableId c) {
-        return getTableDefinition(c) != null;
+        // a definition loads columns and exported keys; existence only needs the relation header,
+        // and must ignore the indexes and sequences getAnyTables also reports
+        for (NSqlTableHeader h : getAnyTables()) {
+            if ((h.isTable() || h.isView()) && c.matches(h.toTableId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The relation stored under this name, as a table or as a view, in the current catalog and
+     * schema. Callers must check isTable() / isView() themselves before issuing DDL: an
+     * {@code alter table} on a view is an error, not a rename. getAnyTables() also reports indexes
+     * and sequences, which are neither. The name is matched the way the database matches it — exactly,
+     * case included — so fold both sides first if the caller wants a case-insensitive lookup.
+     */
+    public NOptional<NSqlTableHeader> findAnyTable(String tableName) {
+        for (NSqlTableHeader h : getAnyTables()) {
+            if ((h.isTable() || h.isView()) && Objects.equals(h.getTableName(), tableName)) {
+                return NOptional.of(h);
+            }
+        }
+        return NOptional.ofEmpty();
     }
 
     public boolean catalogExists(NSqlCatalogId c) {
@@ -1298,9 +1321,7 @@ public class NSqlConnection implements AutoCloseable {
                     }
                 }
                 if (!NBlankable.isBlank(s.getSchemaName())) {
-                    if (!Objects.equals(s.getSchemaName(), x.getSchemaName())) {
-                        return false;
-                    }
+                    return Objects.equals(s.getSchemaName(), x.getSchemaName());
                 }
                 return true;
             });
